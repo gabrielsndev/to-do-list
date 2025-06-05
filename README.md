@@ -25,16 +25,27 @@ A aplicação roda no terminal (modo texto), com um menu interativo.
 ## 📁 Estrutura do Projeto
 
 projeto-poo/
+
 │
+
 ├── src/
-│ ├── modelo/ # Classes Tarefa e CentralDeInformacoes
-│ ├── persistencia/ # Classe Persistencia (XStream)
-│ ├── relatorios/ # Classe GeradorDeRelatorios (iText)
-│ ├── email/ # Classe Mensageiro (JavaMail)
-│ └── Main.java # Menu principal e interação com o usuário
+   
+   ├── modelo/ # Classes Tarefa e CentralDeInformacoes
+   
+   ├── persistencia/ # Classe Persistencia (XStream)
+   
+   ├── relatorios/ # Classe GeradorDeRelatorios (iText)
+   
+   ├── email/ # Classe Mensageiro (JavaMail)
+   
+   └── Main.java # Menu principal e interação com o usuário
+   
 │
+
 ├── .gitignore
+
 ├── README.md
+
 └── central.xml # Arquivo XML com as tarefas (gerado pelo sistema)
 
 ---
