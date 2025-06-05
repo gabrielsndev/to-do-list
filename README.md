@@ -4,7 +4,7 @@ Este repositório contém a implementação da lista de aquecimento para o proje
 
 ## 👥 Equipe
 - Gabriel Souza
-- Thalys 
+- Thalys Eduardo
 - Maylson Silva
 
 ---
