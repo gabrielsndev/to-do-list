@@ -1,5 +1,7 @@
 package persistencia;
 
+import modelo.CentralDeInformacoes;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
