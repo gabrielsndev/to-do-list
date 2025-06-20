@@ -22,12 +22,19 @@ public class CentralDeInformacoes {
         this.todasAsTarefas = todasAsTarefas;
     }
 
-    public Tarefa recuperarTarefaPorId(long id){
-        for(Tarefa tarefa: todasAsTarefas) { 
-            if(id == tarefa.getId()){
-                return tarefa;           
-            }    
+  public Tarefa recuperarTarefaPorId(long id) {
+    try {
+        for (Tarefa tarefa : todasAsTarefas) {
+            if (id == tarefa.getId()) {
+                return tarefa;
+                }
+         }
+        throw new Exception("Erro ao buscar tarefa: " + id + " ID não encontrada.");
+        } 
+    catch (Exception e) {
+        System.out.println(e.getMessage());
+        return null;    
         }
-    	return null;
     }
+
 }
