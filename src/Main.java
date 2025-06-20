@@ -1,9 +1,17 @@
 import java.util.Scanner;
 
+import modelo.CentralDeInformacoes;
+
 public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         String opcao = "";
+        CentralDeInformacoes tarefasSalvas = new CentralDeInformacoes();
+        
+        // Puxa as tarefas da persistencia: 
+        
+        //
+        
         
         do {
             System.out.println("---- MENU ----");
@@ -16,10 +24,37 @@ public class Main {
 
             switch (opcao) {
                 case "1":
+                	//Lê uma tarefa e adiciona no arraylis local e no arquivo de persistencia
+                	
                     
                     break;
-            
+                    
+                case "2":
+                	// get toda as tarefas e imprime os toString delas
+                	
+                	
+                	break;
+                	
+                case "3":
+                	// sei nem, pra onde vai
+                	
+                	
+                	break;
+                	
+                case "4":
+                	//gerar pdf
+                	
+                	
+                	break;
+                	
+                case "5":
+                	//email
+                	
+                	
+                	break;
+                	
                 default:
+                	System.out.println("Opção inválida!");
                     break;
             }
 
