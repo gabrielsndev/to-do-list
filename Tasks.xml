@@ -1,0 +1,10 @@
+<CentralDeInformacoes>
+  <todasAsTarefas>
+    <modelo.Tarefa>
+      <id>1750619689551</id>
+      <titulo>Volei</titulo>
+      <descricao>Jogar volei</descricao>
+      <deadline>2025-06-22</deadline>
+    </modelo.Tarefa>
+  </todasAsTarefas>
+</CentralDeInformacoes>

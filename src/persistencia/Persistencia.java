@@ -11,15 +11,16 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class Persistencia {
 
-	public void salvarCentral(CentralDeInformacoes central, String arquivo) {
+	public void salvarCentral(CentralDeInformacoes central, String arquivo) throws Exception{
 		XStream xstream = new XStream(new DomDriver());
 		try {
 			xstream.alias("CentralDeInformacoes", CentralDeInformacoes.class);
 			FileOutputStream nomeDoArquivo = new FileOutputStream(arquivo);
 			xstream.toXML(central, nomeDoArquivo);
 			
-		}	catch(Exception e) {
-			System.out.print("ERRO: "+ e.getMessage());
+		} catch(Exception e) {
+			e = new Exception("Ocorreu um erro");
+			throw e;
 		}
 		
 	}
@@ -30,11 +31,11 @@ public class Persistencia {
 			FileInputStream nomeDoArquivo = new FileInputStream(arquivo);
 	        return (CentralDeInformacoes) xstream.fromXML(nomeDoArquivo);
 			
-		}catch(FileNotFoundException  e) {
+		} catch(FileNotFoundException  e) {
 	           return new CentralDeInformacoes();
 	           
 		} catch (Exception e) {
-		    System.out.println("Erro ao recuperar: " + e.getMessage());
+			
             return new CentralDeInformacoes();
 		}
 			
