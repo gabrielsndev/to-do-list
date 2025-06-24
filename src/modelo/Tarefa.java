@@ -45,7 +45,7 @@ public class Tarefa {
     }
 
     public String toString() {
-        return "Título: " + titulo + " - Prazo: " + deadline;
+        return "\nTítulo: " + titulo+ "\nDescrição: "+descricao;
     }
 }
 

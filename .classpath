@@ -6,9 +6,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/USUÁRIO/Downloads/mail-1.4.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/USUÁRIO/Downloads/activation-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/USUÁRIO/Downloads/itextpdf-5.5.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/USUÁRIO/Downloads/xstream-1.4.21/lib/xstream-1.4.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tedua/Downloads/xstream-1.4.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tedua/Downloads/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tedua/Downloads/mail-1.4.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tedua/Downloads/itextpdf-5.4.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

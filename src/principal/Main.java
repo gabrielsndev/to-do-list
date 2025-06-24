@@ -105,20 +105,33 @@ public class Main {
                 	
                 case "5":
                 	//email
-                	 System.out.println("Digite o e-mail do destinatário:");
-                     
-                	 String destinatario = input.nextLine();
-                     
-                	 String mensagem = "Segue em anexo o relatório de tarefas para hoje.";
-
+                	String mensagem = "Segue em anexo o relatório de tarefas para hoje.";
+            		String destinatario = " ";
+                    
+                	do {
+                		System.out.println("Digite o e-mail do destinatário:");
+                		destinatario = input.nextLine();
+                		if (!destinatario.contains("@") || !destinatario.contains(".")) {
+                            System.out.println("Endereço de e-mail inválido. Tente novamente.");
+                            continue;
+                        }
+                		
+                	 try {
+                		 
                      // Primeiro, gerar o PDF do dia atual
                      
                 	 LocalDate hoje = LocalDate.now();
                      GeradorDeRelatorios.obterTarefasDeUmDia(hoje, todasTarefas);
-
+                	 
                      // Agora, enviar o e-mail
                      Mensageiro.enviarEmail(destinatario, mensagem);
-                	
+                     System.out.println("Mensagem enviada com sucesso!");
+                     break;
+                	 
+                	 }catch(Exception e) {
+                		 System.out.println("Digite um e-mail válido. "+ e.getMessage());
+                	 }
+                	}while(true);
                 	break;
                 	
                 case "S":
@@ -129,9 +142,7 @@ public class Main {
                 default:
                 	System.out.println("Opção inválida");
                     break;
-            }
-            
-
+            }            
             
         } while (!opcao.equalsIgnoreCase("S"));
 
