@@ -107,7 +107,7 @@ public class Main {
                 	//email
                 	String mensagem = "Segue em anexo o relatório de tarefas para hoje.";
             		String destinatario = " ";
-                    
+            		String dataDeEntrada = " ";
                 	do {
                 		System.out.println("Digite o e-mail do destinatário:");
                 		destinatario = input.nextLine();
@@ -119,9 +119,14 @@ public class Main {
                 	 try {
                 		 
                      // Primeiro, gerar o PDF do dia atual
-                     
-                	 LocalDate hoje = LocalDate.now();
-                     GeradorDeRelatorios.obterTarefasDeUmDia(hoje, todasTarefas);
+            		 System.out.println("Digite a data para o relatório (formato: aaaa-mm-dd):");
+            		 dataDeEntrada = input.nextLine();
+            		 LocalDate dataDoRelatorio = LocalDate.parse(dataDeEntrada);
+            		 GeradorDeRelatorios.obterTarefasDeUmDia(dataDoRelatorio, todasTarefas);
+
+                		
+                	 //LocalDate hoje = LocalDate.now();
+                     //GeradorDeRelatorios.obterTarefasDeUmDia(hoje, todasTarefas);
                 	 
                      // Agora, enviar o e-mail
                      Mensageiro.enviarEmail(destinatario, mensagem);
