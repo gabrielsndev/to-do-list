@@ -1,22 +1,31 @@
 package modelo;
+
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
+@Entity
 public class Tarefa {
 
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String titulo;
     private String descricao;
     private LocalDate deadline;
 
-    public Tarefa(String titulo, String descricao, LocalDate deadline) {
+    
+    public Tarefa() {}
 
-        this.id = System.currentTimeMillis();
+    
+    public Tarefa(String titulo, String descricao, LocalDate deadline) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.deadline = deadline;
     }
+
     
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -32,6 +41,10 @@ public class Tarefa {
         return deadline;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
@@ -44,9 +57,8 @@ public class Tarefa {
         this.deadline = deadline;
     }
 
+    @Override
     public String toString() {
-        return "\nTítulo: " + titulo+ "\nDescrição: "+descricao;
+        return "\nTítulo: " + titulo + "\nDescrição: " + descricao;
     }
 }
-
-
