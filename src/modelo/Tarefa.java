@@ -13,9 +13,10 @@ public class Tarefa {
     private String titulo;
     private String descricao;
     private LocalDate deadline;
+    private int prioridade;
 
-    
-    public Tarefa() {}
+
+	public Tarefa() {}
 
     
     public Tarefa(String titulo, String descricao, LocalDate deadline) {
@@ -24,7 +25,7 @@ public class Tarefa {
         this.deadline = deadline;
     }
 
-    
+        
     public Long getId() {
         return id;
     }
@@ -57,6 +58,14 @@ public class Tarefa {
         this.deadline = deadline;
     }
 
+    public int getPrioridade() {
+    	return prioridade;
+    }
+    
+    
+    public void setPrioridade(int prioridade) {
+    	this.prioridade = prioridade;
+    }
     @Override
     public String toString() {
         return "\nTítulo: " + titulo + "\nDescrição: " + descricao;
