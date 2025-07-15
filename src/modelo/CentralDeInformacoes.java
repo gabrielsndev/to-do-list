@@ -3,7 +3,7 @@ package modelo;
 import java.util.ArrayList;
 
 public class CentralDeInformacoes {
-    private ArrayList<Tarefa>todasAsTarefas = new ArrayList<Tarefa>();
+    private ArrayList<Tarefa> todasAsTarefas = new ArrayList<Tarefa>();
 
     public boolean adicionarTarefa(Tarefa t){
         for(Tarefa tarefa: todasAsTarefas)
