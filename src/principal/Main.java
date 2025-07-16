@@ -1,10 +1,11 @@
 package principal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
-import modelo.CentralDeInformacoes;
 import modelo.Tarefa;
 import persistencia.Persistencia;
+import persistencia.TarefaDAO;
 import relatorios.GeradorDeRelatorios;
 import email.Mensageiro;
 
@@ -13,10 +14,12 @@ public class Main {
     	
         Scanner input = new Scanner(System.in);
         String opcao = "";
-        
-        CentralDeInformacoes todasTarefas;
+        TarefaDAO taskDAO = new TarefaDAO();
+        List<Tarefa> todasTarefas;
+        //CentralDeInformacoes todasTarefas;
         Persistencia xml = new Persistencia();
-        todasTarefas = xml.recuperarCentral("Tasks.xml"); 
+        //todasTarefas = xml.recuperarCentral("Tasks.xml"); 
+        
         
         do {
             System.out.println("---> MENU: ");
@@ -54,30 +57,41 @@ public class Main {
                 	
                 	Tarefa tarefa = new Tarefa(title, description, deadline);
                 	
-                	todasTarefas.adicionarTarefa(tarefa);
+                	//todasTarefas.adicionarTarefa(tarefa);
                 	
                 	try {
-                		xml.salvarCentral(todasTarefas, "Tasks.xml");
+                		taskDAO.salvar(tarefa);
+                		//xml.salvarCentral(todasTarefas, "Tasks.xml");
                 		System.out.println("Tarefa Adicionada com Sucesso");
                 	} catch(Exception e) {
                 		System.out.println("Houve um erro ao salvar a tarefa: " + e.getMessage());
                 	}
-                	
                     break;
                     
                 case "2":
                 	// get todas as tarefas e imprime os toString delas
                 	System.out.println("Lista de todas as tarefas: ");
-                	for(Tarefa t: todasTarefas.getTodasAsTarefas()) {
-                		System.out.println(t+" ID: "+ t.getId());
+                	todasTarefas = taskDAO.listar();
+                	for(Tarefa t: todasTarefas) {
+                		System.out.println(t+" ID: " + t.getId() + ". Titulo: " +  t.getTitulo());
                 	}                
                 	break;
                 	
                 case "3":
                 	// listando tarefa específica (pelo id)
-                	System.out.println("Digite o número do ID que deseja procurar: ");
-                	long id = Long.parseLong(input.nextLine());
-                	Tarefa encontrada = todasTarefas.recuperarTarefaPorId(id);
+                	long id;
+                	while (true) {
+                	    System.out.println("Digite o número do ID que deseja procurar: ");
+                	    try {
+                	        id = Long.parseLong(input.nextLine());
+                	        break; 
+                	    } catch (Exception e) {
+                	        System.out.println("ID inválido. Tente novamente.");
+                	    }
+                	}
+                	
+                	
+                	Tarefa encontrada = taskDAO.buscar(id);
                 	
                 	if(encontrada != null) {
                 		System.out.println("Tarefa encontrada.");
@@ -88,10 +102,12 @@ public class Main {
                 		System.out.println("Tarefa não encontrada.");
                 		
                 	}
+                	
                 	break;
                 	
                 case "4":
                 	//gerar pdf dia específico
+                	todasTarefas = taskDAO.listar();
                 	System.out.println("Digite a data para o relatório (formato: aaaa-mm-dd):");
                     String entradaData = input.nextLine();
                     try {
@@ -122,6 +138,7 @@ public class Main {
             		 System.out.println("Digite a data para o relatório (formato: aaaa-mm-dd):");
             		 dataDeEntrada = input.nextLine();
             		 LocalDate dataDoRelatorio = LocalDate.parse(dataDeEntrada);
+            		 todasTarefas = taskDAO.listar();
             		 GeradorDeRelatorios.obterTarefasDeUmDia(dataDoRelatorio, todasTarefas);
 
                 		

@@ -10,9 +10,10 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
+import java.util.List;
 
 public class GeradorDeRelatorios {
-	public static void obterTarefasDeUmDia(LocalDate dia, CentralDeInformacoes central) {
+	public static void obterTarefasDeUmDia(LocalDate dia, List<Tarefa> central) {
 		Document document = new Document();
 		
 
@@ -25,7 +26,7 @@ public class GeradorDeRelatorios {
 
             boolean encontrou = false;
 
-            for (Tarefa tarefa : central.getTodasAsTarefas()) {
+            for (Tarefa tarefa : central) {
                 if (tarefa.getDeadline().equals(dia)) {
                     document.add(new Paragraph(tarefa.toString()));
                     document.add(new Paragraph(" "));

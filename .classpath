@@ -11,8 +11,22 @@
 	<classpathentry kind="lib" path="lib/itextpdf-5.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/mail-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.4.21.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-core-6.4.4.Final.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta.persistence-api-3.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.45.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-community-dialects-6.4.4.Final.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-core-6.4.4.Final.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/classmate-1.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta.transaction-api-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-logging-3.5.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-commons-annotations-6.0.6.Final.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta.xml.bind-api-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-runtime-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jandex-3.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-2.0.13.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-simple-2.0.13.jar"/>
+	<classpathentry kind="lib" path="lib/byte-buddy-1.14.13.jar"/>
+	<classpathentry kind="lib" path="lib/byte-buddy-agent-1.14.13.jar"/>
+	<classpathentry kind="lib" path="lib/antlr4-runtime-4.13.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

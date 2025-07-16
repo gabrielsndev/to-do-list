@@ -3,7 +3,6 @@ package persistencia;
 import jakarta.persistence.*;
 import modelo.Tarefa;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TarefaDAO {
