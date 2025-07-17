@@ -3,6 +3,7 @@ package persistencia;
 import jakarta.persistence.*;
 import modelo.Tarefa;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class TarefaDAO {
@@ -60,6 +61,16 @@ public class TarefaDAO {
            em.close();
        }
    }
-    
+   
+   public List<Tarefa> buscarDeadLine(LocalDate deadline) {
+	   EntityManager em = emf.createEntityManager();
+	   try {
+		   return em.createQuery("SELECT t FROM Tarefa t WHERE t.deadline = :deadline", Tarefa.class)
+				   .setParameter("deadline", deadline)
+				   .getResultList();
+	   } finally {
+		   em.close();
+	   }
+   }
    
 }

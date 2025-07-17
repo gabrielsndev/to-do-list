@@ -30,6 +30,7 @@ public class Main {
             System.out.println("4 - Gerar PDF das tarefas de um dia.");
             System.out.println("5 - Receber email com as tarefas de hoje.");
             System.out.println("6 - Excluir uma tarefa.");
+            System.out.println("7 - Listar tarefas de um dia específico.");
             System.out.println("S - Para encerrar o programa.");
             
             System.out.print("Escolha uma opção: ");
@@ -173,6 +174,33 @@ public class Main {
                 	}
                 	break;
                 
+                	
+                case "7":
+                	dataValida = false;
+                	deadline = null;
+                	do {
+                	    try {
+                	        System.out.println("Digite a Data para Procurar as Tarefas (no formato: AAAA-MM-DD):");
+                	        String date = input.nextLine();
+                	        deadline = LocalDate.parse(date);
+                	        dataValida = true;
+                	    } catch (Exception e) {
+                	        System.out.println("Data inválida! Tente novamente");
+                	    }
+                	    
+                	} while (!dataValida);
+
+                	List<Tarefa> tarefasEspecificas = taskDAO.buscarDeadLine(deadline);
+                	if(tarefasEspecificas.isEmpty()) {
+                		System.out.println("Nenhuma tarefa tem o dia especificado");
+                	} else {
+	                	for(Tarefa t: tarefasEspecificas) {
+	                		System.out.println(t + " ID: " + t.getId() + ". Titulo: " +  t.getTitulo());
+	                	}  
+                	}
+                	
+                	
+                	break;
                 	
                 case "S":
                 case "s":
