@@ -15,6 +15,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
         String opcao = "";
         TarefaDAO taskDAO = new TarefaDAO();
+        long id;
         List<Tarefa> todasTarefas;
         //CentralDeInformacoes todasTarefas;
         Persistencia xml = new Persistencia();
@@ -28,6 +29,7 @@ public class Main {
             System.out.println("3 - Receber detalhes de uma tarefa específica.");
             System.out.println("4 - Gerar PDF das tarefas de um dia.");
             System.out.println("5 - Receber email com as tarefas de hoje.");
+            System.out.println("6 - Excluir uma tarefa.");
             System.out.println("S - Para encerrar o programa.");
             
             System.out.print("Escolha uma opção: ");
@@ -68,6 +70,7 @@ public class Main {
                 	}
                     break;
                     
+                    
                 case "2":
                 	// get todas as tarefas e imprime os toString delas
                 	System.out.println("Lista de todas as tarefas: ");
@@ -77,9 +80,9 @@ public class Main {
                 	}                
                 	break;
                 	
+                	
                 case "3":
                 	// listando tarefa específica (pelo id)
-                	long id;
                 	while (true) {
                 	    System.out.println("Digite o número do ID que deseja procurar: ");
                 	    try {
@@ -102,8 +105,8 @@ public class Main {
                 		System.out.println("Tarefa não encontrada.");
                 		
                 	}
-                	
                 	break;
+                	
                 	
                 case "4":
                 	//gerar pdf dia específico
@@ -130,7 +133,7 @@ public class Main {
                 		if (!destinatario.contains("@") || !destinatario.contains(".")) {
                             System.out.println("Endereço de e-mail inválido. Tente novamente.");
                             continue;
-                        }
+                        	}
                 		
                 	 try {
                 		 
@@ -150,11 +153,26 @@ public class Main {
                      System.out.println("Mensagem enviada com sucesso!");
                      break;
                 	 
-                	 }catch(Exception e) {
+                	 } catch(Exception e) {
                 		 System.out.println("Digite um e-mail válido. "+ e.getMessage());
-                	 }
-                	}while(true);
+                	 	}
+                	} while(true);	
                 	break;
+                	
+                
+                case "6":
+                	try {
+                		System.out.println("Digite o ID da tarefa a ser excluída");
+                		id = Long.parseLong(input.nextLine());
+                		taskDAO.remover(id);
+                		System.out.println("Tarefa excluída com sucesso!");
+                	} catch (NumberFormatException e) {
+                        System.out.println("Entrada inválida");
+                    } catch(Exception e) {
+                		System.out.println("Nenhuma tarefa foi encontrada com esse ID");
+                	}
+                	break;
+                
                 	
                 case "S":
                 case "s":

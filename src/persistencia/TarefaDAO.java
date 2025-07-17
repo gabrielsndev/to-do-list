@@ -35,8 +35,11 @@ public class TarefaDAO {
        }
    }
    
-   public void remover(long id) {
+   public void remover(long id) throws Exception{
        EntityManager em = emf.createEntityManager();
+       Tarefa t = em.find(Tarefa.class, id);
+       if(t == null) {throw new Exception();}
+       
        try {
            Tarefa tarefa = em.find(Tarefa.class, id);
            if (tarefa != null) {
@@ -57,7 +60,6 @@ public class TarefaDAO {
            em.close();
        }
    }
-   
-   
+    
    
 }
