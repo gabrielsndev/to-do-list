@@ -9,7 +9,7 @@ import javax.mail.internet.*;
 
 
 public class Mensageiro {
-	public static void enviarEmail(String destinatario, String mensagemTexto) {
+	public static void enviarEmail(String destinatario, String mensagemTexto, String caminhoAnexo) {
 		 //Configurações da conta que vai enviar o e-mail
         String remetente = "projetospoo@gmail.com";  // Coloque aqui o e-mail que vai enviar
         String senha = "qmtj xczy bpsj yhrw";            // Coloque aqui a senha (ou app password, se for Gmail)

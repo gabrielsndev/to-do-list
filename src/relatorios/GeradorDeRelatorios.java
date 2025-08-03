@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class GeradorDeRelatorios {
-	public static void obterTarefasDeUmDia(LocalDate dia, List<Tarefa> central) {
+	public static void gerarRelatorioPDFDoDia(LocalDate dia, List<Tarefa> central,String nomeArquivo) {
 		Document document = new Document();
 		
 
