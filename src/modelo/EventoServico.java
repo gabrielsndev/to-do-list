@@ -11,6 +11,14 @@ public class EventoServico {
  
     // Criar novo evento (com validação de data única)
     public void criarEvento(Evento evento) throws Exception {
+        List<Evento> eventosExistentes = eventoDAO.listar();
+
+        for (Evento e : eventosExistentes) {
+            if (e.getData().equals(evento.getData())) {
+                throw new Exception("Já existe um evento marcado para essa data.");
+            }
+        }
+
         eventoDAO.salvar(evento);
     }
 

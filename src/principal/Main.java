@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+import modelo.EventoServico;
+import modelo.Evento;
 import modelo.Subtarefa;
 import modelo.Tarefa;
 import persistencia.Persistencia;
@@ -436,7 +438,7 @@ public class Main {
                     System.out.println("Digite o título da subtarefa que deseja excluir:");
                     String tituloExcluir = input.nextLine();
 
-                    boolean removido = tarefaSub.getSubtarefas().removeIf(s -> s.getTitulo().equalsIgnoreCase(tituloExcluir));
+                    boolean removido = tarefaSub.getSubtarefas().removeIf(s -> s.getDescricao().equalsIgnoreCase(tituloExcluir));
 
                     if (!removido) {
                         System.out.println("Subtarefa não encontrada.");
@@ -460,6 +462,7 @@ public class Main {
                         LocalDate dataEvento = LocalDate.parse(input.nextLine());
 
                         Evento novoEvento = new Evento(tituloEvento, descricaoEvento, dataEvento);
+                        EventoServico eventoServico = new EventoServico();
                         eventoServico.criarEvento(novoEvento);
                         System.out.println("Evento criado com sucesso!");
                     } catch (Exception e) {
@@ -469,19 +472,25 @@ public class Main {
 
                 case "16":
                     try {
-                        System.out.println("Digite o ID do evento a ser editado:");
-                        long idEvento = Long.parseLong(input.nextLine());
+                    	EventoServico eventoServico = new EventoServico();
+
+                    	System.out.println("Digite o ID do evento a ser editado:");
+                        
+                    	long idEvento = Long.parseLong(input.nextLine());
                         Evento evento = eventoServico.buscar(idEvento);
+                        
                         if (evento == null) {
                             System.out.println("Evento não encontrado.");
                             break;
                         }
                         System.out.println("Digite o novo título:");
                         String novoTitulo = input.nextLine();
+                        
                         System.out.println("Digite a nova descrição:");
-                        String novaDescricao = input.nextLine();
+                        String novaDesc = input.nextLine();
+                        
                         System.out.println("Digite a nova data (AAAA-MM-DD):");
-                        LocalDate novaData = LocalDate.parse(input.nextLine());
+                        LocalDate dataNova = LocalDate.parse(input.nextLine());
 
                         evento.setTitulo(novoTitulo);
                         evento.setDescricao(novaDescricao);

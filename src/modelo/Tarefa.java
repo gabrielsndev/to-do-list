@@ -39,6 +39,11 @@ public class Tarefa {
         this.prioridade = prioridade; 
     }
 
+    public void adicionarSubtarefa(Subtarefa subtarefa) {
+        subtarefa.setTarefa(this); // estabelece a referência para a tarefa pai
+        this.subtarefas.add(subtarefa);
+    }
+
     // Retorna a lista de subtarefas associadas a esta tarefa
     public List<Subtarefa> getSubtarefas() {
         return subtarefas;
