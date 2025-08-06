@@ -24,19 +24,31 @@ public class Main {
         //CentralDeInformacoes todasTarefas;
         Persistencia xml = new Persistencia();
         //todasTarefas = xml.recuperarCentral("Tasks.xml"); 
-        
+        EventoServico eventoServico = new EventoServico();
         
         do {
             System.out.println("---> MENU: ");
-            System.out.println("1 - Adicionar nova tarefa.");
-            System.out.println("2 - Listar Todas as Tarefas.");
-            System.out.println("3 - Receber detalhes de uma tarefa específica.");
-            System.out.println("4 - Gerar PDF das tarefas de um dia.");
-            System.out.println("5 - Receber email com as tarefas de hoje.");
-            System.out.println("6 - Excluir uma tarefa.");
-            System.out.println("7 - Listar tarefas de um dia específico.");
-            System.out.println("8 - Editar informações de uma tarefa.");
-            System.out.println("S - Para encerrar o programa.");
+            System.out.println("1  - Adicionar nova tarefa.");
+            System.out.println("2  - Listar todas as tarefas.");
+            System.out.println("3  - Receber detalhes de uma tarefa específica.");
+            System.out.println("4  - Gerar PDF das tarefas de um dia.");
+            System.out.println("5  - Receber email com as tarefas de hoje.");
+            System.out.println("6  - Excluir uma tarefa.");
+            System.out.println("7  - Listar tarefas de um dia específico.");
+            System.out.println("8  - Editar informações de uma tarefa.");
+            System.out.println("9  - Exportar relatório mensal (.xlsx).");                     
+            System.out.println("10 - Listar tarefas críticas.");                              
+            System.out.println("11 - Cadastrar subtarefas.");                                 
+            System.out.println("12 - Listar subtarefas.");                                     
+            System.out.println("13 - Editar subtarefa.");                                     
+            System.out.println("14 - Excluir subtarefa.");                                     
+            System.out.println("15 - Cadastrar eventos (sem choque).");                       
+            System.out.println("16 - Editar evento.");                                         
+            System.out.println("17 - Excluir evento.");                                        
+            System.out.println("18 - Listar eventos + dias restantes.");                       
+            System.out.println("19 - Listar eventos de um dia.");                              
+            System.out.println("20 - Listar eventos de um mês.");                              
+            System.out.println("S  - Para encerrar o programa.");
             
             System.out.print("Escolha uma opção: ");
             opcao = input.nextLine();
@@ -462,7 +474,7 @@ public class Main {
                         LocalDate dataEvento = LocalDate.parse(input.nextLine());
 
                         Evento novoEvento = new Evento(tituloEvento, descricaoEvento, dataEvento);
-                        EventoServico eventoServico = new EventoServico();
+                       
                         eventoServico.criarEvento(novoEvento);
                         System.out.println("Evento criado com sucesso!");
                     } catch (Exception e) {
@@ -472,7 +484,7 @@ public class Main {
 
                 case "16":
                     try {
-                    	EventoServico eventoServico = new EventoServico();
+  
 
                     	System.out.println("Digite o ID do evento a ser editado:");
                         
@@ -487,14 +499,14 @@ public class Main {
                         String novoTitulo = input.nextLine();
                         
                         System.out.println("Digite a nova descrição:");
-                        String novaDesc = input.nextLine();
+                        String descNova = input.nextLine();
                         
                         System.out.println("Digite a nova data (AAAA-MM-DD):");
                         LocalDate dataNova = LocalDate.parse(input.nextLine());
 
                         evento.setTitulo(novoTitulo);
-                        evento.setDescricao(novaDescricao);
-                        evento.setData(novaData);
+                        evento.setDescricao(descNova);
+                        evento.setData(dataNova);
                         eventoServico.editarEvento(evento);
                         System.out.println("Evento editado com sucesso!");
                     } catch (Exception e) {
@@ -545,10 +557,10 @@ public class Main {
                 case "20":
                     try {
                         System.out.println("Digite o ano:");
-                        int ano = Integer.parseInt(input.nextLine());
+                        int anoEvento = Integer.parseInt(input.nextLine());
                         System.out.println("Digite o mês (1 a 12):");
-                        int mes = Integer.parseInt(input.nextLine());
-                        List<Evento> eventosDoMes = eventoServico.listarPorMes(ano, mes);
+                        int mesEvento = Integer.parseInt(input.nextLine());
+                        List<Evento> eventosDoMes = eventoServico.listarPorMes(anoEvento, mesEvento);
                         if (eventosDoMes.isEmpty()) {
                             System.out.println("Nenhum evento encontrado nesse mês.");
                         } else {
