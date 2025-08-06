@@ -1,8 +1,10 @@
 package principal;
 import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Scanner;
 
+import modelo.Subtarefa;
 import modelo.Tarefa;
 import persistencia.Persistencia;
 import persistencia.TarefaDAO;
@@ -307,21 +309,31 @@ public class Main {
                         break;
                     }
 
-                    System.out.println("Digite o título da subtarefa:");
-                    String tituloSub = input.nextLine();
-
                     System.out.println("Digite a descrição da subtarefa:");
-                    String descSub = input.nextLine();
+                    String descricaoSub = input.nextLine();
 
-                    System.out.println("Digite a data (formato: AAAA-MM-DD):");
-                    LocalDate dataSub = LocalDate.parse(input.nextLine());
+                    System.out.println("Digite a data da subtarefa (formato: AAAA-MM-DD):");
+                    LocalDate dataSub;
+                    try {
+                        dataSub = LocalDate.parse(input.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("Data inválida.");
+                        break;
+                    }
 
-                    System.out.println("Digite a prioridade (1 a 5):");
-                    int prioridadeSub = Integer.parseInt(input.nextLine());
+                    System.out.println("Digite o percentual concluído (0 a 100):");
+                    double percentual;
+                    try {
+                        percentual = Double.parseDouble(input.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("Percentual inválido.");
+                        break;
+                    }
 
-                    Subtarefa sub = new subtarefa(tituloSub, descSub, dataSub, prioridadeSub);
+                    // Cria a subtarefa e associa à tarefa principal
+                    Subtarefa sub = new Subtarefa(descricaoSub, percentual, dataSub, tarefaPai);
                     tarefaPai.adicionarSubtarefa(sub);
-                    
+
                     try {
                         taskDAO.editarTarefa(tarefaPai.getId(), tarefaPai);
                         System.out.println("Subtarefa adicionada com sucesso!");
@@ -346,12 +358,12 @@ public class Main {
                         break;
                     }
 
-                    List<Tarefa> subtarefas = tarefaComSubs.getSubtarefas();
+                    List<Subtarefa> subtarefas = tarefaComSubs.getSubtarefas();
                     if (subtarefas.isEmpty()) {
                         System.out.println("Essa tarefa não tem subtarefas.");
                     } else {
-                        for (Tarefa subT : subtarefas) {
-                            System.out.println("▶ Subtarefa: " + subT.getTitulo() + " - Progresso: " + subT.getPercentualConcluido() + "%");
+                        for (Subtarefa subT : subtarefas) {
+                            System.out.println("▶ Subtarefa: " + subT.getDescricao() + " - Progresso: " + subT.getPercentualConcluido() + "%");
                         }
                     }
                     break;
@@ -374,8 +386,8 @@ public class Main {
                     System.out.println("Digite o título da subtarefa a ser editada:");
                     String tituloSubAntigo = input.nextLine();
 
-                    Tarefa subtarefaEditar = tarefaBase.getSubtarefas().stream()
-                        .filter(s -> s.getTitulo().equalsIgnoreCase(tituloSubAntigo))
+                    Subtarefa subtarefaEditar = tarefaBase.getSubtarefas().stream()
+                        .filter(s -> s.getDescricao().equalsIgnoreCase(tituloSubAntigo))
                         .findFirst()
                         .orElse(null);
 
@@ -384,19 +396,18 @@ public class Main {
                         break;
                     }
 
-                    System.out.println("Digite o novo título:");
-                    String novoTitulo = input.nextLine();
                     System.out.println("Digite a nova descrição:");
                     String novaDescricao = input.nextLine();
+                  
                     System.out.println("Digite a nova data (AAAA-MM-DD):");
                     LocalDate novaData = LocalDate.parse(input.nextLine());
-                    System.out.println("Digite a nova prioridade:");
-                    int novaPrioridade = Integer.parseInt(input.nextLine());
-
-                    subtarefaEditar.setTitulo(novoTitulo);
+                   
+                    System.out.println("Digite o novo percentual concluído:");
+                    double novoPercentual = Double.parseDouble(input.nextLine());
+                    
                     subtarefaEditar.setDescricao(novaDescricao);
                     subtarefaEditar.setDeadline(novaData);
-                    subtarefaEditar.setPrioridade(novaPrioridade);
+                    subtarefaEditar.setPercentualConcluido(novoPercentual);
 
                     try {
                         taskDAO.editarTarefa(idPrincipal, tarefaBase);
