@@ -265,7 +265,282 @@ public class Main {
                 	}
                 	
                 	break;
-                	
+                
+                case "9":
+                    todasTarefas = taskDAO.listar();
+                    System.out.print("Digite o ano do relatório (ex: 2025): ");
+                    int ano = Integer.parseInt(input.nextLine());
+
+                    System.out.print("Digite o mês do relatório (1 a 12): ");
+                    int mes = Integer.parseInt(input.nextLine());
+
+                    String nomeArquivoExcel = "relatorio-mensal-" + mes + "-" + ano + ".xlsx";
+                    GeradorDeRelatorios.gerarPlanilhaMensal(todasTarefas, ano, mes, nomeArquivoExcel);
+                    break;
+                
+                case "10":
+                    todasTarefas = taskDAO.listar();
+                    LocalDate hoje = LocalDate.now();
+                    System.out.println("Tarefas críticas:");
+                    
+                    for (Tarefa t : todasTarefas) {
+                        long diasRestantes = java.time.temporal.ChronoUnit.DAYS.between(hoje, t.getDeadline());
+                        if (diasRestantes - t.getPrioridade() < 0) {
+                            System.out.println("ID: " + t.getId() + " | Título: " + t.getTitulo() + " | Deadline: " + t.getDeadline() + " | Prioridade: " + t.getPrioridade());
+                        }
+                    }
+                    break;
+                
+                case "11":
+                    System.out.println("Digite o ID da tarefa principal:");
+                    long idTarefaPrincipal;
+                    try {
+                        idTarefaPrincipal = Long.parseLong(input.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("ID inválido.");
+                        break;
+                    }
+
+                    Tarefa tarefaPai = taskDAO.buscar(idTarefaPrincipal);
+                    if (tarefaPai == null) {
+                        System.out.println("Tarefa não encontrada.");
+                        break;
+                    }
+
+                    System.out.println("Digite o título da subtarefa:");
+                    String tituloSub = input.nextLine();
+
+                    System.out.println("Digite a descrição da subtarefa:");
+                    String descSub = input.nextLine();
+
+                    System.out.println("Digite a data (formato: AAAA-MM-DD):");
+                    LocalDate dataSub = LocalDate.parse(input.nextLine());
+
+                    System.out.println("Digite a prioridade (1 a 5):");
+                    int prioridadeSub = Integer.parseInt(input.nextLine());
+
+                    Subtarefa sub = new subtarefa(tituloSub, descSub, dataSub, prioridadeSub);
+                    tarefaPai.adicionarSubtarefa(sub);
+                    
+                    try {
+                        taskDAO.editarTarefa(tarefaPai.getId(), tarefaPai);
+                        System.out.println("Subtarefa adicionada com sucesso!");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao salvar subtarefa: " + e.getMessage());
+                    }
+                    break;
+                
+                case "12":
+                    System.out.println("Digite o ID da tarefa que deseja ver as subtarefas:");
+                    long idTarefa;
+                    try {
+                        idTarefa = Long.parseLong(input.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("ID inválido.");
+                        break;
+                    }
+
+                    Tarefa tarefaComSubs = taskDAO.buscar(idTarefa);
+                    if (tarefaComSubs == null) {
+                        System.out.println("Tarefa não encontrada.");
+                        break;
+                    }
+
+                    List<Tarefa> subtarefas = tarefaComSubs.getSubtarefas();
+                    if (subtarefas.isEmpty()) {
+                        System.out.println("Essa tarefa não tem subtarefas.");
+                    } else {
+                        for (Tarefa subT : subtarefas) {
+                            System.out.println("▶ Subtarefa: " + subT.getTitulo() + " - Progresso: " + subT.getPercentualConcluido() + "%");
+                        }
+                    }
+                    break;
+                case "13":
+                    System.out.println("Digite o ID da tarefa principal:");
+                    long idPrincipal;
+                    try {
+                        idPrincipal = Long.parseLong(input.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("ID inválido.");
+                        break;
+                    }
+
+                    Tarefa tarefaBase = taskDAO.buscar(idPrincipal);
+                    if (tarefaBase == null || tarefaBase.getSubtarefas().isEmpty()) {
+                        System.out.println("Tarefa não encontrada ou sem subtarefas.");
+                        break;
+                    }
+
+                    System.out.println("Digite o título da subtarefa a ser editada:");
+                    String tituloSubAntigo = input.nextLine();
+
+                    Tarefa subtarefaEditar = tarefaBase.getSubtarefas().stream()
+                        .filter(s -> s.getTitulo().equalsIgnoreCase(tituloSubAntigo))
+                        .findFirst()
+                        .orElse(null);
+
+                    if (subtarefaEditar == null) {
+                        System.out.println("Subtarefa não encontrada.");
+                        break;
+                    }
+
+                    System.out.println("Digite o novo título:");
+                    String novoTitulo = input.nextLine();
+                    System.out.println("Digite a nova descrição:");
+                    String novaDescricao = input.nextLine();
+                    System.out.println("Digite a nova data (AAAA-MM-DD):");
+                    LocalDate novaData = LocalDate.parse(input.nextLine());
+                    System.out.println("Digite a nova prioridade:");
+                    int novaPrioridade = Integer.parseInt(input.nextLine());
+
+                    subtarefaEditar.setTitulo(novoTitulo);
+                    subtarefaEditar.setDescricao(novaDescricao);
+                    subtarefaEditar.setDeadline(novaData);
+                    subtarefaEditar.setPrioridade(novaPrioridade);
+
+                    try {
+                        taskDAO.editarTarefa(idPrincipal, tarefaBase);
+                        System.out.println("Subtarefa editada com sucesso!");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao editar subtarefa: " + e.getMessage());
+                    }
+                    break;
+
+                case "14":
+                    System.out.println("Digite o ID da tarefa principal:");
+                    long idTarefaSub;
+                    try {
+                        idTarefaSub = Long.parseLong(input.nextLine());
+                    } catch (Exception e) {
+                        System.out.println("ID inválido.");
+                        break;
+                    }
+
+                    Tarefa tarefaSub = taskDAO.buscar(idTarefaSub);
+                    if (tarefaSub == null || tarefaSub.getSubtarefas().isEmpty()) {
+                        System.out.println("Tarefa não encontrada ou sem subtarefas.");
+                        break;
+                    }
+
+                    System.out.println("Digite o título da subtarefa que deseja excluir:");
+                    String tituloExcluir = input.nextLine();
+
+                    boolean removido = tarefaSub.getSubtarefas().removeIf(s -> s.getTitulo().equalsIgnoreCase(tituloExcluir));
+
+                    if (!removido) {
+                        System.out.println("Subtarefa não encontrada.");
+                        break;
+                    }
+
+                    try {
+                        taskDAO.editarTarefa(idTarefaSub, tarefaSub);
+                        System.out.println("Subtarefa excluída com sucesso!");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao excluir subtarefa: " + e.getMessage());
+                    }
+                    break;
+                case "15":
+                    try {
+                        System.out.println("Digite o título do evento:");
+                        String tituloEvento = input.nextLine();
+                        System.out.println("Digite a descrição do evento:");
+                        String descricaoEvento = input.nextLine();
+                        System.out.println("Digite a data do evento (AAAA-MM-DD):");
+                        LocalDate dataEvento = LocalDate.parse(input.nextLine());
+
+                        Evento novoEvento = new Evento(tituloEvento, descricaoEvento, dataEvento);
+                        eventoServico.criarEvento(novoEvento);
+                        System.out.println("Evento criado com sucesso!");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao cadastrar evento: " + e.getMessage());
+                    }
+                    break;
+
+                case "16":
+                    try {
+                        System.out.println("Digite o ID do evento a ser editado:");
+                        long idEvento = Long.parseLong(input.nextLine());
+                        Evento evento = eventoServico.buscar(idEvento);
+                        if (evento == null) {
+                            System.out.println("Evento não encontrado.");
+                            break;
+                        }
+                        System.out.println("Digite o novo título:");
+                        String novoTitulo = input.nextLine();
+                        System.out.println("Digite a nova descrição:");
+                        String novaDescricao = input.nextLine();
+                        System.out.println("Digite a nova data (AAAA-MM-DD):");
+                        LocalDate novaData = LocalDate.parse(input.nextLine());
+
+                        evento.setTitulo(novoTitulo);
+                        evento.setDescricao(novaDescricao);
+                        evento.setData(novaData);
+                        eventoServico.editarEvento(evento);
+                        System.out.println("Evento editado com sucesso!");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao editar evento: " + e.getMessage());
+                    }
+                    break;
+
+                case "17":
+                    try {
+                        System.out.println("Digite o ID do evento a ser excluído:");
+                        long idEvento = Long.parseLong(input.nextLine());
+                        eventoServico.excluirEvento(idEvento);
+                        System.out.println("Evento excluído com sucesso!");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao excluir evento: " + e.getMessage());
+                    }
+                    break;
+
+                case "18":
+                    List<Evento> eventos = eventoServico.listarTodos();
+                    if (eventos.isEmpty()) {
+                        System.out.println("Nenhum evento cadastrado.");
+                    } else {
+                        for (Evento ev : eventos) {
+                            long diasRestantes = LocalDate.now().until(ev.getData()).getDays();
+                            System.out.println(ev + " (Faltam " + diasRestantes + " dias)");
+                        }
+                    }
+                    break;
+
+                case "19":
+                    try {
+                        System.out.println("Digite a data do evento para listar (AAAA-MM-DD):");
+                        LocalDate dataBusca = LocalDate.parse(input.nextLine());
+                        List<Evento> eventosDoDia = eventoServico.listarPorDia(dataBusca);
+                        if (eventosDoDia.isEmpty()) {
+                            System.out.println("Nenhum evento encontrado nesta data.");
+                        } else {
+                            for (Evento ev : eventosDoDia) {
+                                System.out.println(ev);
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Data inválida: " + e.getMessage());
+                    }
+                    break;
+
+                case "20":
+                    try {
+                        System.out.println("Digite o ano:");
+                        int ano = Integer.parseInt(input.nextLine());
+                        System.out.println("Digite o mês (1 a 12):");
+                        int mes = Integer.parseInt(input.nextLine());
+                        List<Evento> eventosDoMes = eventoServico.listarPorMes(ano, mes);
+                        if (eventosDoMes.isEmpty()) {
+                            System.out.println("Nenhum evento encontrado nesse mês.");
+                        } else {
+                            for (Evento ev : eventosDoMes) {
+                                System.out.println(ev);
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Erro ao buscar eventos: " + e.getMessage());
+                    }
+                    break;
+
                 case "S":
                 case "s":
                     System.out.println("Saindo...");
