@@ -32,10 +32,11 @@ public class Tarefa {
 	public Tarefa() {}
 
     
-    public Tarefa(String titulo, String descricao, LocalDate deadline) {
+    public Tarefa(String titulo, String descricao, LocalDate deadline, int prioridade) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.deadline = deadline;
+        this.prioridade = prioridade; 
     }
 
     // Retorna a lista de subtarefas associadas a esta tarefa

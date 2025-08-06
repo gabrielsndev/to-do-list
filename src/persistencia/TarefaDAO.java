@@ -72,5 +72,28 @@ public class TarefaDAO {
 		   em.close();
 	   }
    }
+  
    
+   public void editarTarefa(long id, Tarefa novaTarefa) throws Exception {
+	   	EntityManager em = emf.createEntityManager();
+	   	
+	   	try {
+	   		em.getTransaction().begin();
+
+	        Tarefa tarefaExistente = em.find(Tarefa.class, id);
+	        if (tarefaExistente == null) {
+	            throw new Exception("Tarefa com ID " + id + " não encontrada.");
+	        }
+
+	        // Atualiza os campos necessários (exemplo: título, descrição, deadline)
+	        tarefaExistente.setTitulo(novaTarefa.getTitulo());
+	        tarefaExistente.setDescricao(novaTarefa.getDescricao());
+	        tarefaExistente.setDeadline(novaTarefa.getDeadline());
+	        tarefaExistente.setPrioridade(novaTarefa.getPrioridade());
+	        em.getTransaction().commit();
+	    } finally {
+	        em.close();
+	    }
+	}
+  
 }

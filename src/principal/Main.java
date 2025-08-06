@@ -31,6 +31,7 @@ public class Main {
             System.out.println("5 - Receber email com as tarefas de hoje.");
             System.out.println("6 - Excluir uma tarefa.");
             System.out.println("7 - Listar tarefas de um dia específico.");
+            System.out.println("8 - Editar informações de uma tarefa.");
             System.out.println("S - Para encerrar o programa.");
             
             System.out.print("Escolha uma opção: ");
@@ -57,8 +58,21 @@ public class Main {
                 	    }
                 	    
                 	} while (!dataValida);
+                	int prioridade = 0;
+                	System.out.println("Digite a prioridade de 1 a 5");
+                	while (true) {
+                		try {
+                		prioridade = Integer.parseInt(input.nextLine());
+                		} catch (Exception e) {
+                			System.out.println("Valor informado inválido");
+                		}
+                		if(prioridade >= 1 && prioridade <=5) {
+                			break;
+                		}
+                		System.out.println("Valor informado não é válido, o valor deve estar entre 1 e 5");
+                	}
                 	
-                	Tarefa tarefa = new Tarefa(title, description, deadline);
+                	Tarefa tarefa = new Tarefa(title, description, deadline, prioridade);
                 	
                 	//todasTarefas.adicionarTarefa(tarefa);
                 	
@@ -116,7 +130,7 @@ public class Main {
                     String entradaData = input.nextLine();
                     try {
                         LocalDate dataRelatorio = LocalDate.parse(entradaData);
-                        GeradorDeRelatorios.obterTarefasDeUmDia(dataRelatorio, todasTarefas);
+                        // GeradorDeRelatorios.obterTarefasDeUmDia(dataRelatorio, todasTarefas);
                     } catch (Exception e) {
                         System.out.println("Data inválida! Use o formato correto: aaaa-mm-dd");
                     }
@@ -143,14 +157,14 @@ public class Main {
             		 dataDeEntrada = input.nextLine();
             		 LocalDate dataDoRelatorio = LocalDate.parse(dataDeEntrada);
             		 todasTarefas = taskDAO.listar();
-            		 GeradorDeRelatorios.obterTarefasDeUmDia(dataDoRelatorio, todasTarefas);
+            		 // GeradorDeRelatorios.obterTarefasDeUmDia(dataDoRelatorio, todasTarefas);
 
                 		
                 	 //LocalDate hoje = LocalDate.now();
                      //GeradorDeRelatorios.obterTarefasDeUmDia(hoje, todasTarefas);
                 	 
                      // Agora, enviar o e-mail
-                     Mensageiro.enviarEmail(destinatario, mensagem);
+                     // Mensageiro.enviarEmail(destinatario, mensagem);
                      System.out.println("Mensagem enviada com sucesso!");
                      break;
                 	 
@@ -199,6 +213,56 @@ public class Main {
 	                	}  
                 	}
                 	
+                	
+                	break;
+                	
+                case "8":
+                	System.out.println("Digite o id da tarefa que você quer editar:");
+                	long idEditar;
+                	try {
+                		idEditar = Long.parseLong(input.nextLine());
+                	} catch (Exception e) {
+                		System.out.println("Id digitado é inválido");
+                		break;
+                	}
+                	System.out.println("Digite um Titulo para a Tarefa:");
+                	String tituloNovo= input.nextLine();
+                	
+                	System.out.println("Digite uma Descrição para a Tarefa:");
+                	String descricaoNova = input.nextLine();
+                	dataValida = false;
+                	LocalDate novadeadline = null;
+                	do {
+                	    try {
+                	        System.out.println("Digite a Data da Tarefa (no formato: AAAA-MM-DD):");
+                	        String date = input.nextLine();
+                	        deadline = LocalDate.parse(date);
+                	        dataValida = true;
+                	    } catch (Exception e) {
+                	        System.out.println("Data inválida! Tente novamente");
+                	    }
+                	    
+                	} while (!dataValida);
+                	int novaPrioridade = 0;
+                	System.out.println("Digite a prioridade de 1 a 5");
+                	while (true) {
+                		try {
+                		novaPrioridade = Integer.parseInt(input.nextLine());
+                		} catch (Exception e) {
+                			System.out.println("Valor informado inválido");
+                		}
+                		if(novaPrioridade >= 1 && novaPrioridade <=5) {
+                			break;
+                		}
+                		System.out.println("Valor informado não é válido, o valor deve estar entre 1 e 5");
+                	}
+                	
+                	Tarefa novaTarefa = new Tarefa(tituloNovo, descricaoNova, novadeadline, novaPrioridade);
+                	try {
+                		taskDAO.editarTarefa(idEditar, novaTarefa);
+                	} catch(Exception e) {
+                		System.out.println(e.getMessage());
+                	}
                 	
                 	break;
                 	
