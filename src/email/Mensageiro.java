@@ -42,18 +42,21 @@ public class Mensageiro {
             corpo.setText(mensagemTexto);
 
             // Anexo (o PDF)
-            MimeBodyPart anexo = new MimeBodyPart();
-            String arquivo = "relatorio.pdf";  // Nome do PDF gerado anteriormente
-            DataSource fonte = new FileDataSource(arquivo);
-            anexo.setDataHandler(new DataHandler(fonte));
-            anexo.setFileName(arquivo);
+            if (caminhoAnexo != null) {
+                MimeBodyPart anexo = new MimeBodyPart();
+                DataSource fonte = new FileDataSource(caminhoAnexo);
+                anexo.setDataHandler(new DataHandler(fonte));
+                anexo.setFileName(caminhoAnexo);
 
-            // Montando a estrutura final com corpo + anexo
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(corpo);
-            multipart.addBodyPart(anexo);
-
-            mensagem.setContent(multipart);
+                // Monta estrutura com corpo + anexo
+                Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(corpo);
+                multipart.addBodyPart(anexo);
+                mensagem.setContent(multipart);
+            } else {
+                // Só corpo de texto
+                mensagem.setText(mensagemTexto);
+            }
 
             // Enviando a mensagem
             Transport.send(mensagem);

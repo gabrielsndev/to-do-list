@@ -18,7 +18,7 @@ public class EventoServico {
     public void editarEvento(Evento evento) throws Exception {
         eventoDAO.editar(evento);
         Mensageiro.enviarEmail("projetospoo@gmail.com", 
-            "Evento alterado: " + evento.getTitulo() + "\n\n" + evento.toString());
+            "Evento alterado: " + evento.getTitulo() + "\n\n" + evento.toString(), null);
     }
 
     public void excluirEvento(long id) throws Exception {
@@ -29,7 +29,7 @@ public class EventoServico {
 
         eventoDAO.remover(id);
         Mensageiro.enviarEmail("projetospoo@gmail.com", 
-            "Evento cancelado: " + evento.getTitulo() + "\n\n" + evento.toString());
+            "Evento cancelado: " + evento.getTitulo() + "\n\n" + evento.toString(), null);
     }
 
     // Listar todos os eventos
