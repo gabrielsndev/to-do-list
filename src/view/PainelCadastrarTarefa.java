@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import modelo.Tarefa;
+import persistencia.TarefaDAO;
 
 public class PainelCadastrarTarefa extends JPanel {
     private JTextField textFieldTituloTarefa;
@@ -80,55 +82,75 @@ public class PainelCadastrarTarefa extends JPanel {
         String titulo = textFieldTituloTarefa.getText().trim();
         String data = textFieldDataTarefa.getText().trim();
         String prioridadeTexto = textFieldPrioridadeTarefa.getText().trim();
-        
-        // Validação de campos obrigatórios
-        if(titulo.isEmpty() || titulo.equalsIgnoreCase(" ") || 
-           data.isEmpty() || data.equalsIgnoreCase(" ") ||
-           prioridadeTexto.isEmpty() || prioridadeTexto.equalsIgnoreCase(" ")) {
-            
+        String descricao = textFieldDescricaoTarefa.getText().trim();
+
+        if (titulo.isEmpty() || data.isEmpty() || prioridadeTexto.isEmpty()) {
             JOptionPane.showMessageDialog(btnSalvar,
-                "Preencha todos os campos obrigatorios!\n Titulo, Data e Prioridade",
-                "Avisos", JOptionPane.WARNING_MESSAGE);
+                "Preencha todos os campos obrigatórios!\nTítulo, Data e Prioridade",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
+        LocalDate deadline;
         try {
-            DateTimeFormatter dataFormatada = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDate date = LocalDate.parse(data, dataFormatada);
-            
-            if (date.isBefore(LocalDate.now())) {
-                JOptionPane.showMessageDialog(btnSalvar, 
-                    "Não é possível cadastrar uma tarefa com uma data no passado.",
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            deadline = LocalDate.parse(data, formatter);
+
+            if (deadline.isBefore(LocalDate.now())) {
+                JOptionPane.showMessageDialog(btnSalvar,
+                    "A data não pode estar no passado.",
                     "Data inválida", JOptionPane.WARNING_MESSAGE);
-                
                 return;
             }
-        } catch(DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(btnSalvar, 
-                "A data precisa esta no formato DD-MM-YYYY", 
-                "Formato Invalido", JOptionPane.WARNING_MESSAGE);
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(btnSalvar,
+                "A data precisa estar no formato DD-MM-YYYY",
+                "Formato inválido", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
+        int prioridade;
         try {
-            int prioridade = Integer.parseInt(prioridadeTexto);
-            
-            if(prioridade < 0 || prioridade > 5) {
-                JOptionPane.showMessageDialog(btnSalvar, 
-                    "A Prioridade deve ser entre 0 e 5.", 
-                    "Aviso", JOptionPane.WARNING_MESSAGE);
+            prioridade = Integer.parseInt(prioridadeTexto);
+            if (prioridade < 0 || prioridade > 5) {
+                JOptionPane.showMessageDialog(btnSalvar,
+                    "A prioridade deve estar entre 0 e 5.",
+                    "Valor inválido", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
-            JOptionPane.showMessageDialog(btnSalvar,"Tarefa Salva.", "Concluido", JOptionPane.INFORMATION_MESSAGE);
-            
-            // Limpar campos após salvar
-            limparCampos();
-            
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(btnSalvar,"A prioridade deve ser um número inteiro.","Erro de Formato", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(btnSalvar,
+                "A prioridade deve ser um número inteiro.",
+                "Erro de formato", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        // Agora criamos e salvamos a tarefa
+        Tarefa novaTarefa = new Tarefa();
+        novaTarefa.setTitulo(titulo);
+        novaTarefa.setDescricao(descricao);
+        novaTarefa.setDeadline(deadline);
+        novaTarefa.setPrioridade(prioridade);
+
+        try {
+            TarefaDAO dao = new TarefaDAO();
+            dao.salvar(novaTarefa);
+
+            JOptionPane.showMessageDialog(btnSalvar,
+                "Tarefa salva com sucesso!",
+                "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+            limparCampos();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(btnSalvar,
+                "Erro ao salvar a tarefa no banco de dados.",
+                "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
+
     
     private void limparCampos() {
         textFieldTituloTarefa.setText("");

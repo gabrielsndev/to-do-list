@@ -6,7 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -17,11 +20,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
 import model.ButtonEditor;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
+import persistencia.EventoDAO;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -141,52 +146,90 @@ public class Evento extends JFrame {
 		
 		JButton btnSalvar = new JButton("Cadastrar");
 		btnSalvar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(!textFieldTitulo.getText().isEmpty() && !textFieldDescricao.getText().isEmpty() &&
-						!textFieldDataFinal.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(btnSalvar, "Evento Cadastrado com Sucesso!", "Sucesso",JOptionPane.INFORMATION_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(btnSalvar, "Preencha os campos obrigatorios!\n Titulo, Descricao e Data Final", "Erro",JOptionPane.WARNING_MESSAGE);
-				}// Adicionar a verificação das datas pra ver se já tem um evento com a mesma data.
-				return;
-			}
+		    public void actionPerformed(ActionEvent e) {
+		        String titulo = textFieldTitulo.getText().trim();
+		        String descricao = textFieldDescricao.getText().trim();
+		        String dataStr = textFieldDataFinal.getText().trim();
+
+		        if (titulo.isEmpty() || descricao.isEmpty() || dataStr.contains("_")) {
+		            JOptionPane.showMessageDialog(btnSalvar, "Preencha todos os campos obrigatórios!", "Erro", JOptionPane.WARNING_MESSAGE);
+		            return;
+		        }
+
+		        try {
+		            Date dataFormatada = new SimpleDateFormat("dd-MM-yyyy").parse(dataStr);
+		            LocalDate dataFinal = dataFormatada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+
+		            modelo.Evento evento = new modelo.Evento(titulo, descricao, dataFinal);
+		            persistencia.EventoDAO dao = new persistencia.EventoDAO();
+		            dao.salvar(evento);
+
+		            JOptionPane.showMessageDialog(btnSalvar, "Evento cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+		            // Limpa os campos
+		            textFieldTitulo.setText("");
+		            textFieldDescricao.setText("");
+		            textFieldDataFinal.setText("");
+
+		        } catch (Exception ex) {
+		            JOptionPane.showMessageDialog(btnSalvar, "Erro ao cadastrar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+		            ex.printStackTrace();
+		        }
+		    }
 		});
+
 		
 		btnSalvar.setBounds(263, 331, 105, 31);
 		painelCadastro.add(btnSalvar);
 		
 		return painelCadastro;
 	}
-    private JPanel criarPainelListar() {
-        JPanel painelTarefas = new JPanel(new BorderLayout());
+	
+	private JPanel criarPainelListar() {
+	    JPanel painelTarefas = new JPanel(new BorderLayout());
 
-        String[] colunas = {"Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
-        Object[][] dados = {
-        		{"Estudar Java", "23-07-2025", "Descricao", "Pendente", "0", "", ""},
-                {"Entregar Projeto", "18-07-2025", "Descricao", "Pendente", "5", "", ""},
-                {"Entregar Projeto", "18-08-2025", "Descricao", "Pendente", "5", "", ""},
-                {"Entregar Projeto", "18-10-2025", "Descricao", "Pendente", "5", "", ""}
-        };
+	    String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
 
-        JTable tabela = new JTable(dados, colunas);
-        painelTarefas.add(new JScrollPane(tabela), BorderLayout.CENTER);
-        
-        String[] statusOptions = { "Pendente", "Concluída" };
-        JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
-        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(statusComboBox));
-        
-        tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
-        
-        // Botões de Ação nas colunas "Editar" e "Apagar"
-        tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+	    // Buscar dados do banco
+	    persistencia.EventoDAO eventoDAO = new persistencia.EventoDAO();
+	    List<modelo.Evento> listaEventos = eventoDAO.listar();
 
-        tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
+	    // Preencher matriz de dados dinamicamente
+	    Object[][] dados = new Object[listaEventos.size()][colunas.length];
+	    int i = 0;
+	    for (modelo.Evento evento : listaEventos) {
+	        dados[i][0] = evento.getId();
+	        dados[i][1] = evento.getTitulo();
+	        dados[i][2] = evento.getData().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+	        dados[i][3] = evento.getDescricao();
+	        dados[i][4] = "Pendente"; // ou um campo real de status se tiver
+	        dados[i][5] = "0";        // prioridade não existe no modelo ainda
+	        dados[i][6] = "Editar";
+	        dados[i][7] = "Apagar";
+	        i++;
+	    }
 
-        
-        return painelTarefas;
-    }
+	    JTable tabela = new JTable(dados, colunas);
+	    painelTarefas.add(new JScrollPane(tabela), BorderLayout.CENTER);
+
+	    // Editar status (não persistente por enquanto)
+	    String[] statusOptions = {"Pendente", "Concluída"};
+	    JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
+	    tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(statusComboBox));
+
+	    // Renderizador para datas
+	    tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
+
+	    // Botões
+	    tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
+	    tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+
+	    tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
+	    tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
+
+	    return painelTarefas;
+	}
+
     
     private JPanel painelListarEventosPorMes() {
     	JPanel listarEventoPMes = new JPanel();
@@ -251,65 +294,90 @@ public class Evento extends JFrame {
     
         
     private JPanel painelListarEventosPorDia() {
-    	JPanel listarEventoPDia = new JPanel();
-    	listarEventoPDia.setLayout(null);
-    	
-    	
-    	JLabel lblNewLabel = new JLabel("Lista de Eventos Por Dia");
-    	lblNewLabel.setBounds(10, 11, 217, 22);
-    	lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-    	listarEventoPDia.add(lblNewLabel);
-    	
-    	String[] colunas = {"Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
-        Object[][] dados = {
-        		{"Estudar Java", "23-07-2025", "Descricao", "Pendente", "0", "", ""},
-                {"Entregar Projeto", "18-07-2025", "Descricao", "Pendente", "5", "", ""},
-                {"Entregar Projeto", "18-08-2025", "Descricao", "Pendente", "5", "", ""},
-                {"Entregar Projeto", "18-10-2025", "Descricao", "Pendente", "5", "", ""}
-        };
+        JPanel listarEventoPDia = new JPanel();
+        listarEventoPDia.setLayout(null);
 
-        JTable tabela = new JTable(dados, colunas);
+        JLabel lblNewLabel = new JLabel("Lista de Eventos Por Dia");
+        lblNewLabel.setBounds(10, 11, 250, 22);
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+        listarEventoPDia.add(lblNewLabel);
+
+        JTextField textFieldPorDia = new JTextField();
+        textFieldPorDia.setFont(new Font("Tahoma", Font.BOLD, 15));
+        textFieldPorDia.setBounds(320, 15, 136, 25);
+        listarEventoPDia.add(textFieldPorDia);
+
+        JLabel labelData = new JLabel("DD-MM-YYYY");
+        labelData.setFont(new Font("Tahoma", Font.BOLD, 10));
+        labelData.setBounds(320, 38, 70, 13);
+        listarEventoPDia.add(labelData);
+
+        JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setBounds(350, 55, 90, 23);
+        listarEventoPDia.add(btnBuscar);
+
+        // Tabela
+        String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
+        DefaultTableModel modeloTabela = new DefaultTableModel(null, colunas);
+        JTable tabela = new JTable(modeloTabela);
+
         JScrollPane scrollPane = new JScrollPane(tabela);
         scrollPane.setBounds(10, 95, 759, 427);
         listarEventoPDia.add(scrollPane);
-        
-        String[] statusOptions = { "Pendente", "Concluída","Atrasada" };
-        JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
-        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(statusComboBox));
-        
+
+        // Oculta a coluna ID
+        tabela.removeColumn(tabela.getColumn("ID"));
+
+        // Configuração dos editores/renderizadores
+        String[] statusOptions = {"Pendente", "Concluída", "Atrasada"};
+        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(new JComboBox<>(statusOptions)));
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
-        
-        // Botões de Ação nas colunas "Editar" e "Apagar"
+
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
         tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
         tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
-        
-        JLabel labelData = new JLabel("DD-MM-YYYY");
-        labelData.setFont(new Font("Tahoma", Font.BOLD, 10));
-        labelData.setBounds(320, 38, 70, 13);
-        listarEventoPDia.add(labelData);
-        
-        textFieldPorDia = new JTextField();
-        textFieldPorDia.setFont(new Font("Tahoma", Font.BOLD, 15));
-        textFieldPorDia.setColumns(10);
-        textFieldPorDia.setBounds(320, 15, 136, 25);
-        listarEventoPDia.add(textFieldPorDia);
-        
-        JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		if(textFieldPorDia.getText().isEmpty()) {
-        			JOptionPane.showMessageDialog(btnBuscar, "Digite a data","Erro",JOptionPane.WARNING_MESSAGE);
-        		}
-        	}
+
+        // Ação do botão buscar
+        btnBuscar.addActionListener(e -> {
+            String texto = textFieldPorDia.getText().trim();
+            if (texto.isEmpty()) {
+                JOptionPane.showMessageDialog(listarEventoPDia, "Digite a data no formato DD-MM-YYYY", "Erro", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                LocalDate data = LocalDate.parse(texto, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                EventoDAO dao = new EventoDAO();
+                List<modelo.Evento> eventos = dao.listarPorDia(data);
+
+                modeloTabela.setRowCount(0); // limpa a tabela
+
+                for (modelo.Evento evento : eventos) {
+                    modeloTabela.addRow(new Object[]{
+                        evento.getId(),
+                        evento.getTitulo(),
+                        evento.getData().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                        evento.getDescricao(),
+                        "Pendente", // substitua se tiver evento.getStatus()
+                        "0",        // substitua se tiver evento.getPrioridade()
+                        "Editar",
+                        "Apagar"
+                    });
+                }
+
+
+                modeloTabela.fireTableDataChanged();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(listarEventoPDia, "Data inválida. Use o formato DD-MM-YYYY.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         });
-        btnBuscar.setBounds(350, 55, 90, 23);
-        listarEventoPDia.add(btnBuscar);
-        
-    	return listarEventoPDia;
+
+        return listarEventoPDia;
     }
+
     
    
 	

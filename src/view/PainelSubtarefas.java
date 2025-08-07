@@ -2,104 +2,208 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
+import java.util.List;
+
+import modelo.Subtarefa;
+import modelo.Tarefa;
+import persistencia.SubtarefaDAO;
+import persistencia.TarefaDAO;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
 import model.ButtonEditor;
 
+import javax.swing.table.DefaultTableModel;
+import java.time.format.DateTimeFormatter;
+
 public class PainelSubtarefas extends JPanel {
-    
+
+    private JComboBox<Tarefa> comboBoxTarefaMae;
+    private JTextField textTitulo;
+    private JTextField textDescricao;
+    private JTable tabela;
+    private DefaultTableModel modeloTabela;
+
+    private SubtarefaDAO subtarefaDAO = new SubtarefaDAO();
+    private TarefaDAO tarefaDAO = new TarefaDAO();
+
     public PainelSubtarefas() {
         setLayout(new BorderLayout());
-        
-        JTabbedPane abasInternas = new JTabbedPane();
-        
-        JPanel painelListagem = criarPainelListagem();
 
+        JTabbedPane abasInternas = new JTabbedPane();
+
+        JPanel painelListagem = criarPainelListagem();
         JPanel painelCadastro = criarPainelCadastro();
-        
+
         abasInternas.addTab("Listar", painelListagem);
         abasInternas.addTab("Cadastrar", painelCadastro);
 
         add(abasInternas, BorderLayout.CENTER);
+        
+        subtarefaDAO.limparSubtarefasOrfas();
+
+        carregarSubtarefasNaTabela();
+
+        carregarTarefasNoComboBox();
+        carregarSubtarefasNaTabela();
     }
-    
+
     private JPanel criarPainelListagem() {
         JPanel painelListagem = new JPanel(new BorderLayout());
-        
-        String[] colunas = {"Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
-        Object[][] linhas = {
-            {"Estudar Java", "23-07-2025", "Descricao", "Pendente", "0", "", ""},
-            {"Entregar Projeto", "18-07-2025", "Descricao", "Pendente", "5", "", ""}
+
+        String[] colunas = {"ID", "Título", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
+        modeloTabela = new DefaultTableModel(null, colunas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // só colunas Editar, Apagar e Status podem ser editadas
+                return column == 4 || column == 6 || column == 7;
+            }
         };
 
-        JTable tabela = new JTable(linhas, colunas);
-        JScrollPane scrollPane = new JScrollPane(tabela);
-        painelListagem.add(scrollPane, BorderLayout.CENTER);
+        tabela = new JTable(modeloTabela);
+
+        // Ocultar coluna ID
+        tabela.removeColumn(tabela.getColumn("ID"));
 
         String[] statusOptions = {"Pendente", "Concluída", "Atrasada"};
-        JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
-        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(statusComboBox));
-
+        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(new JComboBox<>(statusOptions)));
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar") {
+            @Override
+            protected void onClick(JTable table, int row) {
+                JOptionPane.showMessageDialog(table, "Funcionalidade editar ainda não implementada");
+            }
+        });
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
-        
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar") {
+            @Override
+            protected void onClick(JTable table, int row) {
+                int confirm = JOptionPane.showConfirmDialog(table,
+                    "Tem certeza que deseja excluir esta subtarefa?", "Confirmação", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object idObj = table.getModel().getValueAt(modelRow, 0);
+
+                    try {
+                        long id = Long.parseLong(idObj.toString());
+                        subtarefaDAO.remover(id);
+                        ((DefaultTableModel) table.getModel()).removeRow(modelRow);
+                        JOptionPane.showMessageDialog(table, "Subtarefa excluída com sucesso.");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(table, "Erro ao excluir subtarefa.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(tabela);
+        painelListagem.add(scrollPane, BorderLayout.CENTER);
+
         return painelListagem;
     }
-    
+
     private JPanel criarPainelCadastro() {
-        JPanel painelCadastro = new JPanel();
-        painelCadastro.setLayout(null);
+        JPanel painelCadastro = new JPanel(null);
 
         JLabel labelTarefaMae = new JLabel("Selecione a Tarefa: ");
-        labelTarefaMae.setBounds(50, 50, 200, 25);
+        labelTarefaMae.setBounds(50, 50, 150, 25);
         painelCadastro.add(labelTarefaMae);
-        
-        JComboBox<String> comboBoxTarefaMae = new JComboBox<>();
+
+        comboBoxTarefaMae = new JComboBox<>();
         comboBoxTarefaMae.setBounds(200, 50, 300, 25);
         painelCadastro.add(comboBoxTarefaMae);
 
-        JLabel labelTitulo = new JLabel("Titulo da Subtarefa:");
-        labelTitulo.setBounds(50, 90, 200, 25);
+        JLabel labelTitulo = new JLabel("Título da Subtarefa:");
+        labelTitulo.setBounds(50, 90, 150, 25);
         painelCadastro.add(labelTitulo);
-        
-        JTextField textTitulo = new JTextField();
+
+        textTitulo = new JTextField();
         textTitulo.setBounds(200, 90, 300, 25);
         painelCadastro.add(textTitulo);
 
         JLabel labelDescricao = new JLabel("Descrição:");
-        labelDescricao.setBounds(50, 130, 200, 25);
+        labelDescricao.setBounds(50, 130, 150, 25);
         painelCadastro.add(labelDescricao);
-        
-        JTextField textDescricao = new JTextField();
+
+        textDescricao = new JTextField();
         textDescricao.setBounds(200, 130, 300, 25);
         painelCadastro.add(textDescricao);
 
         JButton btnSalvar = new JButton("Salvar");
-        btnSalvar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(!textTitulo.getText().trim().isEmpty()) {
-                    JOptionPane.showMessageDialog(btnSalvar, 
-                        "Subtarefa Salva Com Sucesso", 
-                        "SubTarefa Salva", JOptionPane.INFORMATION_MESSAGE);
-                    
-                    // Limpar campos após salvar
-                    textTitulo.setText("");
-                    textDescricao.setText("");
-                } else {
-                    JOptionPane.showMessageDialog(btnSalvar,"É preciso adicionar um titulo a SubTarefa", "Erro", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
         btnSalvar.setBounds(250, 180, 100, 30);
         painelCadastro.add(btnSalvar);
-        
+
+        btnSalvar.addActionListener(e -> salvarSubtarefa());
+
         return painelCadastro;
+    }
+
+    private void carregarTarefasNoComboBox() {
+        comboBoxTarefaMae.removeAllItems();
+        List<Tarefa> tarefas = tarefaDAO.listar();
+        for (Tarefa t : tarefas) {
+            comboBoxTarefaMae.addItem(t);
+        }
+        comboBoxTarefaMae.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list,
+                    Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Tarefa) {
+                    setText(((Tarefa) value).getTitulo());
+                }
+                return this;
+            }
+        });
+    }
+
+    private void carregarSubtarefasNaTabela() {
+        modeloTabela.setRowCount(0);
+        List<Subtarefa> subtarefas = subtarefaDAO.listar();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        for (Subtarefa s : subtarefas) {
+            modeloTabela.addRow(new Object[] {
+                s.getId(),
+                s.getTitulo(),
+                s.getDeadline() != null ? s.getDeadline().format(formatter) : "",
+                s.getDescricao(),
+                "Pendente", // status fixo, pode expandir futuramente
+                "0", // prioridade fixa aqui, pode adaptar se subtarefa tiver campo
+                "Editar",
+                "Apagar"
+            });
+        }
+    }
+
+    private void salvarSubtarefa() {
+        String titulo = textTitulo.getText().trim();
+        String descricao = textDescricao.getText().trim();
+        Tarefa tarefaSelecionada = (Tarefa) comboBoxTarefaMae.getSelectedItem();
+
+        if (titulo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "É preciso adicionar um título para a subtarefa", "Erro", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (tarefaSelecionada == null) {
+            JOptionPane.showMessageDialog(this, "Selecione a tarefa mãe", "Erro", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Subtarefa subtarefa = new Subtarefa();
+        subtarefa.setTitulo(titulo);
+        subtarefa.setDescricao(descricao);
+        subtarefa.setTarefa(tarefaSelecionada);
+
+        subtarefaDAO.salvar(subtarefa);
+
+        JOptionPane.showMessageDialog(this, "Subtarefa salva com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+        carregarSubtarefasNaTabela();
+        textTitulo.setText("");
+        textDescricao.setText("");
     }
 }

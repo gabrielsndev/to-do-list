@@ -2,89 +2,95 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.util.List;
+import modelo.Tarefa;
+import persistencia.TarefaDAO;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
 import model.ButtonEditor;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import javax.swing.table.DefaultTableModel;
 
 public class PainelListarPorDia extends JPanel {
     private JTextField textFieldData;
-    
+    private JTable tabela;
+    private DefaultTableModel modeloTabela;
+
     public PainelListarPorDia() {
         setLayout(null);
-        
-        // Título
-        JLabel lblListaDeTarefas = new JLabel("Lista de Tarefas Por Dia");
-        lblListaDeTarefas.setFont(new Font("Tahoma", Font.BOLD, 18));
-        lblListaDeTarefas.setBounds(10, 11, 246, 22);
-        add(lblListaDeTarefas);
-        
+
+        JLabel lblTitulo = new JLabel("Lista de Tarefas Por Dia");
+        lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblTitulo.setBounds(10, 11, 300, 22);
+        add(lblTitulo);
+
         textFieldData = new JTextField();
         textFieldData.setBounds(320, 21, 136, 25);
         textFieldData.setFont(new Font("Tahoma", Font.BOLD, 15));
-        textFieldData.setColumns(10);
         add(textFieldData);
-        
-        JLabel labelData = new JLabel("DD-MM-YYYY");
-        labelData.setBounds(320, 47, 70, 13);
-        labelData.setFont(new Font("Tahoma", Font.BOLD, 10));
-        add(labelData);
-        
+
+        JLabel lblFormato = new JLabel("DD-MM-YYYY");
+        lblFormato.setBounds(320, 47, 100, 13);
+        lblFormato.setFont(new Font("Tahoma", Font.BOLD, 10));
+        add(lblFormato);
+
         JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                buscarTarefasPorDia(btnBuscar);
-            }
-        });
-        btnBuscar.setBounds(350, 62, 90, 23);
+        btnBuscar.setBounds(470, 22, 90, 23);
         add(btnBuscar);
-        
-        // Tabela de Tarefas
-        criarTabelaTarefas();
-    }
-    
-    private void criarTabelaTarefas() {
-        String[] colunas = {"Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
-        Object[][] dados = {
-            {"Estudar Java", "23-07-2025", "Descricao", "Pendente", "0", "", ""},
-            {"Entregar Projeto", "18-07-2025", "Descricao", "Pendente", "5", "", ""},
-            {"Entregar Projeto", "18-09-2025", "Descricao", "Pendente", "5", "", ""}
-        };
-        
-        JTable tabela = new JTable(dados, colunas);
+
+        String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
+        modeloTabela = new DefaultTableModel(null, colunas);
+        tabela = new JTable(modeloTabela);
+
         JScrollPane scrollPane = new JScrollPane(tabela);
-        scrollPane.setBounds(10, 102, 759, 427);
+        scrollPane.setBounds(10, 80, 760, 400);
         add(scrollPane);
-        
-        // ComboBox para Status
+
+        tabela.removeColumn(tabela.getColumn("ID"));
+
         String[] statusOptions = {"Pendente", "Concluída", "Atrasada"};
-        JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
-        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(statusComboBox));
-        
-        // Renderer para Data
+        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(new JComboBox<>(statusOptions)));
+
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
-        
-        // Botões de Ação
+
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
         tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
         tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
+
+        btnBuscar.addActionListener(e -> buscarTarefasPorDia());
     }
-    
-    private void buscarTarefasPorDia(JButton btnBuscar) {
-        if(textFieldData.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(btnBuscar, 
-                "Digite a data", "Erro", JOptionPane.WARNING_MESSAGE);
+
+    private void buscarTarefasPorDia() {
+        String texto = textFieldData.getText().trim();
+        if (texto.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite a data", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
-        // implementar a lógica de busca por data
-        String data = textFieldData.getText().trim();
-        
-        JOptionPane.showMessageDialog(btnBuscar, 
-            "Buscando tarefas para a data: " + data, 
-            "Busca", JOptionPane.INFORMATION_MESSAGE);
+
+        try {
+            LocalDate data = LocalDate.parse(texto, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+            TarefaDAO dao = new TarefaDAO();
+            List<Tarefa> tarefas = dao.buscarDeadLine(data);
+
+            modeloTabela.setRowCount(0);
+            for (Tarefa t : tarefas) {
+                modeloTabela.addRow(new Object[]{
+                    t.getId(),
+                    t.getTitulo(),
+                    t.getDeadline().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                    t.getDescricao(),
+                    "Pendente",
+                    t.getPrioridade(),
+                    "Editar",
+                    "Apagar"
+                });
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Data inválida", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

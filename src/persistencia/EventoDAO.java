@@ -12,7 +12,9 @@ public class EventoDAO {
     public EventoDAO() {
         this.emf = Persistence.createEntityManagerFactory("todo-pu");
     }
-
+    
+    
+    
     // ✅ Salvar novo evento
     public void salvar(Evento evento) throws Exception {
         if (existeEventoNaData(evento.getData())) {
@@ -61,6 +63,8 @@ public class EventoDAO {
             em.close();
         }
     }
+    
+    
 
     // ✅ Buscar evento por ID
     public Evento buscar(long id) {

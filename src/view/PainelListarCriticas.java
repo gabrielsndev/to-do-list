@@ -1,51 +1,82 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import java.util.List;
+import modelo.Tarefa;
+import java.time.format.DateTimeFormatter;
+
 import java.awt.*;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
+import persistencia.TarefaDAO;
+import modelo.TarefaServico;
 import model.ButtonEditor;
 
 public class PainelListarCriticas extends JPanel {
-    
+
     public PainelListarCriticas() {
         setLayout(null);
-        
-        
+
         JLabel lblNewLabel = new JLabel("Listagem de Tarefas Criticas");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
-        lblNewLabel.setBounds(10, 11, 247, 28);
+        lblNewLabel.setBounds(10, 11, 300, 28);
         add(lblNewLabel);
-        
-        // Criando a tabela
+
         criarTabelaTarefasCriticas();
     }
-    
+
     private void criarTabelaTarefasCriticas() {
-        String[] colunas = {"Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
-        Object[][] dados = {
-            {"Estudar Java", "23-07-2025", "Descricao", "Pendente", "0", "", ""},
-            {"Entregar Projeto", "18-07-2025", "Descricao", "Pendente", "5", "", ""},
-            {"Entregar Projeto", "18-09-2025", "Descricao", "Pendente", "5", "", ""}
+        String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
+
+        TarefaDAO dao = new TarefaDAO();
+        List<Tarefa> todas = dao.listar();
+
+        List<Tarefa> tarefasCriticas = new TarefaServico().listarTarefaCritica(todas);
+
+        Object[][] dados = new Object[tarefasCriticas.size()][8];
+
+        for (int i = 0; i < tarefasCriticas.size(); i++) {
+            Tarefa t = tarefasCriticas.get(i);
+            dados[i][0] = t.getId();
+            dados[i][1] = t.getTitulo();
+            dados[i][2] = t.getDeadline().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            dados[i][3] = t.getDescricao();
+            dados[i][4] = "Pendente"; // ajuste se tiver campo status
+            dados[i][5] = t.getPrioridade();
+            dados[i][6] = "Editar";
+            dados[i][7] = "Apagar";
+        }
+
+        DefaultTableModel model = new DefaultTableModel(dados, colunas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // deixa só as colunas Editar e Apagar editáveis (6 e 7)
+                return column == 6 || column == 7;
+            }
         };
 
-        JTable tabela = new JTable(dados, colunas);
+        JTable tabela = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tabela);
         scrollPane.setBounds(10, 77, 759, 427);
         add(scrollPane);
-        
-        // ComboBox para Status
+
+        tabela.removeColumn(tabela.getColumn("ID")); // esconde coluna ID
+
+        // ComboBox Status
         String[] statusOptions = {"Pendente", "Concluída", "Atrasada"};
         JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
         tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(statusComboBox));
-        
-        // Renderer para Data
+
+        // Render da data
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
-        
-        // Botões de Ação
+
+        // Botão Editar
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
         tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
 
+        // Botão Apagar
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
         tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
     }

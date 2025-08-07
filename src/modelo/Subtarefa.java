@@ -11,10 +11,9 @@ public class Subtarefa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String titulo;            // novo campo
     private String descricao;
-
     private double percentualConcluido; // de 0 a 100
-
     private LocalDate deadline;
 
     @ManyToOne
@@ -23,7 +22,8 @@ public class Subtarefa {
 
     public Subtarefa() {}
 
-    public Subtarefa(String descricao, double percentualConcluido, LocalDate deadline, Tarefa tarefa) {
+    public Subtarefa(String titulo, String descricao, double percentualConcluido, LocalDate deadline, Tarefa tarefa) {
+        this.titulo = titulo;
         this.descricao = descricao;
         this.percentualConcluido = percentualConcluido;
         this.deadline = deadline;
@@ -32,6 +32,10 @@ public class Subtarefa {
 
     public Long getId() {
         return id;
+    }
+
+    public String getTitulo() {
+        return titulo;
     }
 
     public String getDescricao() {
@@ -54,6 +58,10 @@ public class Subtarefa {
         this.id = id;
     }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
@@ -72,6 +80,6 @@ public class Subtarefa {
 
     @Override
     public String toString() {
-        return "Subtarefa: " + descricao + " (" + percentualConcluido + "%)";
+        return "Subtarefa: " + titulo + " (" + percentualConcluido + "%)";
     }
 }

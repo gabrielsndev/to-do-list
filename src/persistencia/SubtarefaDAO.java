@@ -8,9 +8,30 @@ import java.util.List;
 
 public class SubtarefaDAO {
     private EntityManagerFactory emf;
-
+    
     public SubtarefaDAO() {
         this.emf = Persistence.createEntityManagerFactory("todo-pu");
+    }
+    
+    public void limparSubtarefasOrfas() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+
+            int deletados = em.createNativeQuery(
+                "DELETE FROM subtarefa WHERE tarefa_id NOT IN (SELECT id FROM tarefa)"
+            ).executeUpdate();
+
+            em.getTransaction().commit();
+
+            System.out.println("Subtarefas órfãs deletadas: " + deletados);
+        } catch (Exception e) {
+            if (em.getTransaction().isActive())
+                em.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
     }
 
     // Salvar nova subtarefa 
