@@ -28,7 +28,7 @@
 	<classpathentry kind="lib" path="lib/byte-buddy-1.14.13.jar"/>
 	<classpathentry kind="lib" path="lib/byte-buddy-agent-1.14.13.jar"/>
 	<classpathentry kind="lib" path="lib/antlr4-runtime-4.13.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/USUÁRIO/Documents/cleyton/to-do-list/lib/poi-5.4.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/USUÁRIO/Documents/cleyton/to-do-list/lib/poi-ooxml-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-5.4.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

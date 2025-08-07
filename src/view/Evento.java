@@ -58,7 +58,7 @@ public class Evento extends JFrame {
         btnVoltar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		dispose();
-        		home home = new home();
+        		Home home = new Home();
         		home.setVisible(true);
         		home.setLocationRelativeTo(null);
         		
