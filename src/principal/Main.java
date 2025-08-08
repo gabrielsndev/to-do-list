@@ -560,7 +560,7 @@ public class Main {
                         int anoEvento = Integer.parseInt(input.nextLine());
                         System.out.println("Digite o mês (1 a 12):");
                         int mesEvento = Integer.parseInt(input.nextLine());
-                        List<Evento> eventosDoMes = eventoServico.listarPorMes(anoEvento, mesEvento);
+                        List<Evento> eventosDoMes = eventoServico.listarPorMes(mesEvento);
                         if (eventosDoMes.isEmpty()) {
                             System.out.println("Nenhum evento encontrado nesse mês.");
                         } else {
