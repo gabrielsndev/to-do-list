@@ -1,67 +1,125 @@
 package model;
 
+import persistencia.EventoDAO;
 import persistencia.TarefaDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.EventObject;
 
-public class ButtonEditor extends DefaultCellEditor {
-    private JButton button;
-    private String label;
-    private boolean clicked;
-    private int row;
-    private JTable table;
+import modelo.Tarefa;
 
-    public ButtonEditor(JCheckBox checkBox, JTable table, String label) {
+public class ButtonEditor extends DefaultCellEditor {
+    private final JButton button;
+    private final String label;
+    private int row;
+    private final JTable table;
+    private final TipoDAO tipo;
+
+    public ButtonEditor(JCheckBox checkBox, JTable table, String label, TipoDAO tipo) {
         super(checkBox);
         this.button = new JButton(label);
         this.label = label;
         this.table = table;
+        this.tipo = tipo;
 
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                fireEditingStopped();
+        button.addActionListener(e -> {
+            fireEditingStopped();
 
-                if (label.equals("Editar")) {
-                    String titulo = table.getValueAt(row, 1).toString(); // coluna 1: título
-                    JOptionPane.showMessageDialog(button, "Editar: " + titulo);
-                    // Pode abrir tela de edição aqui depois
-                } else if (label.equals("Apagar")) {
-                    try {
-                        int confirm = JOptionPane.showConfirmDialog(button,
-                            "Deseja realmente apagar esta tarefa?",
-                            "Confirmação",
-                            JOptionPane.YES_NO_OPTION);
+            if (label.equals("Editar")) {
+                try {
+                    Object idObj = table.getModel().getValueAt(row, 0);
+                    long id = Long.parseLong(idObj.toString());
 
-                        if (confirm == JOptionPane.YES_OPTION) {
-                            // Coluna 0: ID oculto
-                            Object idObj = table.getModel().getValueAt(row, 0);
-                            long id = Long.parseLong(idObj.toString());
+                    String tituloAtual = table.getModel().getValueAt(row, 1).toString();
+                    String descricaoAtual = table.getModel().getValueAt(row, 3).toString();
+                    String prioridadeAtual = table.getModel().getValueAt(row, 5).toString();
+                    String data = table.getModel().getValueAt(row, 2).toString();
 
-                            TarefaDAO dao = new TarefaDAO();
-                            dao.remover(id);
+                    // Campos para edição
+                    JTextField campoTitulo = new JTextField(tituloAtual);
+                    JTextField campoDescricao = new JTextField(descricaoAtual);
+                    JTextField campoPrioridade = new JTextField(prioridadeAtual);
+                    JTextField campoData = new JTextField(data);
 
-                            ((DefaultTableModel) table.getModel()).removeRow(row);
+                    JPanel painel = new JPanel(new GridLayout(0, 1, 5, 5));
+                    painel.add(new JLabel("Título:"));
+                    painel.add(campoTitulo);
+                    painel.add(new JLabel("Descrição:"));
+                    painel.add(campoDescricao);
+                    painel.add(new JLabel("Prioridade:"));
+                    painel.add(campoPrioridade);
+                    painel.add(new JLabel("Data:"));
+                    painel.add(campoData);
 
-                            JOptionPane.showMessageDialog(button, "Tarefa removida com sucesso.");
+                    int result = JOptionPane.showConfirmDialog(button, painel, 
+                        "Editar Tarefa", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                    if (result == JOptionPane.OK_OPTION) {
+                        Tarefa tarefa = new Tarefa();
+                        tarefa.setId(id);
+                        tarefa.setTitulo(campoTitulo.getText());
+                        tarefa.setDescricao(campoDescricao.getText());
+                        tarefa.setPrioridade(Integer.parseInt(campoPrioridade.getText()));
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                        tarefa.setDeadline(LocalDate.parse(campoData.getText(), formatter));
+
+
+                        if (tipo == TipoDAO.TAREFA) {
+                            new TarefaDAO().editarTarefa(id, tarefa);
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(button,
-                            "Erro ao remover a tarefa.",
-                            "Erro", JOptionPane.ERROR_MESSAGE);
+
+                        // Atualiza a tabela
+                        table.getModel().setValueAt(campoTitulo.getText(), row, 1);
+                        table.getModel().setValueAt(campoDescricao.getText(), row, 3);
+                        table.getModel().setValueAt(campoPrioridade.getText(), row, 5);
+                        table.getModel().setValueAt(campoData.getText(), row, 2);
+
+                        JOptionPane.showMessageDialog(button, "Tarefa atualizada com sucesso!");
                     }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(button, "Erro ao editar a tarefa.", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } else if (label.equals("Apagar")) {
+                try {
+                    int confirm = JOptionPane.showConfirmDialog(button,
+                        "Deseja realmente apagar este item?",
+                        "Confirmação",
+                        JOptionPane.YES_NO_OPTION);
+
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        Object idObj = table.getModel().getValueAt(row, 0);
+                        long id = Long.parseLong(idObj.toString());
+
+                        if (tipo == TipoDAO.TAREFA) {
+                            new TarefaDAO().remover(id);
+                        } else if (tipo == TipoDAO.EVENTO) {
+                            new EventoDAO().remover(id);
+                        }
+
+                        // Remove da tabela se for DefaultTableModel
+                        if (table.getModel() instanceof DefaultTableModel) {
+                            ((DefaultTableModel) table.getModel()).removeRow(row);
+                        }
+
+                        JOptionPane.showMessageDialog(button, "Removido com sucesso.");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(button, "Erro ao remover.", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
     }
 
     @Override
-    public Component getTableCellEditorComponent(
-        JTable table, Object value, boolean isSelected, int row, int column) {
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         this.row = row;
         button.setText(label);
         return button;

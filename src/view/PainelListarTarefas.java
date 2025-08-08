@@ -8,6 +8,7 @@ import modelo.Tarefa;
 import persistencia.TarefaDAO;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
+import model.TipoDAO;
 import model.ButtonEditor;
 
 public class PainelListarTarefas extends JPanel {
@@ -25,7 +26,13 @@ public class PainelListarTarefas extends JPanel {
             Tarefa t = tarefas.get(i);
             dados[i][0] = t.getId();
             dados[i][1] = t.getTitulo();
-            dados[i][2] = t.getDeadline().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
+            if (t.getDeadline() != null) {
+                dados[i][2] = t.getDeadline().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            } else {
+                dados[i][2] = "";
+            }
+            
             dados[i][3] = t.getDescricao();
             dados[i][4] = "Pendente"; // Status fixo
             dados[i][5] = t.getPrioridade();
@@ -44,10 +51,10 @@ public class PainelListarTarefas extends JPanel {
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar",TipoDAO.TAREFA));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar",TipoDAO.TAREFA));
 
         add(new JScrollPane(tabela), BorderLayout.CENTER);
     }

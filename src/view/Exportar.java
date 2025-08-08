@@ -3,12 +3,20 @@ package view;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
+
+import email.Mensageiro;
+import modelo.Tarefa;
+import persistencia.TarefaDAO;
+import relatorios.GeradorDeRelatorios;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -22,6 +30,7 @@ public class Exportar extends JFrame {
 	private JTextField textFieldEmail;
 	private JTextField textFieldDiaEspecifico;
 	private JTextField textFieldMesEspecifico;
+	private JTextField textFieldData;
 
 	public Exportar() {
 		setTitle("Exportar");
@@ -54,39 +63,78 @@ public class Exportar extends JFrame {
 	}
 	
 	private JPanel painelEmail() {
-		JPanel email = new JPanel();
-		email.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("Exportar Para O Email");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblNewLabel.setBounds(267, 48, 234, 62);
-		email.add(lblNewLabel);
-		
-		textFieldEmail = new JTextField();
-		textFieldEmail.setBounds(277, 144, 224, 31);
-		email.add(textFieldEmail);
-		textFieldEmail.setColumns(10);
-		
-		JLabel lblNewLabel_1 = new JLabel("Digite o Email para receber o arquivo: ");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1.setBounds(267, 119, 234, 14);
-		email.add(lblNewLabel_1);
-		
-		JButton btnEnviar = new JButton("Enviar");
-		btnEnviar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(!textFieldEmail.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(btnEnviar, "Arquivo enviado !","Sucesso",JOptionPane.INFORMATION_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(btnEnviar, "Preencha o campo de Email!","Erro",JOptionPane.WARNING_MESSAGE);
-				}
-			}
-		});
-		btnEnviar.setBounds(324, 186, 117, 35);
-		email.add(btnEnviar);
-		
-		return email;
+	    JPanel email = new JPanel();
+	    email.setLayout(null);
+	    
+	    
+	    JLabel lblNewLabel = new JLabel("Exportar Para O Email");
+	    lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+	    lblNewLabel.setBounds(267, 48, 234, 62);
+	    email.add(lblNewLabel);
+	    
+	    textFieldEmail = new JTextField();
+	    textFieldEmail.setBounds(277, 144, 224, 31);
+	    email.add(textFieldEmail);
+	    textFieldEmail.setColumns(10);
+	    
+	    JLabel lblNewLabel_1 = new JLabel("Digite o Email para receber o arquivo: ");
+	    lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 12));
+	    lblNewLabel_1.setBounds(267, 119, 234, 14);
+	    email.add(lblNewLabel_1);
+	    
+	    JButton btnEnviar = new JButton("Enviar");
+	    btnEnviar.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	TarefaDAO taskDAO = new TarefaDAO();
+	            String destinatario = textFieldEmail.getText().trim();
+	            String data = textFieldData.getText().trim();
+	            
+	            
+	            if (!destinatario.isEmpty()) {
+	                try {
+	                	
+	                	LocalDate dataFormatada = LocalDate.parse(data);
+	                    String mensagem = "Segue o relatório de tarefas em anexo.";
+	                    String caminhoAnexo = null; 
+	                    List<Tarefa>todasTarefas = taskDAO.listar();
+	                    GeradorDeRelatorios.gerarRelatorioPDFDoDia(dataFormatada, todasTarefas, "aaaa!");
+	                    Mensageiro.enviarEmail(destinatario, mensagem, "relatorio.pdf");
+	                    
+	                    JOptionPane.showMessageDialog(btnEnviar, 
+	                        "E-mail enviado com sucesso!", 
+	                        "Sucesso", 
+	                        JOptionPane.INFORMATION_MESSAGE);
+	                } catch (Exception ex) {
+	                    JOptionPane.showMessageDialog(btnEnviar, 
+	                        "Erro ao enviar e-mail: " + ex.getMessage(), 
+	                        "Erro", 
+	                        JOptionPane.ERROR_MESSAGE);
+	                    ex.printStackTrace();
+	                }
+	            } else {
+	                JOptionPane.showMessageDialog(btnEnviar, 
+	                    "Preencha o campo de Email!", 
+	                    "Erro", 
+	                    JOptionPane.WARNING_MESSAGE);
+	            }
+	        }
+	    });
+	    btnEnviar.setBounds(324, 279, 117, 35);
+	    email.add(btnEnviar);
+	    
+	    textFieldData = new JTextField();
+	    textFieldData.setColumns(10);
+	    textFieldData.setBounds(277, 228, 224, 31);
+	    email.add(textFieldData);
+	    
+	    JLabel lblNewLabel_1_1 = new JLabel("Digite a data das Tarefas:");
+	    lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD, 12));
+	    lblNewLabel_1_1.setBounds(317, 191, 167, 14);
+	    email.add(lblNewLabel_1_1);
+	    
+	    return email;
 	}
+
 	
 	
 	private JPanel painelPlanilha() {
@@ -121,7 +169,7 @@ public class Exportar extends JFrame {
 		btnDiaEspecifico.setBounds(307, 140, 125, 33);
 		planilha.add(btnDiaEspecifico);
 		
-		JLabel lblNewLabel_2_1 = new JLabel("Exportação Com Um Dia Especifico");
+		JLabel lblNewLabel_2_1 = new JLabel("Exportação Com Um Mes Especifico");
 		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblNewLabel_2_1.setBounds(10, 207, 350, 47);
 		planilha.add(lblNewLabel_2_1);
@@ -165,5 +213,4 @@ public class Exportar extends JFrame {
 			}
 		});
 	}
-
 }

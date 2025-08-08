@@ -26,7 +26,11 @@ import javax.swing.text.MaskFormatter;
 import model.ButtonEditor;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
+import model.TipoDAO;
+import modelo.Evento;
+import modelo.Tarefa;
 import persistencia.EventoDAO;
+import persistencia.TarefaDAO;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -36,7 +40,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 
-public class Evento extends JFrame {
+public class PainelEvento extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -49,7 +53,7 @@ public class Evento extends JFrame {
 	private JTextField textFieldPorDia;
 
 
-	public Evento() {
+	public PainelEvento() {
 		setTitle("Evento");
 		setSize(800,600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -188,26 +192,30 @@ public class Evento extends JFrame {
 	private JPanel criarPainelListar() {
 	    JPanel painelTarefas = new JPanel(new BorderLayout());
 
-	    String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
+	    String[] colunas = {"ID", "Titulo","Descrição", "Data", "Status", "Editar", "Apagar"};
 
 	    // Buscar dados do banco
-	    persistencia.EventoDAO eventoDAO = new persistencia.EventoDAO();
-	    List<modelo.Evento> listaEventos = eventoDAO.listar();
+	    EventoDAO dao = new EventoDAO();
+	    List<Evento> listaEventos = dao.listar();
 
 	    // Preencher matriz de dados dinamicamente
-	    Object[][] dados = new Object[listaEventos.size()][colunas.length];
-	    int i = 0;
-	    for (modelo.Evento evento : listaEventos) {
-	        dados[i][0] = evento.getId();
-	        dados[i][1] = evento.getTitulo();
-	        dados[i][2] = evento.getData().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-	        dados[i][3] = evento.getDescricao();
-	        dados[i][4] = "Pendente"; // ou um campo real de status se tiver
-	        dados[i][5] = "0";        // prioridade não existe no modelo ainda
-	        dados[i][6] = "Editar";
-	        dados[i][7] = "Apagar";
-	        i++;
-	    }
+	    Object[][] dados = new Object[listaEventos.size()][8];
+	    for (int i = 0; i < listaEventos.size(); i++) {
+            Evento t = listaEventos.get(i);
+            dados[i][0] = t.getId();
+            dados[i][1] = t.getTitulo();
+            dados[i][2] = t.getDescricao();
+            if (t.getData() != null) {
+                dados[i][3] = t.getData().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            } else {
+                dados[i][3] = "Sem data";
+            }
+
+            dados[i][4] = "Pendente"; // Status fixo
+            dados[i][5] = "Editar";
+            dados[i][6] = "Apagar";
+        }
+	   
 
 	    JTable tabela = new JTable(dados, colunas);
 	    painelTarefas.add(new JScrollPane(tabela), BorderLayout.CENTER);
@@ -222,75 +230,104 @@ public class Evento extends JFrame {
 
 	    // Botões
 	    tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-	    tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+	    tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", TipoDAO.EVENTO));
 
 	    tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-	    tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
+	    tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.EVENTO));
 
 	    return painelTarefas;
 	}
 
     
-    private JPanel painelListarEventosPorMes() {
-    	JPanel listarEventoPMes = new JPanel();
-    	listarEventoPMes.setLayout(null);
-    	
-    	
-    	JLabel lblNewLabel = new JLabel("Lista de Eventos Por Mes");
-    	lblNewLabel.setBounds(10, 11, 246, 22);
-    	lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-    	listarEventoPMes.add(lblNewLabel);
-    	
-    	String[] colunas = {"Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
-        Object[][] dados = {
-        		{"Estudar Java", "23-07-2025", "Descricao", "Pendente", "0", "", ""},
-                {"Entregar Projeto", "18-07-2025", "Descricao", "Pendente", "5", "", ""},
-                {"Entregar Projeto", "18-08-2025", "Descricao", "Pendente", "5", "", ""},
-                {"Entregar Projeto", "18-10-2025", "Descricao", "Pendente", "5", "", ""}
-        };
+	private JPanel painelListarEventosPorMes() {
+	    JPanel listarEventoPMes = new JPanel();
+	    listarEventoPMes.setLayout(null);
 
-        JTable tabela = new JTable(dados, colunas);
-        JScrollPane scrollPane = new JScrollPane(tabela);
-        scrollPane.setBounds(10, 95, 759, 427);
-        listarEventoPMes.add(scrollPane);
-        
-        String[] statusOptions = { "Pendente", "Concluída","Atrasada" };
-        JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
-        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(statusComboBox));
-        
-        tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
-        
-        // Botões de Ação nas colunas "Editar" e "Apagar"
-        tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+	    JLabel lblTitulo = new JLabel("Lista de Eventos Por Mês");
+	    lblTitulo.setBounds(10, 11, 246, 22);
+	    lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 18));
+	    listarEventoPMes.add(lblTitulo);
 
-        tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
-        
-        textFieldPorMes = new JTextField();
-        textFieldPorMes.setFont(new Font("Tahoma", Font.BOLD, 15));
-        textFieldPorMes.setColumns(10);
-        textFieldPorMes.setBounds(304, 26, 136, 25);
-        listarEventoPMes.add(textFieldPorMes);
-        
-        JLabel labelData = new JLabel("DD-MM-YYYY");
-        labelData.setFont(new Font("Tahoma", Font.BOLD, 10));
-        labelData.setBounds(305, 49, 70, 13);
-        listarEventoPMes.add(labelData);
-        
-        JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		if(textFieldPorMes.getText().isEmpty()) {
-        			JOptionPane.showMessageDialog(btnBuscar, "Digite a data","Erro",JOptionPane.WARNING_MESSAGE);
-        		}
-        	}
-        });
-        btnBuscar.setBounds(333, 61, 90, 23);
-        listarEventoPMes.add(btnBuscar);
-        
-    	return listarEventoPMes;
-    }
+	    textFieldPorMes = new JTextField();
+	    textFieldPorMes.setFont(new Font("Tahoma", Font.BOLD, 15));
+	    textFieldPorMes.setColumns(10);
+	    textFieldPorMes.setBounds(304, 26, 136, 25);
+	    listarEventoPMes.add(textFieldPorMes);
+
+	    JLabel labelData = new JLabel("Mês (1-12)");
+	    labelData.setFont(new Font("Tahoma", Font.BOLD, 10));
+	    labelData.setBounds(305, 49, 70, 13);
+	    listarEventoPMes.add(labelData);
+
+	    // Criar tabela vazia
+	    String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Editar", "Apagar"};
+	    DefaultTableModel modeloTabela = new DefaultTableModel(colunas, 0);
+	    JTable tabela = new JTable(modeloTabela);
+
+	    // Remove a coluna ID da visualização
+	    tabela.removeColumn(tabela.getColumn("ID"));
+
+	    // Editor para Status
+	    String[] statusOptions = {"Pendente", "Concluída", "Atrasada"};
+	    JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
+	    tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(statusComboBox));
+
+	    tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
+
+	    tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
+	    tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", TipoDAO.EVENTO));
+
+	    tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
+	    tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.EVENTO));
+
+	    JScrollPane scrollPane = new JScrollPane(tabela);
+	    scrollPane.setBounds(10, 95, 759, 427);
+	    listarEventoPMes.add(scrollPane);
+
+	    // Botão Buscar
+	    JButton btnBuscar = new JButton("Buscar");
+	    btnBuscar.setBounds(333, 61, 90, 23);
+	    listarEventoPMes.add(btnBuscar);
+
+	    btnBuscar.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	            if (textFieldPorMes.getText().isEmpty()) {
+	                JOptionPane.showMessageDialog(btnBuscar, "Digite o mês", "Erro", JOptionPane.WARNING_MESSAGE);
+	                return;
+	            }
+
+	            try {
+	                int mes = Integer.parseInt(textFieldPorMes.getText().trim());
+	                EventoDAO dao = new EventoDAO();
+	                
+	                List<Evento> eventos = dao.listarPorMes(mes);
+
+	                // Limpa a tabela antes de adicionar novos dados
+	                modeloTabela.setRowCount(0);
+
+	                for (Evento ev : eventos) {
+	                    modeloTabela.addRow(new Object[]{
+	                            ev.getId(),
+	                            ev.getTitulo(),
+	                            ev.getData().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+	                            ev.getDescricao(),
+	                            "Pendente", // Status fixo por enquanto
+	                            "Editar",
+	                            "Apagar"
+	                    });
+	                }
+
+	            } catch (NumberFormatException ex) {
+	                JOptionPane.showMessageDialog(btnBuscar, "Digite um número válido para o mês", "Erro", JOptionPane.ERROR_MESSAGE);
+	            } catch (Exception ex) {
+	                JOptionPane.showMessageDialog(btnBuscar, "Erro ao buscar eventos: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+	            }
+	        }
+	    });
+
+	    return listarEventoPMes;
+	}
+
     
         
     private JPanel painelListarEventosPorDia() {
@@ -334,10 +371,10 @@ public class Evento extends JFrame {
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar",TipoDAO.EVENTO));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar",TipoDAO.EVENTO));
 
         // Ação do botão buscar
         btnBuscar.addActionListener(e -> {
@@ -385,7 +422,7 @@ public class Evento extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Evento frame = new Evento();
+					PainelEvento frame = new PainelEvento();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

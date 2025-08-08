@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.awt.*;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
+import model.TipoDAO;
 import persistencia.TarefaDAO;
 import modelo.TarefaServico;
 import model.ButtonEditor;
@@ -41,7 +42,13 @@ public class PainelListarCriticas extends JPanel {
             Tarefa t = tarefasCriticas.get(i);
             dados[i][0] = t.getId();
             dados[i][1] = t.getTitulo();
-            dados[i][2] = t.getDeadline().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
+            if (t.getDeadline() != null) {
+                dados[i][2] = t.getDeadline().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            } else {
+                dados[i][2] = "";
+            }
+            
             dados[i][3] = t.getDescricao();
             dados[i][4] = "Pendente"; // ajuste se tiver campo status
             dados[i][5] = t.getPrioridade();
@@ -74,10 +81,10 @@ public class PainelListarCriticas extends JPanel {
 
         // Botão Editar
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar",TipoDAO.TAREFA));
 
         // Botão Apagar
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar",TipoDAO.TAREFA));
     }
 }

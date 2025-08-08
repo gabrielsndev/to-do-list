@@ -7,6 +7,7 @@ import modelo.Tarefa;
 import persistencia.TarefaDAO;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
+import model.TipoDAO;
 import model.ButtonEditor;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,10 +56,10 @@ public class PainelListarPorDia extends JPanel {
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar"));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar",TipoDAO.TAREFA));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar"));
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar",TipoDAO.TAREFA));
 
         btnBuscar.addActionListener(e -> buscarTarefasPorDia());
     }

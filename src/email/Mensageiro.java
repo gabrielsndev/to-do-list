@@ -61,10 +61,8 @@ public class Mensageiro {
             // Enviando a mensagem
             Transport.send(mensagem);
 
-            System.out.println("E-mail enviado com sucesso!");
 
         } catch (MessagingException e) {
-            System.out.println("Erro ao enviar o e-mail: " + e.getMessage());
             e.printStackTrace();
         }
     }

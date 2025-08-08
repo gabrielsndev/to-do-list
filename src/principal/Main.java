@@ -173,7 +173,7 @@ public class Main {
             		 dataDeEntrada = input.nextLine();
             		 LocalDate dataDoRelatorio = LocalDate.parse(dataDeEntrada);
             		 todasTarefas = taskDAO.listar();
-            		 // GeradorDeRelatorios.obterTarefasDeUmDia(dataDoRelatorio, todasTarefas);
+            		 GeradorDeRelatorios.gerarRelatorioPDFDoDia(dataDoRelatorio, todasTarefas, "aaaa!");
 
                 		
                 	 //LocalDate hoje = LocalDate.now();
@@ -345,8 +345,8 @@ public class Main {
                     }
 
                     // Cria a subtarefa e associa à tarefa principal
-                    Subtarefa sub = new Subtarefa(descricaoSub, percentual, dataSub, tarefaPai);
-                    tarefaPai.adicionarSubtarefa(sub);
+                    //Subtarefa sub = new Subtarefa(descricaoSub, percentual, dataSub, tarefaPai);
+                    //tarefaPai.adicionarSubtarefa(sub);
 
                     try {
                         taskDAO.editarTarefa(tarefaPai.getId(), tarefaPai);

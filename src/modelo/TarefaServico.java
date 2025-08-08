@@ -6,20 +6,20 @@ import java.util.stream.Collectors;
 import java.util.List;
 
 public class TarefaServico {
-	 public List<Tarefa> listarTarefaCritica(List<Tarefa> listaDeTarefas) {
-	        
-		 	List<Tarefa> tarefaCritica = new ArrayList<>();
-
-	        for (Tarefa t : listaDeTarefas) {
-	            long diasFaltando = ChronoUnit.DAYS.between(LocalDate.now(), t.getDeadline());
-	            long diferenca = diasFaltando - t.getPrioridade();
-
-	            if (diferenca < 0) {
-	                tarefaCritica.add(t);
-	            }
+	public List<Tarefa> listarTarefaCritica(List<Tarefa> tarefas) {
+	    LocalDate hoje = LocalDate.now();
+	    List<Tarefa> criticas = new ArrayList<>();
+	    for (Tarefa t : tarefas) {
+	        if (t.getDeadline() == null) {
+	            // Ignora essa tarefa, porque não tem data limite
+	            continue;
 	        }
-
-	        return tarefaCritica;
+	        long dias = ChronoUnit.DAYS.between(hoje, t.getDeadline());
+	        if (dias <= 3) {
+	            criticas.add(t);
+	        }
+	    }
+	    return criticas;
 	}
 
 }

@@ -99,7 +99,8 @@ public class Tarefa {
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
-
+    
+    
     public int getPrioridade() {
     	return prioridade;
     }

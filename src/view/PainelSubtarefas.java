@@ -11,6 +11,7 @@ import persistencia.SubtarefaDAO;
 import persistencia.TarefaDAO;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
+import model.TipoDAO;
 import model.ButtonEditor;
 
 import javax.swing.table.DefaultTableModel;
@@ -70,16 +71,16 @@ public class PainelSubtarefas extends JPanel {
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar") {
-            @Override
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar",TipoDAO.TAREFA) {
+           
             protected void onClick(JTable table, int row) {
                 JOptionPane.showMessageDialog(table, "Funcionalidade editar ainda não implementada");
             }
         });
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar") {
-            @Override
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar",TipoDAO.TAREFA) {
+           
             protected void onClick(JTable table, int row) {
                 int confirm = JOptionPane.showConfirmDialog(table,
                     "Tem certeza que deseja excluir esta subtarefa?", "Confirmação", JOptionPane.YES_NO_OPTION);

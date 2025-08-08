@@ -74,26 +74,37 @@ public class TarefaDAO {
    }
   
    
-   public void editarTarefa(long id, Tarefa novaTarefa) throws Exception {
-	   	EntityManager em = emf.createEntityManager();
-	   	
-	   	try {
-	   		em.getTransaction().begin();
+   public void editarTarefa(long id, Tarefa novaTarefa) {
+	    EntityManager em = emf.createEntityManager();
+	    
+	    try {
+	        em.getTransaction().begin();
 
+	        // Busca a tarefa existente pelo ID
 	        Tarefa tarefaExistente = em.find(Tarefa.class, id);
 	        if (tarefaExistente == null) {
-	            throw new Exception("Tarefa com ID " + id + " não encontrada.");
+	            throw new IllegalArgumentException("Tarefa com ID " + id + " não encontrada.");
 	        }
 
-	        // Atualiza os campos necessários (exemplo: título, descrição, deadline)
+	        // Atualiza os campos da tarefa existente com os valores da nova tarefa
 	        tarefaExistente.setTitulo(novaTarefa.getTitulo());
 	        tarefaExistente.setDescricao(novaTarefa.getDescricao());
 	        tarefaExistente.setDeadline(novaTarefa.getDeadline());
 	        tarefaExistente.setPrioridade(novaTarefa.getPrioridade());
+
+	        // Comita a transação para salvar as alterações
 	        em.getTransaction().commit();
+
+	    } catch (RuntimeException e) {
+	        // Caso ocorra algum erro, faz rollback para evitar inconsistências
+	        if (em.getTransaction().isActive()) {
+	            em.getTransaction().rollback();
+	        }
+	        throw e; // Propaga a exceção para o chamador tratar
 	    } finally {
 	        em.close();
 	    }
 	}
+
   
 }

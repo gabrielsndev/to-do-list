@@ -88,7 +88,7 @@ public class Home extends JFrame {
 		btnEvento.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				Evento evento = new Evento();
+				PainelEvento evento = new PainelEvento();
 				evento.setLocationRelativeTo(null);
 				evento.setVisible(true);
 			}

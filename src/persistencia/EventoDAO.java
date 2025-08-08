@@ -99,12 +99,12 @@ public class EventoDAO {
     }
 
     // ✅ Listar eventos de um mês específico
-    public List<Evento> listarPorMes(int ano, int mes) {
+    public List<Evento> listarPorMes(int mes) {
         EntityManager em = emf.createEntityManager();
         try {
             return em.createQuery(
                     "SELECT e FROM Evento e WHERE YEAR(e.data) = :ano AND MONTH(e.data) = :mes", Evento.class)
-                    .setParameter("ano", ano)
+               
                     .setParameter("mes", mes)
                     .getResultList();
         } finally {

@@ -51,8 +51,8 @@ public class EventoServico {
     }
 
     // Listar eventos de um mês específico
-    public List<Evento> listarPorMes(int ano, int mes) {
-        return eventoDAO.listarPorMes(ano, mes);
+    public List<Evento> listarPorMes(int mes) {
+        return eventoDAO.listarPorMes(mes);
     }
 
     // Buscar evento específico
