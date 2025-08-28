@@ -28,7 +28,7 @@ public class Main {
         
         do {
             System.out.println("---> MENU: ");
-            System.out.println("1  - Adicionar nova tarefa.");
+            System.out.println("1 - Adicionar nova tarefa.");
             System.out.println("2  - Listar todas as tarefas.");
             System.out.println("3  - Receber detalhes de uma tarefa específica.");
             System.out.println("4  - Gerar PDF das tarefas de um dia.");
