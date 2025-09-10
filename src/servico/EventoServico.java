@@ -4,9 +4,6 @@ import modelo.Evento;
 import java.util.List;
 import servicoDao.EventoServicoRepository;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
 
 public class EventoServico{
 
