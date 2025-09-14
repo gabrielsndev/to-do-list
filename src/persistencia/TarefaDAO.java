@@ -2,14 +2,16 @@ package persistencia;
 
 import jakarta.persistence.*;
 import modelo.Tarefa;
+import repositorioInterface.TarefaRepositorio;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-public class TarefaDAO {
-	private EntityManagerFactory emf;
+public class TarefaDAO implements TarefaRepositorio {
 
-	
+    private EntityManagerFactory emf;
+
    public TarefaDAO() {
         this.emf = Persistence.createEntityManagerFactory("todo-pu");
     }
@@ -25,13 +27,22 @@ public class TarefaDAO {
 		   em.close();
 	   }
    }
-   
-   public List<Tarefa> listar(){
+
+    public List<Tarefa> listar(){
 	   EntityManager em = emf.createEntityManager();
-	   
 	   try {
            return em.createQuery("SELECT t FROM Tarefa t", Tarefa.class).getResultList();
        } finally {
+           em.close();
+       }
+   }
+
+   public List<Tarefa> listarTarefaCritica(){
+       EntityManager em = emf.createEntityManager();
+
+       try {
+           return em.createQuery("SELECT t FROM Tarefa t WHERE t.critica = true", Tarefa.class).getResultList();
+       }finally {
            em.close();
        }
    }
@@ -39,7 +50,6 @@ public class TarefaDAO {
    public void remover(long id) throws Exception{
        EntityManager em = emf.createEntityManager();
        Tarefa t = em.find(Tarefa.class, id);
-       if(t == null) {throw new Exception();}
        
        try {
            Tarefa tarefa = em.find(Tarefa.class, id);
@@ -53,10 +63,10 @@ public class TarefaDAO {
        }
    }
    
-   public Tarefa buscar(long id) {
+   public Optional <Tarefa> buscar(long id) {
        EntityManager em = emf.createEntityManager();
        try {
-           return em.find(Tarefa.class, id);
+           return Optional.ofNullable(em.find(Tarefa.class, id));
        } finally {
            em.close();
        }
@@ -74,33 +84,20 @@ public class TarefaDAO {
    }
   
    
-   public void editarTarefa(long id, Tarefa novaTarefa) {
+   public void editarTarefa(Tarefa t) {
 	    EntityManager em = emf.createEntityManager();
 	    
 	    try {
 	        em.getTransaction().begin();
 
-	        // Busca a tarefa existente pelo ID
-	        Tarefa tarefaExistente = em.find(Tarefa.class, id);
-	        if (tarefaExistente == null) {
-	            throw new IllegalArgumentException("Tarefa com ID " + id + " não encontrada.");
-	        }
-
-	        // Atualiza os campos da tarefa existente com os valores da nova tarefa
-	        tarefaExistente.setTitulo(novaTarefa.getTitulo());
-	        tarefaExistente.setDescricao(novaTarefa.getDescricao());
-	        tarefaExistente.setDeadline(novaTarefa.getDeadline());
-	        tarefaExistente.setPrioridade(novaTarefa.getPrioridade());
-
-	        // Comita a transação para salvar as alterações
-	        em.getTransaction().commit();
+            em.merge(t);
+            em.getTransaction().commit();
 
 	    } catch (RuntimeException e) {
-	        // Caso ocorra algum erro, faz rollback para evitar inconsistências
 	        if (em.getTransaction().isActive()) {
 	            em.getTransaction().rollback();
 	        }
-	        throw e; // Propaga a exceção para o chamador tratar
+	        throw e;
 	    } finally {
 	        em.close();
 	    }

@@ -21,23 +21,23 @@ public class Tarefa {
     private String descricao;
     private LocalDate deadline;
     private int prioridade;
-    
- // Uma tarefa pode ter várias subtarefas.
- // "mappedBy = 'tarefa'" significa que a chave estrangeira está na classe Subtarefa (campo 'tarefa').
- // "cascade = CascadeType.ALL" garante que salvar/excluir uma tarefa também salva/exclui suas subtarefas.
- // "orphanRemoval = true" remove subtarefas que forem removidas da lista.
+    private boolean critica;
+
     @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subtarefa> subtarefas = new ArrayList<>(); // Conectando Subtarefa a Tarefa
 
 	public Tarefa() {}
 
     
-    public Tarefa(String titulo, String descricao, LocalDate deadline, int prioridade) {
+    public Tarefa(String titulo, String descricao, LocalDate deadline, int prioridade, boolean critica) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.deadline = deadline;
-        this.prioridade = prioridade; 
+        this.prioridade = prioridade;
+        this.critica = critica;
     }
+
+
 
     public void adicionarSubtarefa(Subtarefa subtarefa) {
         subtarefa.setTarefa(this); // estabelece a referência para a tarefa pai
@@ -46,11 +46,13 @@ public class Tarefa {
 
     // Retorna a lista de subtarefas associadas a esta tarefa
     public List<Subtarefa> getSubtarefas() {
+
         return subtarefas;
     }
  
     // Define ou substitui a lista de subtarefas
     public void setSubtarefas(List<Subtarefa> subtarefas) {
+
         this.subtarefas = subtarefas;
     }
     
@@ -109,6 +111,15 @@ public class Tarefa {
     public void setPrioridade(int prioridade) {
     	this.prioridade = prioridade;
     }
+
+    public boolean isCritica() {
+        return critica;
+    }
+
+    public void setCritica(boolean critica) {
+        this.critica = critica;
+    }
+
     @Override
     public String toString() {
         return "\nTítulo: " + titulo + "\nDescrição: " + descricao;
