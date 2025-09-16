@@ -1,4 +1,4 @@
-package servicoDao;
+package repositorioInterface;
 
 import modelo.Evento;
 
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.time.LocalDate;
 
-public interface EventoServicoRepository {
+public interface EventoRepositorio {
     void salvar(Evento evento) throws  Exception;
     void atualizar(Evento evento) throws  Exception;
     void remover(long id) throws  Exception;

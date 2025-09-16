@@ -1,4 +1,4 @@
-package modelo;
+package servico;
 
 import relatorios.GeradorDeRelatorios;
 import email.Mensageiro;

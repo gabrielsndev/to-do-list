@@ -2,49 +2,55 @@ package servico;
 
 import modelo.Evento;
 import java.util.List;
-import servicoDao.EventoServicoRepository;
+import java.util.Optional;
+
+import repositorioInterface.EventoRepositorio;
 
 
 public class EventoServico{
 
-    private final EventoServicoRepository eventoServicoRepository;
+    private final EventoRepositorio eventoRepositorio;
 
-    public EventoServico(EventoServicoRepository eventoServicoRepository) {
-        this.eventoServicoRepository = eventoServicoRepository;
+    public EventoServico(EventoRepositorio eventoRepositorio) {
+        this.eventoRepositorio = eventoRepositorio;
     }
 
     public void criarEvento(Evento evento) throws Exception {
-        List<Evento> eventosNaData = eventoServicoRepository.buscarPorData(evento.getData());
+        List<Evento> eventosNaData = eventoRepositorio.buscarPorData(evento.getData());
 
         if(eventosNaData.isEmpty()){
             throw new Exception("Já existe um evento agendado para essa data");
         }
-        eventoServicoRepository.salvar(evento);
+        eventoRepositorio.salvar(evento);
         }
 
     public void atualizarEvento(Evento evento) throws Exception {
-        List<Evento> eventosNaData = eventoServicoRepository.buscarPorData(evento.getData());
+        List<Evento> eventosNaData = eventoRepositorio.buscarPorData(evento.getData());
         for (Evento existente : eventosNaData) {
             if (!existente.getId().equals(evento.getId())) {
                 throw new Exception("Já existe outro evento agendado para esta nova data.");
             }
         }
-        eventoServicoRepository.atualizar(evento);
+        eventoRepositorio.atualizar(evento);
     }
 
     public void cancelarEvento(long id) throws Exception {
-        Evento evento = eventoServicoRepository.buscarPorId(id)
-                .orElseThrow(() -> new Exception("Evento não encontrado para exclusão."));
+        Optional<Evento> optionalEvento = eventoRepositorio.buscarPorId(id);
 
-        eventoServicoRepository.remover(id);
-        System.out.println("Evento removido com sucesso!");
+        if (optionalEvento.isPresent()) {
+            Evento evento = optionalEvento.get();
+            eventoRepositorio.remover(evento.getId());
+
+        } else {
+            throw new Exception("Evento não encontrado para exclusão.");
+        }
     }
 
     public List<Evento> listarTodosOsEventos() {
-        return eventoServicoRepository.listarTodosOsEventos();
+        return eventoRepositorio.listarTodosOsEventos();
     }
 
     public List<Evento> listarTodosOsEventosPorMes(int mes) {
-        return eventoServicoRepository.listarPorMes(mes);
+        return eventoRepositorio.listarPorMes(mes);
     }
 }
