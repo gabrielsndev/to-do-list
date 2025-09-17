@@ -1,4 +1,6 @@
-package modelo;
+package servico;
+
+import modelo.Subtarefa;
 
 import java.time.LocalDate;
 import java.util.List;

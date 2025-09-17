@@ -2,13 +2,13 @@ package persistencia;
 
 import jakarta.persistence.*;
 import modelo.Evento;
-import servicoDao.EventoServicoRepository;
+import repositorioInterface.EventoRepositorio;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public class EventoDAO implements EventoServicoRepository {
+public class EventoDAO implements EventoRepositorio {
     private EntityManagerFactory emf;
 
     public EventoDAO() {
@@ -16,7 +16,7 @@ public class EventoDAO implements EventoServicoRepository {
     }
 
     // ✅ Salvar novo evento
-    public void salvar(Evento evento) throws Exception {
+    public void salvar(Evento evento) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -27,7 +27,7 @@ public class EventoDAO implements EventoServicoRepository {
         }
     }
 
-    public void atualizar(Evento evento) throws Exception {
+    public void atualizar(Evento evento){
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -38,11 +38,10 @@ public class EventoDAO implements EventoServicoRepository {
         }
     }
 
-    public void remover(long id) throws Exception {
+    public void remover(long id){
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-
             Evento evento = em.find(Evento.class, id);
             if (evento != null) {
                 em.remove(evento);

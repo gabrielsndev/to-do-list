@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/relatorios/RelatorioServico.java
 package relatorios;
+========
+package servico;
+>>>>>>>> origin/main:src/servico/RelatorioServico.java
 
 import email.Mensageiro;
 import modelo.Tarefa;
