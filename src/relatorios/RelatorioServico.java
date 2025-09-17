@@ -1,6 +1,5 @@
-package modelo;
+package relatorios;
 
-import relatorios.GeradorDeRelatorios;
 import email.Mensageiro;
 import modelo.Tarefa;
 

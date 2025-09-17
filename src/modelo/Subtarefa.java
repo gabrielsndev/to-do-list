@@ -13,7 +13,7 @@ public class Subtarefa {
 
     private String titulo;            // novo campo
     private String descricao;
-    private double percentualConcluido; // de 0 a 100
+    private Double percentualConcluido; // de 0 a 100
     private LocalDate deadline;
 
     @ManyToOne

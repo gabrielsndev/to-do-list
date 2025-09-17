@@ -1,5 +1,5 @@
 package relatorios;
-import modelo.CentralDeInformacoes;
+
 import modelo.Tarefa;
 
 import org.apache.poi.ss.usermodel.*;

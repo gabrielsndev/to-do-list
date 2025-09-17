@@ -20,11 +20,11 @@ public class Tarefa {
     private String titulo;
     private String descricao;
     private LocalDate deadline;
-    private int prioridade;
-    private boolean critica;
+    private Integer prioridade;
+    private Boolean critica;
 
     @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Subtarefa> subtarefas = new ArrayList<>(); // Conectando Subtarefa a Tarefa
+    private List<Subtarefa> subtarefas = new ArrayList<>();
 
 	public Tarefa() {}
 
