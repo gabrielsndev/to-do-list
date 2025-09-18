@@ -1,5 +1,5 @@
 package view;
-
+import servico.TarefaServico;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -8,12 +8,8 @@ import modelo.Tarefa;
 import java.time.format.DateTimeFormatter;
 
 import java.awt.*;
-import model.ButtonRenderer;
-import model.DataPrazoRender;
-import model.TipoDAO;
+import model.*;
 import persistencia.TarefaDAO;
-import modelo.TarefaServico;
-import model.ButtonEditor;
 
 public class PainelListarCriticas extends JPanel {
 
@@ -34,7 +30,7 @@ public class PainelListarCriticas extends JPanel {
         TarefaDAO dao = new TarefaDAO();
         List<Tarefa> todas = dao.listar();
 
-        List<Tarefa> tarefasCriticas = new TarefaServico().listarTarefaCritica(todas);
+        List<Tarefa> tarefasCriticas = new TarefaServico(dao).listarTarefaCritica(todas);
 
         Object[][] dados = new Object[tarefasCriticas.size()][8];
 
