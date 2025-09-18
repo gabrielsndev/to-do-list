@@ -22,7 +22,6 @@ public class Main {
         long id;
         List<Tarefa> todasTarefas;
         //CentralDeInformacoes todasTarefas;
-        Persistencia xml = new Persistencia();
         //todasTarefas = xml.recuperarCentral("Tasks.xml"); 
         EventoServico eventoServico = new EventoServico();
         

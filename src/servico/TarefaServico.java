@@ -17,7 +17,7 @@ public class TarefaServico {
         this.tarefaRepositorio = tarefaRepositorio;
     }
 
-    public void criarTarefa(Tarefa tarefa) throws Exception{
+    public void criarTarefa(Tarefa tarefa) throws Exception {
         List<Tarefa> buscarTarefaNaData =  tarefaRepositorio.buscarDeadLine(tarefa.getDeadline());
 
         if (buscarTarefaNaData.isEmpty()) {
@@ -26,7 +26,7 @@ public class TarefaServico {
         tarefaRepositorio.salvar(tarefa);
     }
 
-    public void excluir(long id) throws Exception{
+    public void excluir(long id) throws Exception {
         Optional<Tarefa> optionalBuscarId =  tarefaRepositorio.buscar(id);
 
         if (optionalBuscarId.isPresent()) {
