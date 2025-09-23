@@ -37,13 +37,7 @@ public class PainelListarTarefas extends JPanel {
             Tarefa t = tarefas.get(i);
             dados[i][0] = t.getId();
             dados[i][1] = t.getTitulo();
-
-            if (t.getDeadline() != null) {
-                dados[i][2] = t.getDeadline().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            } else {
-                dados[i][2] = "";
-            }
-
+            dados[i][2] = t.getDeadline().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             dados[i][3] = t.getDescricao();
             dados[i][4] = "Pendente"; // Status fixo
             dados[i][5] = t.getPrioridade();
