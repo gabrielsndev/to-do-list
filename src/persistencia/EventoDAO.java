@@ -69,6 +69,7 @@ public class EventoDAO implements EventoRepositorio {
             em.close();
         }
     }
+    
 
     public List<Evento> buscarPorData(LocalDate data) {
         EntityManager em = emf.createEntityManager();

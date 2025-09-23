@@ -196,7 +196,7 @@ public class PainelEvento extends JFrame {
 
 	    // Buscar dados do banco
 	    EventoDAO dao = new EventoDAO();
-	    List<Evento> listaEventos = dao.listar();
+	    List<Evento> listaEventos = dao.listarTodosOsEventos();
 
 	    // Preencher matriz de dados dinamicamente
 	    Object[][] dados = new Object[listaEventos.size()][8];
@@ -386,8 +386,9 @@ public class PainelEvento extends JFrame {
 
             try {
                 LocalDate data = LocalDate.parse(texto, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                int teste = 9; //AJEITAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAr
                 EventoDAO dao = new EventoDAO();
-                List<modelo.Evento> eventos = dao.listarPorDia(data);
+                List<modelo.Evento> eventos = dao.listarPorMes(teste);
 
                 modeloTabela.setRowCount(0); // limpa a tabela
 

@@ -12,12 +12,14 @@ import modelo.Tarefa;
 import persistencia.TarefaDAO;
 
 public class PainelCadastrarTarefa extends JPanel {
+    private TarefaPrincipal framePrincipal;
     private JTextField textFieldTituloTarefa;
     private JFormattedTextField textFieldDataTarefa;
     private JTextField textFieldDescricaoTarefa;
     private JTextField textFieldPrioridadeTarefa;
     
-    public PainelCadastrarTarefa() {
+    public PainelCadastrarTarefa(TarefaPrincipal framePrincipal) {
+    	this.framePrincipal = framePrincipal;
         setLayout(null);
         
         JLabel lblDigiteOTtulo = new JLabel("Digite o titulo:");
@@ -141,6 +143,7 @@ public class PainelCadastrarTarefa extends JPanel {
                 "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
             limparCampos();
+            this.framePrincipal.tarefaAdicionada();
 
         } catch (Exception ex) {
             ex.printStackTrace();

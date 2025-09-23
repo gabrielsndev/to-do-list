@@ -6,7 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/mail-1.4.7.jar"/>
@@ -30,6 +29,5 @@
 	<classpathentry kind="lib" path="lib/antlr4-runtime-4.13.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-5.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-5.4.1.jar"/>
-	<classpathentry kind="lib" path="src/META-INF/persistence.xml"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

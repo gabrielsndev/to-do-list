@@ -70,7 +70,7 @@ public class ButtonEditor extends DefaultCellEditor {
 
 
                         if (tipo == TipoDAO.TAREFA) {
-                            new TarefaDAO().editarTarefa(id, tarefa);
+                            new TarefaDAO().editarTarefa(tarefa);
                         }
 
                         // Atualiza a tabela
