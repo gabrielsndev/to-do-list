@@ -5,6 +5,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class TarefaPrincipal extends JFrame {
+	
+	private JTabbedPane tabbedPane;
+	private PainelListarTarefas painelListar;
+	private PainelCadastrarTarefa painelCadastrar;
     
     public TarefaPrincipal() {
         setTitle("Sistema de Tarefas com Abas");
@@ -28,18 +32,27 @@ public class TarefaPrincipal extends JFrame {
         });
         
         // Criando o painel de abas
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
         tabbedPane.setBounds(0, 0, 784, 561);
 
         // Adicionando as abas com as telas separadas
-        tabbedPane.addTab("Listar Tarefas", new PainelListarTarefas());
-        tabbedPane.addTab("Cadastrar Tarefas", new PainelCadastrarTarefa());
+        
+        painelListar = new PainelListarTarefas();
+        painelCadastrar = new PainelCadastrarTarefa(this);
+
+        tabbedPane.addTab("Listar Tarefas", painelListar);
+        tabbedPane.addTab("Cadastrar Tarefas", painelCadastrar);
         tabbedPane.addTab("Subtarefas", new PainelSubtarefas());
         tabbedPane.addTab("Listar Tarefa Por Dia", new PainelListarPorDia());
         tabbedPane.addTab("Listar Tarefas Criticas", new PainelListarCriticas());
 
         getContentPane().add(tabbedPane);
         setVisible(true);
+    }
+    
+    public void tarefaAdicionada() {
+        painelListar.atualizarTabela();
+        tabbedPane.setSelectedIndex(0);
     }
 
     public static void main(String[] args) {
