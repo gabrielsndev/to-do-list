@@ -29,7 +29,7 @@ public class PainelListarTarefas extends JPanel {
 
 
     public void atualizarTabela() {
-        TarefaDAO dao = new TarefaDAO();
+        
         List<Tarefa> tarefas = dao.listar();
 
         Object[][] dados = new Object[tarefas.size()][8];
@@ -39,7 +39,7 @@ public class PainelListarTarefas extends JPanel {
             dados[i][1] = t.getTitulo();
             dados[i][2] = t.getDeadline().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             dados[i][3] = t.getDescricao();
-            dados[i][4] = "Pendente"; // Status fixo
+            dados[i][4] = "Pendente"; // 
             dados[i][5] = t.getPrioridade();
             dados[i][6] = "Editar";
             dados[i][7] = "Apagar";
