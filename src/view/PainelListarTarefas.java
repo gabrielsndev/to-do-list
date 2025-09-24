@@ -29,7 +29,7 @@ public class PainelListarTarefas extends JPanel {
 
 
     public void atualizarTabela() {
-        
+        TarefaDAO dao = new TarefaDAO();
         List<Tarefa> tarefas = dao.listar();
 
         Object[][] dados = new Object[tarefas.size()][8];

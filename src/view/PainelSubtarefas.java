@@ -143,7 +143,7 @@ public class PainelSubtarefas extends JPanel {
         return painelCadastro;
     }
 
-    private void carregarTarefasNoComboBox() {
+    public void carregarTarefasNoComboBox() {
         comboBoxTarefaMae.removeAllItems();
         List<Tarefa> tarefas = tarefaDAO.listar();
         for (Tarefa t : tarefas) {
@@ -178,6 +178,11 @@ public class PainelSubtarefas extends JPanel {
                 "Apagar"
             });
         }
+    }
+    
+    public void atualizarPainel() {
+        carregarTarefasNoComboBox();
+        carregarSubtarefasNaTabela();
     }
 
     private void salvarSubtarefa() {

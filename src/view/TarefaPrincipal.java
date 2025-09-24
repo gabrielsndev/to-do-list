@@ -8,6 +8,7 @@ public class TarefaPrincipal extends JFrame {
 	
 	private JTabbedPane tabbedPane;
 	private PainelListarTarefas painelListar;
+	private PainelSubtarefas painelSubtarefa;
 	private PainelCadastrarTarefa painelCadastrar;
     
     public TarefaPrincipal() {
@@ -39,10 +40,11 @@ public class TarefaPrincipal extends JFrame {
         
         painelListar = new PainelListarTarefas();
         painelCadastrar = new PainelCadastrarTarefa(this);
+        painelSubtarefa = new PainelSubtarefas();
 
         tabbedPane.addTab("Listar Tarefas", painelListar);
         tabbedPane.addTab("Cadastrar Tarefas", painelCadastrar);
-        tabbedPane.addTab("Subtarefas", new PainelSubtarefas());
+        tabbedPane.addTab("Subtarefas", painelSubtarefa);
         tabbedPane.addTab("Listar Tarefa Por Dia", new PainelListarPorDia());
         tabbedPane.addTab("Listar Tarefas Criticas", new PainelListarCriticas());
 
@@ -52,6 +54,7 @@ public class TarefaPrincipal extends JFrame {
     
     public void tarefaAdicionada() {
         painelListar.atualizarTabela();
+        painelSubtarefa.atualizarPainel();
         tabbedPane.setSelectedIndex(0);
     }
 
