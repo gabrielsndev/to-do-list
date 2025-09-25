@@ -3,6 +3,7 @@ package view;
 import javax.swing.*;
 
 import persistencia.TarefaDAO;
+import servico.TarefaServico;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -18,6 +19,7 @@ public class TarefaPrincipal extends JFrame {
 	private PainelCadastrarTarefa painelCadastrar;
 	
 	TarefaDAO dao = new TarefaDAO();
+	TarefaServico servico = new TarefaServico(dao);
     
     public TarefaPrincipal() {
         setTitle("Sistema de Tarefas com Abas");
@@ -54,8 +56,8 @@ public class TarefaPrincipal extends JFrame {
         // separação
         
         painelCadastrar = new PainelCadastrarTarefa(this);
-        painelSubtarefa = new PainelSubtarefas();
-        painelCriticas = new PainelListarCriticas();
+        painelSubtarefa = new PainelSubtarefas(dao.listar());
+        painelCriticas = new PainelListarCriticas(servico.listarTarefaCritica(dao.listarTarefaCritica()));
 
         tabbedPane.addTab("Listar Tarefas", painelListar);
         tabbedPane.addTab("Cadastrar Tarefas", painelCadastrar);
@@ -66,15 +68,11 @@ public class TarefaPrincipal extends JFrame {
         getContentPane().add(tabbedPane);
         setVisible(true);
     }
-    
-    public void tarefaAdicionada() {
-        painelSubtarefa.atualizarPainel();
-        painelCriticas.carregarDados();
-        tabbedPane.setSelectedIndex(0);
-    }
-    
+
     public void atualizarTelasListagem() {
     	this.painelListar.atualizarLista(dao.listar());
+    	painelSubtarefa.atualizarPainel(dao.listar());
+    	painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(dao.listarTarefaCritica()));
     }
 
     public static void main(String[] args) {
