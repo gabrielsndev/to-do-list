@@ -1,6 +1,9 @@
 package view;
 
 import javax.swing.*;
+
+import persistencia.TarefaDAO;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -9,7 +12,10 @@ public class TarefaPrincipal extends JFrame {
 	private JTabbedPane tabbedPane;
 	private PainelListarTarefas painelListar;
 	private PainelSubtarefas painelSubtarefa;
+	private PainelListarCriticas painelCriticas;
 	private PainelCadastrarTarefa painelCadastrar;
+	
+	TarefaDAO dao = new TarefaDAO();
     
     public TarefaPrincipal() {
         setTitle("Sistema de Tarefas com Abas");
@@ -38,15 +44,16 @@ public class TarefaPrincipal extends JFrame {
 
         // Adicionando as abas com as telas separadas
         
-        painelListar = new PainelListarTarefas();
+        painelListar = new PainelListarTarefas(dao);
         painelCadastrar = new PainelCadastrarTarefa(this);
         painelSubtarefa = new PainelSubtarefas();
+        painelCriticas = new PainelListarCriticas();
 
         tabbedPane.addTab("Listar Tarefas", painelListar);
         tabbedPane.addTab("Cadastrar Tarefas", painelCadastrar);
         tabbedPane.addTab("Subtarefas", painelSubtarefa);
         tabbedPane.addTab("Listar Tarefa Por Dia", new PainelListarPorDia());
-        tabbedPane.addTab("Listar Tarefas Criticas", new PainelListarCriticas());
+        tabbedPane.addTab("Listar Tarefas Criticas", painelCriticas);
 
         getContentPane().add(tabbedPane);
         setVisible(true);
@@ -55,8 +62,11 @@ public class TarefaPrincipal extends JFrame {
     public void tarefaAdicionada() {
         painelListar.atualizarTabela();
         painelSubtarefa.atualizarPainel();
+        painelCriticas.carregarDados();
         tabbedPane.setSelectedIndex(0);
     }
+    
+    public void atualizarTelasListagem() {}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TarefaPrincipal::new);

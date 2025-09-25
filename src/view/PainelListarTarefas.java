@@ -14,11 +14,13 @@ import model.TipoDAO;
 import model.ButtonEditor;
 
 public class PainelListarTarefas extends JPanel {
-
+	
+	private TarefaDAO dao;
     private JTable tabela;
     private String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
 
-    public PainelListarTarefas() {
+    public PainelListarTarefas(TarefaDAO dao) {
+    	this.dao = dao;
         setLayout(new BorderLayout());
 
         tabela = new JTable(new DefaultTableModel(null, colunas));
@@ -29,7 +31,6 @@ public class PainelListarTarefas extends JPanel {
 
 
     public void atualizarTabela() {
-        TarefaDAO dao = new TarefaDAO();
         List<Tarefa> tarefas = dao.listar();
 
         Object[][] dados = new Object[tarefas.size()][8];

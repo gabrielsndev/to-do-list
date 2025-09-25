@@ -12,8 +12,9 @@ import model.*;
 import persistencia.TarefaDAO;
 
 public class PainelListarCriticas extends JPanel {
-
+	
     public PainelListarCriticas() {
+    	dao = new TarefaDAO();
         setLayout(null);
 
         JLabel lblNewLabel = new JLabel("Listagem de Tarefas Criticas");
@@ -23,14 +24,17 @@ public class PainelListarCriticas extends JPanel {
 
         criarTabelaTarefasCriticas();
     }
+    
+    private List<Tarefa> tarefasCriticas;
+    private TarefaDAO dao;
+
 
     private void criarTabelaTarefasCriticas() {
         String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
+        
 
-        TarefaDAO dao = new TarefaDAO();
-        List<Tarefa> todas = dao.listar();
-
-        List<Tarefa> tarefasCriticas = new TarefaServico(dao).listarTarefaCritica(todas);
+        
+        tarefasCriticas = carregarDados();
 
         Object[][] dados = new Object[tarefasCriticas.size()][8];
 
@@ -83,4 +87,22 @@ public class PainelListarCriticas extends JPanel {
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
         tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar",TipoDAO.TAREFA));
     }
+    
+    public void atualizarTabelaCriticas() {
+    	removeAll();
+    	JLabel lblNewLabel = new JLabel("Listagem de Tarefas Criticas");
+    	lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+    	lblNewLabel.setBounds(10, 11, 300, 28);
+    	add(lblNewLabel);
+    	criarTabelaTarefasCriticas();
+    	revalidate();
+    	repaint();
+    }
+    
+    public List<Tarefa> carregarDados() {
+    	List<Tarefa> todas = dao.listar();
+    	return new TarefaServico(dao).listarTarefaCritica(todas);
+    }
+    
+    
 }
