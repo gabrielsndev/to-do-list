@@ -10,7 +10,9 @@ import java.awt.event.ActionEvent;
 public class TarefaPrincipal extends JFrame {
 	
 	private JTabbedPane tabbedPane;
+	
 	private PainelListarTarefas painelListar;
+	
 	private PainelSubtarefas painelSubtarefa;
 	private PainelListarCriticas painelCriticas;
 	private PainelCadastrarTarefa painelCadastrar;
@@ -44,7 +46,13 @@ public class TarefaPrincipal extends JFrame {
 
         // Adicionando as abas com as telas separadas
         
-        painelListar = new PainelListarTarefas(dao);
+        
+        // colocando a lógica aqui
+        
+        painelListar = new PainelListarTarefas(dao.listar());
+        
+        // separação
+        
         painelCadastrar = new PainelCadastrarTarefa(this);
         painelSubtarefa = new PainelSubtarefas();
         painelCriticas = new PainelListarCriticas();
@@ -60,13 +68,14 @@ public class TarefaPrincipal extends JFrame {
     }
     
     public void tarefaAdicionada() {
-        painelListar.atualizarTabela();
         painelSubtarefa.atualizarPainel();
         painelCriticas.carregarDados();
         tabbedPane.setSelectedIndex(0);
     }
     
-    public void atualizarTelasListagem() {}
+    public void atualizarTelasListagem() {
+    	this.painelListar.atualizarLista(dao.listar());
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TarefaPrincipal::new);

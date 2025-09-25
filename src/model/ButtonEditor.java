@@ -2,6 +2,7 @@ package model;
 
 import persistencia.EventoDAO;
 import persistencia.TarefaDAO;
+import view.TarefaPrincipal;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,6 +20,7 @@ public class ButtonEditor extends DefaultCellEditor {
     private int row;
     private final JTable table;
     private final TipoDAO tipo;
+    private TarefaPrincipal tarefaPrincipal;
 
     public ButtonEditor(JCheckBox checkBox, JTable table, String label, TipoDAO tipo) {
         super(checkBox);
@@ -98,7 +100,9 @@ public class ButtonEditor extends DefaultCellEditor {
                         long id = Long.parseLong(idObj.toString());
 
                         if (tipo == TipoDAO.TAREFA) {
+                        	tarefaPrincipal = new TarefaPrincipal();
                             new TarefaDAO().remover(id);
+                            tarefaPrincipal.atualizarTelasListagem();
                         } else if (tipo == TipoDAO.EVENTO) {
                             new EventoDAO().remover(id);
                         }
