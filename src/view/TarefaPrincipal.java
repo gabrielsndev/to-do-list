@@ -57,7 +57,7 @@ public class TarefaPrincipal extends JFrame {
         
         painelCadastrar = new PainelCadastrarTarefa(this);
         painelSubtarefa = new PainelSubtarefas(dao.listar());
-        painelCriticas = new PainelListarCriticas(servico.listarTarefaCritica(dao.listarTarefaCritica()));
+        painelCriticas = new PainelListarCriticas(servico.listarTarefaCritica(dao.listar()));
 
         tabbedPane.addTab("Listar Tarefas", painelListar);
         tabbedPane.addTab("Cadastrar Tarefas", painelCadastrar);
@@ -72,7 +72,7 @@ public class TarefaPrincipal extends JFrame {
     public void atualizarTelasListagem() {
     	this.painelListar.atualizarLista(dao.listar());
     	painelSubtarefa.atualizarPainel(dao.listar());
-    	painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(dao.listarTarefaCritica()));
+    	painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(dao.listar()));
     }
 
     public static void main(String[] args) {
