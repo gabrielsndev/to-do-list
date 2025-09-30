@@ -143,7 +143,7 @@ public class PainelCadastrarTarefa extends JPanel {
                 "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
             limparCampos();
-            this.framePrincipal.tarefaAdicionada();
+            this.framePrincipal.atualizarTelasListagem();
 
         } catch (Exception ex) {
             ex.printStackTrace();

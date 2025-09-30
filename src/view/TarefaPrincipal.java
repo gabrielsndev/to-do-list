@@ -3,6 +3,7 @@ package view;
 import javax.swing.*;
 
 import persistencia.TarefaDAO;
+import servico.TarefaServico;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -10,12 +11,15 @@ import java.awt.event.ActionEvent;
 public class TarefaPrincipal extends JFrame {
 	
 	private JTabbedPane tabbedPane;
+	
 	private PainelListarTarefas painelListar;
+	
 	private PainelSubtarefas painelSubtarefa;
 	private PainelListarCriticas painelCriticas;
 	private PainelCadastrarTarefa painelCadastrar;
 	
 	TarefaDAO dao = new TarefaDAO();
+	TarefaServico servico = new TarefaServico(dao);
     
     public TarefaPrincipal() {
         setTitle("Sistema de Tarefas com Abas");
@@ -44,10 +48,16 @@ public class TarefaPrincipal extends JFrame {
 
         // Adicionando as abas com as telas separadas
         
-        painelListar = new PainelListarTarefas(dao);
+        
+        // colocando a lógica aqui
+        
+        painelListar = new PainelListarTarefas(dao.listar());
+        
+        // separação
+        
         painelCadastrar = new PainelCadastrarTarefa(this);
-        painelSubtarefa = new PainelSubtarefas();
-        painelCriticas = new PainelListarCriticas();
+        painelSubtarefa = new PainelSubtarefas(dao.listar());
+        painelCriticas = new PainelListarCriticas(servico.listarTarefaCritica(dao.listar()));
 
         tabbedPane.addTab("Listar Tarefas", painelListar);
         tabbedPane.addTab("Cadastrar Tarefas", painelCadastrar);
@@ -58,14 +68,12 @@ public class TarefaPrincipal extends JFrame {
         getContentPane().add(tabbedPane);
         setVisible(true);
     }
-    
-    public void tarefaAdicionada() {
-        painelListar.atualizarTabela();
-        painelSubtarefa.atualizarPainel();
-        painelCriticas.carregarDados();
-        tabbedPane.setSelectedIndex(0);
+
+    public void atualizarTelasListagem() {
+    	this.painelListar.atualizarLista(dao.listar());
+    	painelSubtarefa.atualizarPainel(dao.listar());
+    	painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(dao.listar()));
     }
-    
     public void salvarTarefa() {}
 
     public static void main(String[] args) {

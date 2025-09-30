@@ -15,12 +15,12 @@ import model.ButtonEditor;
 
 public class PainelListarTarefas extends JPanel {
 	
-	private TarefaDAO dao;
+	private List<Tarefa> tarefas;
     private JTable tabela;
     private String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
 
-    public PainelListarTarefas(TarefaDAO dao) {
-    	this.dao = dao;
+    public PainelListarTarefas(List<Tarefa> tarefas) {
+    	this.tarefas = tarefas;
         setLayout(new BorderLayout());
 
         tabela = new JTable(new DefaultTableModel(null, colunas));
@@ -30,8 +30,7 @@ public class PainelListarTarefas extends JPanel {
     }
 
 
-    public void atualizarTabela() {
-        List<Tarefa> tarefas = dao.listar();
+    private void atualizarTabela() {
 
         Object[][] dados = new Object[tarefas.size()][8];
         for (int i = 0; i < tarefas.size(); i++) {
@@ -65,6 +64,11 @@ public class PainelListarTarefas extends JPanel {
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
         tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.TAREFA));
+    }
+    
+    public void atualizarLista(List<Tarefa> tarefas) {
+    	this.tarefas = tarefas;
+    	atualizarTabela();
     }
 
 }

@@ -26,9 +26,10 @@ public class PainelSubtarefas extends JPanel {
     private DefaultTableModel modeloTabela;
 
     private SubtarefaDAO subtarefaDAO = new SubtarefaDAO();
-    private TarefaDAO tarefaDAO = new TarefaDAO();
 
-    public PainelSubtarefas() {
+    private List<Tarefa> tarefas;
+    
+    public PainelSubtarefas(List<Tarefa> tarefas) {
         setLayout(new BorderLayout());
 
         JTabbedPane abasInternas = new JTabbedPane();
@@ -45,7 +46,7 @@ public class PainelSubtarefas extends JPanel {
 
         carregarSubtarefasNaTabela();
 
-        carregarTarefasNoComboBox();
+        carregarTarefasNoComboBox(tarefas);
         carregarSubtarefasNaTabela();
     }
 
@@ -143,10 +144,10 @@ public class PainelSubtarefas extends JPanel {
         return painelCadastro;
     }
 
-    public void carregarTarefasNoComboBox() {
+    public void carregarTarefasNoComboBox(List<Tarefa> tarefas) {
         comboBoxTarefaMae.removeAllItems();
-        List<Tarefa> tarefas = tarefaDAO.listar();
-        for (Tarefa t : tarefas) {
+        this.tarefas = tarefas;
+        for (Tarefa t : this.tarefas) {
             comboBoxTarefaMae.addItem(t);
         }
         comboBoxTarefaMae.setRenderer(new DefaultListCellRenderer() {
@@ -180,8 +181,8 @@ public class PainelSubtarefas extends JPanel {
         }
     }
     
-    public void atualizarPainel() {
-        carregarTarefasNoComboBox();
+    public void atualizarPainel(List<Tarefa> tarefas) {
+        carregarTarefasNoComboBox(tarefas);
         carregarSubtarefasNaTabela();
     }
 
