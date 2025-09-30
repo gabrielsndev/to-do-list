@@ -61,8 +61,12 @@ public class TarefaPrincipal extends JFrame {
     
     public void tarefaAdicionada() {
         painelListar.atualizarTabela();
+        painelSubtarefa.atualizarPainel();
+        painelCriticas.carregarDados();
+        tabbedPane.setSelectedIndex(0);
     }
     
+    public void salvarTarefa() {}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TarefaPrincipal::new);
