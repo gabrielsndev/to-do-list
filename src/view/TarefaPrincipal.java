@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 
+import modelo.Tarefa;
 import persistencia.TarefaDAO;
 import servico.TarefaServico;
 
@@ -28,7 +29,6 @@ public class TarefaPrincipal extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setLayout(null);
         
-        // Botão Voltar
         JButton btnVoltar = new JButton("Voltar");
         btnVoltar.setBounds(690, 5, 80, 20);
         getContentPane().add(btnVoltar);
@@ -42,19 +42,11 @@ public class TarefaPrincipal extends JFrame {
             }
         });
         
-        // Criando o painel de abas
         tabbedPane = new JTabbedPane();
         tabbedPane.setBounds(0, 0, 784, 561);
 
-        // Adicionando as abas com as telas separadas
-        
-        
-        // colocando a lógica aqui
         
         painelListar = new PainelListarTarefas(dao.listar());
-        
-        // separação
-        
         painelCadastrar = new PainelCadastrarTarefa(this);
         painelSubtarefa = new PainelSubtarefas(dao.listar());
         painelCriticas = new PainelListarCriticas(servico.listarTarefaCritica(dao.listar()));
@@ -74,7 +66,10 @@ public class TarefaPrincipal extends JFrame {
     	painelSubtarefa.atualizarPainel(dao.listar());
     	painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(dao.listar()));
     }
-    public void salvarTarefa() {}
+    
+    public void salvarTarefa(Tarefa tarefa) {
+    	dao.salvar(tarefa);
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TarefaPrincipal::new);

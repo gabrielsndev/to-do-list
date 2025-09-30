@@ -127,7 +127,6 @@ public class PainelCadastrarTarefa extends JPanel {
             return;
         }
 
-        // Agora criamos e salvamos a tarefa
         Tarefa novaTarefa = new Tarefa();
         novaTarefa.setTitulo(titulo);
         novaTarefa.setDescricao(descricao);
@@ -135,8 +134,7 @@ public class PainelCadastrarTarefa extends JPanel {
         novaTarefa.setPrioridade(prioridade);
 
         try {
-            TarefaDAO dao = new TarefaDAO();
-            dao.salvar(novaTarefa);
+            this.framePrincipal.salvarTarefa(novaTarefa);
 
             JOptionPane.showMessageDialog(btnSalvar,
                 "Tarefa salva com sucesso!",
