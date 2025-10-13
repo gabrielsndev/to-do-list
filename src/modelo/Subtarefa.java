@@ -6,14 +6,17 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "subtarefa")
 public class Subtarefa {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String titulo;            // novo campo
+    
+    @Column(nullable = false, length = 100)
+    private String titulo;  
+    
+    @Column(length = 250)
     private String descricao;
-    private Double percentualConcluido; // de 0 a 100
+    
+    private Double percentualConcluido; 
     private LocalDate deadline;
 
     @ManyToOne

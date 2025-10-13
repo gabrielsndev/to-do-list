@@ -11,16 +11,24 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Entity
+@Table(name = "Tarefa")
 public class Tarefa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
     private Long id;
+    
+    @Column(nullable = false, length = 100)
     private String titulo;
+    
+    @Column( length = 250)
     private String descricao;
+    
     private LocalDate deadline;
+  
+    @Column(nullable = false)
     private Integer prioridade;
+    
     private Boolean critica;
 
     @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL, orphanRemoval = true)

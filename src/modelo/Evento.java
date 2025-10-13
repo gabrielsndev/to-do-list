@@ -11,12 +11,15 @@ public class Evento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @Column(nullable = false, length = 100)
     private String titulo;
 
+    @Column(length = 100)
     private String descricao;
-
-    private LocalDate data; // Data do evento
+    
+    @Column(nullable = false)
+    private LocalDate data; 
 
     public Evento() {}
 
