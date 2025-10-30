@@ -53,4 +53,8 @@ public class EventoServico{
     public List<Evento> listarTodosOsEventosPorMes(int mes) {
         return eventoRepositorio.listarPorMes(mes);
     }
+
+    public long calcularDiasRestantes(Evento evento) {
+        return java.time.temporal.ChronoUnit.DAYS.between(java.time.LocalDate.now(), evento.getData());
+    }
 }

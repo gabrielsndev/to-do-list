@@ -66,4 +66,14 @@ public class TarefaServico {
 	    }
 	    return criticas;
 	}
+
+	public double calcularPercentualConcluido(Tarefa tarefa) {
+        if (tarefa.getSubtarefas() == null || tarefa.getSubtarefas().isEmpty()) {
+            return 0.0;
+        }
+        return tarefa.getSubtarefas().stream()
+                .mapToDouble(subtarefa -> subtarefa.getPercentualConcluido())
+                .average()
+                .orElse(0.0);
+    }
 }

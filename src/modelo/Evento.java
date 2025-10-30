@@ -61,13 +61,8 @@ public class Evento {
         this.data = data;
     }
 
-    // Método para calcular quantos dias faltam para o evento
-    public long diasRestantes() {
-        return ChronoUnit.DAYS.between(LocalDate.now(), this.data);
-    }
-
     @Override
     public String toString() {
-        return titulo + " - " + descricao + " (Faltam " + diasRestantes() + " dias)";
+        return titulo + " - " + descricao;
     }
 }

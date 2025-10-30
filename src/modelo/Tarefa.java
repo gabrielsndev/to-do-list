@@ -63,21 +63,7 @@ public class Tarefa {
 
         this.subtarefas = subtarefas;
     }
-    
- // Calcula o progresso total da tarefa com base na média do progresso das subtarefas
-    public double getPercentualConcluido() {
-        
-    	// Se a lista estiver vazia ou for nula, retorna 0.0% de progresso
-    	if (subtarefas == null || subtarefas.isEmpty()) {
-            return 0.0;
-        }
-    	// Faz a média dos percentuais de cada subtarefa (usando programação funcional com stream)
-        return subtarefas.stream()
-                .mapToDouble(Subtarefa::getPercentualConcluido)// pega os valores de execução de cada subtarefa
-                .average() // calcula a média
-                .orElse(0.0);   // se der erro ou estiver vazia, retorna 0.0
-    }
-        
+
     public Long getId() {
         return id;
     }
