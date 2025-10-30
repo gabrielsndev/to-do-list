@@ -46,7 +46,6 @@ public class SubtarefaDAO {
         }
     }
 
-    // Atualizar dados de uma subtarefa existente
     public void editar(Subtarefa subtarefa) {
         EntityManager em = emf.createEntityManager();
         try {
@@ -85,7 +84,6 @@ public class SubtarefaDAO {
         }
     }
 
-    // Listar todas as subtarefas (caso queira ver todas do sistema)
     public List<Subtarefa> listar() {
         EntityManager em = emf.createEntityManager();
         try {

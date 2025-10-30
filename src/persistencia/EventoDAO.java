@@ -2,7 +2,7 @@ package persistencia;
 
 import jakarta.persistence.*;
 import modelo.Evento;
-import repositorioInterface.EventoRepositorio;
+import interfaces.repositorioInterface.EventoRepositorio;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +15,6 @@ public class EventoDAO implements EventoRepositorio {
         this.emf = Persistence.createEntityManagerFactory("todo-pu");
     }
 
-    // ✅ Salvar novo evento
     public void salvar(Evento evento) {
         EntityManager em = emf.createEntityManager();
         try {
@@ -82,7 +81,6 @@ public class EventoDAO implements EventoRepositorio {
         }
     }
 
-    // ✅ Listar eventos de um mês específico
     public List<Evento> listarPorMes(int mes) {
         EntityManager em = emf.createEntityManager();
         try {

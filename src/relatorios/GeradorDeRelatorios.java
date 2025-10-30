@@ -14,8 +14,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import servico.TarefaServico;
 
 public class GeradorDeRelatorios {
+
+	private final TarefaServico tarefaServico;
+
+	public GeradorDeRelatorios(TarefaServico tarefaServico) {
+		this.tarefaServico = tarefaServico;
+	}
 	public static void gerarRelatorioPDFDoDia(LocalDate dia, List<Tarefa> central,String nomeArquivo) {
 		Document document = new Document();
 		
@@ -50,7 +57,7 @@ public class GeradorDeRelatorios {
         }
     
 	}
-	 public static void gerarPlanilhaMensal(List<Tarefa> tarefas, int ano, int mes, String nomeArquivoExcel) {
+	 public void gerarPlanilhaMensal(List<Tarefa> tarefas, int ano, int mes, String nomeArquivoExcel) {
 	        Workbook workbook = new XSSFWorkbook();
 	        Sheet sheet = workbook.createSheet("Relatório Mensal");
 
@@ -68,7 +75,7 @@ public class GeradorDeRelatorios {
 	            if (t.getDeadline().getYear() == ano && t.getDeadline().getMonthValue() == mes) {
 	                Row row = sheet.createRow(linha++);
 
-	                double progresso = t.getPercentualConcluido();
+	                double progresso = tarefaServico.calcularPercentualConcluido(t);
 	                boolean sucesso = progresso == 100.0 && !t.getDeadline().isBefore(LocalDate.now());
 
 	                row.createCell(0).setCellValue(t.getTitulo());
@@ -91,8 +98,4 @@ public class GeradorDeRelatorios {
 	            System.out.println("Erro ao gerar a planilha: " + e.getMessage());
 	        }
 	    }
-	
-
 }
-
-

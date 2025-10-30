@@ -1,4 +1,4 @@
-package repositorioInterface;
+package interfaces.repositorioInterface;
 
 import modelo.Tarefa;
 

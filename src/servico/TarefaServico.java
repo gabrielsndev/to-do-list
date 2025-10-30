@@ -1,7 +1,6 @@
 package servico;
-import modelo.Evento;
 import modelo.Tarefa;
-import repositorioInterface.TarefaRepositorio;
+import interfaces.repositorioInterface.TarefaRepositorio;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

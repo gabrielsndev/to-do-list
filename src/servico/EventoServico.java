@@ -4,7 +4,7 @@ import modelo.Evento;
 import java.util.List;
 import java.util.Optional;
 
-import repositorioInterface.EventoRepositorio;
+import interfaces.repositorioInterface.EventoRepositorio;
 
 
 public class EventoServico{
