@@ -4,7 +4,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import interfaces.reportGerator.IReportGenerator;
+import interfaces.reportGerator.IGeradorRelatorioDiario;
 import modelo.Tarefa;
 
 import java.io.FileNotFoundException;
@@ -12,7 +12,7 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.List;
 
-public class PDFGerator implements IReportGenerator {
+public class PDFGerator implements IGeradorRelatorioDiario {
 
     @Override
     public void gerarRelatorioDiario(List<Tarefa> tarefas, LocalDate dia, String nomeArquivo) {
@@ -46,10 +46,5 @@ public class PDFGerator implements IReportGenerator {
         } finally {
             document.close();
         }
-    }
-
-    @Override
-    public void gerarRelatorioMensal(List<Tarefa> tarefas, int ano, int mes, String nomeArquivo) {
-        // Não aplicável para este gerador
     }
 }

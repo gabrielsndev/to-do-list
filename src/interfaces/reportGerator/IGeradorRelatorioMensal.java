@@ -1,11 +1,11 @@
 package interfaces.reportGerator;
 
 import modelo.Tarefa;
-
-import java.time.LocalDate;
 import java.util.List;
 
-public interface IReportGenerator {
-    void gerarRelatorioDiario(List<Tarefa> tarefas, LocalDate dia, String nomeArquivo);
+/**
+ * Define um contrato para geradores de relatórios mensais.
+ */
+public interface IGeradorRelatorioMensal {
     void gerarRelatorioMensal(List<Tarefa> tarefas, int ano, int mes, String nomeArquivo);
 }

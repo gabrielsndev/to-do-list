@@ -30,6 +30,7 @@ public class Tarefa {
     private Integer prioridade;
     
     private Boolean critica;
+    private Integer diasCriticos = 3;
 
     @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subtarefa> subtarefas = new ArrayList<>();
@@ -112,6 +113,10 @@ public class Tarefa {
 
     public void setCritica(boolean critica) {
         this.critica = critica;
+    }
+
+    public Integer getDiasCriticos() {
+        return diasCriticos;
     }
 
     @Override

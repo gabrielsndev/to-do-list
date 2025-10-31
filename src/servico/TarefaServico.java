@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TarefaServico {
+public class TarefaServico implements interfaces.ICalculadorProgresso {
 
     private final TarefaRepositorio tarefaRepositorio;
 
@@ -59,13 +59,14 @@ public class TarefaServico {
 	            continue;
 	        }
 	        long dias = ChronoUnit.DAYS.between(hoje, t.getDeadline());
-	        if (dias <= 3) {
+	        if (dias <= t.getDiasCriticos()) {
 	            criticas.add(t);
 	        }
 	    }
 	    return criticas;
 	}
 
+	@Override
 	public double calcularPercentualConcluido(Tarefa tarefa) {
         if (tarefa.getSubtarefas() == null || tarefa.getSubtarefas().isEmpty()) {
             return 0.0;

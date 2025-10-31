@@ -1,30 +1,25 @@
 package relatorios;
 
-import interfaces.reportGerator.IReportGenerator;
+import interfaces.ICalculadorProgresso;
+import interfaces.reportGerator.IGeradorRelatorioMensal;
 import modelo.Tarefa;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import servico.TarefaServico;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ExcelGerator implements IReportGenerator {
+public class ExcelGerator implements IGeradorRelatorioMensal {
 
-    private final TarefaServico tarefaServico;
+    private final ICalculadorProgresso calculador;
 
-    public ExcelGerator(TarefaServico tarefaServico) {
-        this.tarefaServico = tarefaServico;
-    }
-
-    @Override
-    public void gerarRelatorioDiario(List<Tarefa> tarefas, LocalDate dia, String nomeArquivo) {
-        // Não aplicável para este gerador
+    public ExcelGerator(ICalculadorProgresso calculador) {
+        this.calculador = calculador;
     }
 
     @Override
@@ -46,7 +41,7 @@ public class ExcelGerator implements IReportGenerator {
             if (t.getDeadline().getYear() == ano && t.getDeadline().getMonthValue() == mes) {
                 Row row = sheet.createRow(linha++);
 
-                double progresso = tarefaServico.calcularPercentualConcluido(t);
+                double progresso = calculador.calcularPercentualConcluido(t);
                 boolean sucesso = progresso == 100.0 && !t.getDeadline().isBefore(LocalDate.now());
 
                 row.createCell(0).setCellValue(t.getTitulo());
