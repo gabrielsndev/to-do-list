@@ -17,6 +17,7 @@ import modelo.Tarefa;
 import persistencia.TarefaDAO;
 import relatorios.ExcelGerator;
 import relatorios.PDFGerator;
+import relatorios.GeradorDeRelatorios;
 import servico.TarefaServico;
 
 import javax.swing.JLabel;
@@ -100,7 +101,7 @@ public class Exportar extends JFrame {
 						String nomeArquivo = "relatorio-" + dataFormatada + ".pdf";
 	                    List<Tarefa>todasTarefas = taskDAO.listar();
 
-						IReportGenerator gerador = new PDFGerator();
+						IReportGenerator gerador = GeradorDeRelatorios.createReportGenerator("PDF", null);
 						gerador.gerarRelatorioDiario(todasTarefas, dataFormatada, nomeArquivo);
 
 	                    Mensageiro.enviarEmail(destinatario, mensagem, nomeArquivo);
@@ -203,7 +204,7 @@ public class Exportar extends JFrame {
 						List<Tarefa> tarefas = tarefaDAO.listar();
 
 						TarefaServico tarefaServico = new TarefaServico(tarefaDAO);
-						IReportGenerator gerador = new ExcelGerator(tarefaServico);
+						IReportGenerator gerador = GeradorDeRelatorios.createReportGenerator("EXCEL", tarefaServico);
 
 						String nomeArquivo = "relatorio-" + ano + "-" + mes + ".xlsx";
 						gerador.gerarRelatorioMensal(tarefas, ano, mes, nomeArquivo);

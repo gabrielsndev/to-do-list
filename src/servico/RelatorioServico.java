@@ -14,7 +14,7 @@ public class RelatorioServico {
         String nomeArquivo = "relatorio-" + dia + ".pdf";
 
         // 1. Gerar o PDF com nome personalizado
-        IReportGenerator gerador = new PDFGerator();
+        IReportGenerator gerador = relatorios.GeradorDeRelatorios.createReportGenerator("PDF", null);
         gerador.gerarRelatorioDiario(tarefas, dia, nomeArquivo);
 
         // 2. Enviar o PDF gerado por e-mail
