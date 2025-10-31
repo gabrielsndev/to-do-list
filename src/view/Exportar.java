@@ -10,12 +10,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.border.EmptyBorder;
 
 import email.Mensageiro;
+import interfaces.reportGerator.IReportGenerator;
 import modelo.Tarefa;
 import persistencia.TarefaDAO;
-import relatorios.GeradorDeRelatorios;
+import relatorios.ExcelGerator;
+import relatorios.PDFGerator;
+import servico.TarefaServico;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -95,10 +97,13 @@ public class Exportar extends JFrame {
 	                	
 	                	LocalDate dataFormatada = LocalDate.parse(data);
 	                    String mensagem = "Segue o relatório de tarefas em anexo.";
-	                    String caminhoAnexo = null; 
+						String nomeArquivo = "relatorio-" + dataFormatada + ".pdf";
 	                    List<Tarefa>todasTarefas = taskDAO.listar();
-	                    GeradorDeRelatorios.gerarRelatorioPDFDoDia(dataFormatada, todasTarefas, "aaaa!");
-	                    Mensageiro.enviarEmail(destinatario, mensagem, "relatorio.pdf");
+
+						IReportGenerator gerador = new PDFGerator();
+						gerador.gerarRelatorioDiario(todasTarefas, dataFormatada, nomeArquivo);
+
+	                    Mensageiro.enviarEmail(destinatario, mensagem, nomeArquivo);
 	                    
 	                    JOptionPane.showMessageDialog(btnEnviar, 
 	                        "E-mail enviado com sucesso!", 
@@ -174,9 +179,9 @@ public class Exportar extends JFrame {
 		lblNewLabel_2_1.setBounds(10, 207, 350, 47);
 		planilha.add(lblNewLabel_2_1);
 		
-		JLabel lblNewLabel_3_1 = new JLabel("Digite a Mes Especifico");
+		JLabel lblNewLabel_3_1 = new JLabel("Digite a Mes Especifico (YYYY-MM)");
 		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel_3_1.setBounds(260, 275, 244, 22);
+		lblNewLabel_3_1.setBounds(260, 275, 350, 22);
 		planilha.add(lblNewLabel_3_1);
 		
 		textFieldMesEspecifico = new JTextField();
@@ -187,10 +192,30 @@ public class Exportar extends JFrame {
 		JButton btnMesEspecifico = new JButton("Exportar");
 		btnMesEspecifico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!textFieldMesEspecifico.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(btnDiaEspecifico, "Mes Especifico Exportado", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+				String mesAno = textFieldMesEspecifico.getText().trim();
+				if(!mesAno.isEmpty()) {
+					try {
+						String[] parts = mesAno.split("-");
+						int ano = Integer.parseInt(parts[0]);
+						int mes = Integer.parseInt(parts[1]);
+
+						TarefaDAO tarefaDAO = new TarefaDAO();
+						List<Tarefa> tarefas = tarefaDAO.listar();
+
+						TarefaServico tarefaServico = new TarefaServico(tarefaDAO);
+						IReportGenerator gerador = new ExcelGerator(tarefaServico);
+
+						String nomeArquivo = "relatorio-" + ano + "-" + mes + ".xlsx";
+						gerador.gerarRelatorioMensal(tarefas, ano, mes, nomeArquivo);
+
+						JOptionPane.showMessageDialog(btnMesEspecifico, "Planilha exportada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(btnMesEspecifico, "Erro ao exportar planilha: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+						ex.printStackTrace();
+					}
 				}else {
-					JOptionPane.showMessageDialog(btnDiaEspecifico, "Mes Especifico Não EXPORTADO", "Erro", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(btnMesEspecifico, "Preencha o campo de Mês e Ano!", "Erro", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
