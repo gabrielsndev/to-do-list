@@ -59,7 +59,7 @@ public class TarefaServico implements interfaces.ICalculadorProgresso {
 	            continue;
 	        }
 	        long dias = ChronoUnit.DAYS.between(hoje, t.getDeadline());
-	        if (dias <= t.getDiasCriticos()) {
+	        if (t.getDiasCriticos() != null && dias <= t.getDiasCriticos()) {
 	            criticas.add(t);
 	        }
 	    }
