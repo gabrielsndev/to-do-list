@@ -19,7 +19,12 @@ public class Evento {
     private String descricao;
     
     @Column(nullable = false)
-    private LocalDate data; 
+    private LocalDate data;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 
     public Evento() {}
 
@@ -45,6 +50,10 @@ public class Evento {
         return data;
     }
 
+    public User getUser() {return user; }
+
+
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -60,6 +69,9 @@ public class Evento {
     public void setData(LocalDate data) {
         this.data = data;
     }
+
+    public void setUser(User user) { this.user = user; }
+
 
     @Override
     public String toString() {

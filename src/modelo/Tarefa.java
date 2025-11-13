@@ -1,11 +1,6 @@
 package modelo;
 
 import jakarta.persistence.*;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
@@ -35,6 +30,11 @@ public class Tarefa {
     @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subtarefa> subtarefas = new ArrayList<>();
 
+    //Tem que ajeitar pra adicionar o id do usuário
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 	public Tarefa() {}
 
     
@@ -45,7 +45,6 @@ public class Tarefa {
         this.prioridade = prioridade;
         this.critica = critica;
     }
-
 
 
     public void adicionarSubtarefa(Subtarefa subtarefa) {
@@ -81,43 +80,32 @@ public class Tarefa {
         return deadline;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public int getPrioridade() {
+        return prioridade;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+    public Integer getDiasCriticos() { return diasCriticos; }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+    public User getUser() {return user; }
+
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
-    
-    
-    public int getPrioridade() {
-    	return prioridade;
-    }
-    
-    
-    public void setPrioridade(int prioridade) {
-    	this.prioridade = prioridade;
-    }
 
-    public boolean isCritica() {
-        return critica;
-    }
+    public void setPrioridade(int prioridade) { this.prioridade = prioridade; }
 
-    public void setCritica(boolean critica) {
-        this.critica = critica;
-    }
+    public boolean isCritica() { return critica; }
 
-    public Integer getDiasCriticos() {
-        return diasCriticos;
-    }
+    public void setCritica(boolean critica) { this.critica = critica; }
+
+    public void setUser(User user) { this.user = user; }
 
     @Override
     public String toString() {
