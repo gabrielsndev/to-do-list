@@ -29,5 +29,8 @@
 	<classpathentry kind="lib" path="lib/antlr4-runtime-4.13.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-5.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-5.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/bson-5.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/mongodb-driver-core-5.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/mongodb-driver-sync-5.1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
