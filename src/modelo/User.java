@@ -6,6 +6,7 @@ import java.util.List;
 
 @Entity @Table(name = "User")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,4 +27,48 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "Eventos")
     private List<Evento> eventosUsuario;
+
+    public boolean equals(User user) {
+        return this.username.equals(user.username) && this.password.equals(user.password);
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Tarefa> getTarefasUsuario() {
+        return tarefasUsuario;
+    }
+
+    public void setTarefasUsuario(List<Tarefa> tarefasUsuario) {
+        this.tarefasUsuario = tarefasUsuario;
+    }
+
+    public List<Evento> getEventosUsuario() {
+        return eventosUsuario;
+    }
+
+    public void setEventosUsuario(List<Evento> eventosUsuario) {
+        this.eventosUsuario = eventosUsuario;
+    }
 }

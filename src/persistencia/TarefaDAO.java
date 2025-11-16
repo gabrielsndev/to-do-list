@@ -12,21 +12,21 @@ public class TarefaDAO implements TarefaRepositorio {
 
     private EntityManagerFactory emf;
 
-   public TarefaDAO() {
+    public TarefaDAO() {
         this.emf = Persistence.createEntityManagerFactory("todo-pu");
     }
    
    
-   public void salvar(Tarefa t) {
-	   EntityManager em = emf.createEntityManager();
-	   try {
-		   em.getTransaction().begin();
-		   em.persist(t);
-		   em.getTransaction().commit();
-	   } finally {
-		   em.close();
-	   }
-   }
+    public void salvar(Tarefa t) {
+       EntityManager em = emf.createEntityManager();
+       try {
+           em.getTransaction().begin();
+           em.persist(t);
+           em.getTransaction().commit();
+       } finally {
+           em.close();
+       }
+    }
 
     public List<Tarefa> listar(){
 	   EntityManager em = emf.createEntityManager();
@@ -36,8 +36,7 @@ public class TarefaDAO implements TarefaRepositorio {
            em.close();
        }
    }
-
-   public List<Tarefa> listarTarefaCritica(){
+    public List<Tarefa> listarTarefaCritica(){
        EntityManager em = emf.createEntityManager();
 
        try {

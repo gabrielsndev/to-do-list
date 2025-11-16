@@ -7,7 +7,7 @@ import modelo.Tarefa;
 import java.util.List;
 
 public class SubtarefaDAO {
-    private EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
     
     public SubtarefaDAO() {
         this.emf = Persistence.createEntityManagerFactory("todo-pu");
