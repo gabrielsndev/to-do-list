@@ -1,0 +1,28 @@
+package principal;
+
+import view.factory.IViewCreator; 
+import view.creators.HomeCreator;
+import javax.swing.JFrame;
+import java.awt.EventQueue;
+
+public class MainApp {
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                	System.out.println("Começando do outro main");
+                    IViewCreator telaInicial = new HomeCreator();
+                    
+                    JFrame frameInicial = telaInicial.createView(); 
+                    	
+                    frameInicial.setLocationRelativeTo(null);
+                    frameInicial.setVisible(true);
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+}
