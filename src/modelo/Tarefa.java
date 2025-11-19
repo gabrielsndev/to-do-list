@@ -32,7 +32,7 @@ public class Tarefa {
 
     //Tem que ajeitar pra adicionar o id do usuário
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 	public Tarefa() {}
@@ -106,16 +106,6 @@ public class Tarefa {
     public void setCritica(boolean critica) { this.critica = critica; }
 
     public void setUser(User user) { this.user = user; }
-    
-    public double getProgresso() {
-        if (this.subtarefas == null || this.subtarefas.isEmpty()) {
-            return 0.0;
-        }
-        return this.subtarefas.stream()
-                .mapToDouble(Subtarefa::getPercentualConcluido)
-                .average()
-                .orElse(0.0);
-    }
 
     @Override
     public String toString() {

@@ -1,26 +1,39 @@
 package view;
 
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import controller.command.Command;
-import controller.command.NavegarCommand;
-import view.factory.IViewCreator;
-import view.creators.ExportarCreator;
-import view.creators.PainelEventoCreator;
-import view.creators.TarefaPrincipalCreator;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Home extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Home frame = new Home();
+					frame.setLocationRelativeTo(null);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	} 
+	
 	public Home() {
 		setTitle("home");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,12 +61,11 @@ public class Home extends JFrame {
 		JButton btnNewButton = new JButton("Tarefa");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
+				TarefaPrincipal tarefa = new TarefaPrincipal();
+				tarefa.setLocationRelativeTo(null);
+				tarefa.setVisible(true);
 				
-				IViewCreator creator = new TarefaPrincipalCreator();
-				
-				Command navegar = new NavegarCommand(Home.this, creator);
-				
-				navegar.execute();
 			}
 		});
 		btnNewButton.setBounds(10, 125, 80, 29);
@@ -62,13 +74,12 @@ public class Home extends JFrame {
 		JButton btnSubtarefa = new JButton("Exportar");
 		btnSubtarefa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				IViewCreator creator = new ExportarCreator();
-				
-				Command navegar = new NavegarCommand(Home.this, creator);
-				
-				navegar.execute();
+				dispose();
+				Exportar exportar = new Exportar();
+				exportar.setLocationRelativeTo(null);
+				exportar.setVisible(true);
 			}
+			
 		});
 		btnSubtarefa.setBounds(93, 125, 95, 29);
 		panel.add(btnSubtarefa);
@@ -76,16 +87,16 @@ public class Home extends JFrame {
 		JButton btnEvento = new JButton("Evento");
 		btnEvento.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				IViewCreator creator = new PainelEventoCreator();
-				
-				Command navegar = new NavegarCommand(Home.this, creator);
-				
-				navegar.execute();
+				dispose();
+				PainelEvento evento = new PainelEvento();
+				evento.setLocationRelativeTo(null);
+				evento.setVisible(true);
 			}
+			
 		});
 		
 		btnEvento.setBounds(192, 125, 80, 29);
 		panel.add(btnEvento);
+
 	}
 }

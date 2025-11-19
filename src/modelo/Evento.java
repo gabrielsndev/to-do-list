@@ -22,7 +22,7 @@ public class Evento {
     private LocalDate data;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true) // por enquanto pode ser true
     private User user;
 
 
