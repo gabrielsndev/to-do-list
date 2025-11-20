@@ -2,14 +2,21 @@ package view;
 
 import javax.swing.*;
 
+import controller.command.Command;
+import controller.command.NavegarCommand;
+import view.creators.HomeCreator;
+import view.factory.IViewCreator;
+
+
 import modelo.Tarefa;
 import persistencia.TarefaDAO;
 import servico.TarefaServico;
 
+import interfaces.AtualizarPaineis;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class TarefaPrincipal extends JFrame {
+public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
 	
 	private JTabbedPane tabbedPane;
 	
@@ -19,11 +26,14 @@ public class TarefaPrincipal extends JFrame {
 	private PainelListarCriticas painelCriticas;
 	private PainelCadastrarTarefa painelCadastrar;
 	
-	TarefaDAO dao = new TarefaDAO();
-	TarefaServico servico = new TarefaServico(dao);
+	private final TarefaDAO dao;
+	private final TarefaServico servico;
     
-    public TarefaPrincipal() {
-        setTitle("Sistema de Tarefas com Abas");
+    public TarefaPrincipal(TarefaDAO dao, TarefaServico servico) {
+    	this.dao = dao;
+    	this.servico = servico;
+    	
+        setTitle("Sistema de Tarefas");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -35,10 +45,11 @@ public class TarefaPrincipal extends JFrame {
         
         btnVoltar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                Home home = new Home();
-                home.setVisible(true);
-                home.setLocationRelativeTo(null);
+            	
+               IViewCreator home = new HomeCreator();
+               Command navegar = new NavegarCommand(TarefaPrincipal.this, home);
+               navegar.execute();
+
             }
         });
         
@@ -61,17 +72,21 @@ public class TarefaPrincipal extends JFrame {
         setVisible(true);
     }
 
-    public void atualizarTelasListagem() {
-    	this.painelListar.atualizarLista(dao.listar());
-    	painelSubtarefa.atualizarPainel(dao.listar());
-    	painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(dao.listar()));
-    }
+	    
     
     public void salvarTarefa(Tarefa tarefa) {
     	dao.salvar(tarefa);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(TarefaPrincipal::new);
-    }
+	
+	public void atualizar() {
+		this.painelListar.atualizarLista(dao.listar());
+        
+    	this.painelSubtarefa.atualizarPainel(dao.listar());
+        
+    	this.painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(dao.listar()));
+			
+	}
+
+    
 }

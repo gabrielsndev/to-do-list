@@ -20,7 +20,7 @@ public class ButtonEditor extends DefaultCellEditor {
     private int row;
     private final JTable table;
     private final TipoDAO tipo;
-    private TarefaPrincipal tarefaPrincipal;
+    // private TarefaPrincipal tarefaPrincipal; // COMENTADO: Não precisamos dessa referência aqui agora
 
     public ButtonEditor(JCheckBox checkBox, JTable table, String label, TipoDAO tipo) {
         super(checkBox);
@@ -100,14 +100,19 @@ public class ButtonEditor extends DefaultCellEditor {
                         long id = Long.parseLong(idObj.toString());
 
                         if (tipo == TipoDAO.TAREFA) {
-                        	tarefaPrincipal = new TarefaPrincipal();
+                            // --- PALIATIVO START ---
+                            // Removemos a criação da TarefaPrincipal. 
+                            // Isso evita o erro de compilação e o erro de lógica.
+                            // tarefaPrincipal = new TarefaPrincipal(); 
                             new TarefaDAO().remover(id);
-                            tarefaPrincipal.atualizarTelasListagem();
+                            // tarefaPrincipal.atualizarTelasListagem();
+                            // --- PALIATIVO END ---
+                            
                         } else if (tipo == TipoDAO.EVENTO) {
                             new EventoDAO().remover(id);
                         }
 
-                        // Remove da tabela se for DefaultTableModel
+                        // Remove da tabela visualmente
                         if (table.getModel() instanceof DefaultTableModel) {
                             ((DefaultTableModel) table.getModel()).removeRow(row);
                         }

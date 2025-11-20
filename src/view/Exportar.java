@@ -85,6 +85,7 @@ public class Exportar extends JFrame {
 	    email.add(lblNewLabel_1);
 	    
 	    JButton btnEnviar = new JButton("Enviar");
+	    
 	    btnEnviar.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	        	TarefaDAO taskDAO = new TarefaDAO();
