@@ -13,7 +13,7 @@ public class TarefaServico implements interfaces.ICalculadorProgresso {
 
     private final TarefaRepositorio tarefaRepositorio;
     
-    // 1. CONSTANTES: Facilita a manutenção. Se a regra mudar, você só altera aqui.
+    
     private static final int PRIORIDADE_MIN = 0;
     private static final int PRIORIDADE_MAX = 5;
 
@@ -21,9 +21,9 @@ public class TarefaServico implements interfaces.ICalculadorProgresso {
         this.tarefaRepositorio = tarefaRepositorio;
     }
 
-    // --- CRIAÇÃO (Fluxo Principal) ---
+    
     public void criarNovaTarefa(String titulo, String descricao, LocalDate deadline, int prioridade) throws Exception {
-        // O método conta a "história" da validação passo a passo
+    
         validarTitulo(titulo);
         validarDataFutura(deadline);
         validarPrioridade(prioridade);
@@ -34,25 +34,25 @@ public class TarefaServico implements interfaces.ICalculadorProgresso {
         tarefa.setDescricao(descricao);
         tarefa.setDeadline(deadline);
         tarefa.setPrioridade(prioridade);
-        // tarefa.setStatus("Pendente"); 
+     
 
         tarefaRepositorio.salvar(tarefa);
     }
 
-    // --- ATUALIZAÇÃO ---
+    
     public void atualizarTarefa(Tarefa tarefa) throws Exception {
-        // Reutiliza as validações para garantir consistência
+    
         validarTitulo(tarefa.getTitulo());
-        // validarDataFutura(tarefa.getDeadline()); // Opcional na edição
+    
         validarPrioridade(tarefa.getPrioridade());
         
-        // Validação específica de conflito para edição (ignora o próprio ID)
+    
         verificarDisponibilidadeParaAtualizacao(tarefa);
         
         tarefaRepositorio.editarTarefa(tarefa);
     }
 
-    // --- MÉTODOS AUXILIARES (Regras de Negócio Isoladas) ---
+    
 
     private void validarTitulo(String titulo) {
         if (titulo == null || titulo.trim().isEmpty()) {
@@ -67,7 +67,7 @@ public class TarefaServico implements interfaces.ICalculadorProgresso {
     }
 
     private void validarPrioridade(int prioridade) {
-        // Uso das constantes para evitar números mágicos no código
+    
         if (prioridade < PRIORIDADE_MIN || prioridade > PRIORIDADE_MAX) {
             throw new IllegalArgumentException(
                 String.format("A prioridade deve ser entre %d e %d.", PRIORIDADE_MIN, PRIORIDADE_MAX)
@@ -85,14 +85,14 @@ public class TarefaServico implements interfaces.ICalculadorProgresso {
     private void verificarDisponibilidadeParaAtualizacao(Tarefa tarefa) throws Exception {
         List<Tarefa> tarefasNaData = tarefaRepositorio.buscarDeadLine(tarefa.getDeadline());
         for (Tarefa existente : tarefasNaData) {
-            // Se existe alguém nessa data, e esse alguém NÃO SOU EU (IDs diferentes)
+    
             if (!existente.getId().equals(tarefa.getId())) {
                 throw new Exception("Já existe outro evento agendado para esta data.");
             }
         }
     }
 
-    // --- OUTROS MÉTODOS (Persistência e Listagem) ---
+    
 
     public void excluir(long id) throws Exception {
         Optional<Tarefa> optionalBuscarId = tarefaRepositorio.buscar(id);
@@ -124,18 +124,14 @@ public class TarefaServico implements interfaces.ICalculadorProgresso {
         return criticas;
     }
 
-    // --- CÁLCULO DE PROGRESSO (Modelo Rico) ---
+    
     @Override
-    public double calcularPercentualConcluido(Tarefa tarefa) {
-        // DELEGAÇÃO: O serviço pergunta para a Tarefa qual é o progresso dela.
-        // O Serviço não precisa saber a matemática da média.
-        
-        // OBS: Certifique-se de ter criado o método getProgresso() na classe Tarefa
+    public double calcularPercentualConcluido(Tarefa tarefa) {    
         return tarefa.getProgresso(); 
     }
     
-    // Método helper para compatibilidade (opcional)
     public void criarTarefa(Tarefa tarefa) throws Exception {
+    	// Ele pega os dados do objeto e repassa para o método principal
         criarNovaTarefa(tarefa.getTitulo(), tarefa.getDescricao(), tarefa.getDeadline(), tarefa.getPrioridade());
     }
 }
