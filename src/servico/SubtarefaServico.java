@@ -14,6 +14,10 @@ public class SubtarefaServico {
     public SubtarefaServico() throws Exception {
     }
 
+    public void salvarNovaSubtarefa(Subtarefa subtarefa, Long idTask) throws  Exception {
+        dao.salvar(subtarefa, idTask);
+    }
+
     public void iniciarLista(Long id) throws Exception {
         dao.iniciarListaSubtarefas(id);
     };

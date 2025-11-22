@@ -16,19 +16,17 @@ public class SubtarefaDAO {
     private final MongoCollection<Document> collection;
 
     public SubtarefaDAO() throws Exception {
-        // Pega o banco de dados da nossa classe de conexão e escolhe a coleção
         this.collection = MongoDBConnection.getDatabase().getCollection("subtarefas_listas");
     }
 
-
-    
-    public void limparSubtarefasOrfas() {
-
-    }
-
-    // Salvar nova subtarefa 
-    public void salvar(Subtarefa subtarefa) {
-
+    public void salvar(Subtarefa subtarefa, Long idTask) throws Exception{
+        try {
+            this.collection.updateOne(
+                    Filters.eq("id_task", idTask),
+                    Updates.push("itens", subtarefa));
+        } catch(Exception e) {
+            throw new Exception("Erro na conexão com o MongoDB");
+        }
     }
 
     public void editar(Subtarefa subtarefa) {
@@ -36,21 +34,19 @@ public class SubtarefaDAO {
     }
 
     // Remover subtarefa pelo ID
-    public void remover(long id) throws Exception {
-
+    public void remover(long idTask, String idSubtask) throws Exception {
+        try {
+            this.collection.updateOne(
+                    Filters.eq("id_task", idTask),
+                    Updates.pull("id", idSubtask)
+            );
+        } catch(Exception e) {
+            throw new Exception("Erro ao remover Subtarefa");
+        }
     }
 
-    // Buscar uma subtarefa pelo ID
+//    // Tem que implementar recebendo uma lista de tarefas e iterando sobre elas pra evitar filtrar por usuário
 
-//    public Subtarefa buscar(long id) {
-//
-//    }
-//
-//    public List<Subtarefa> listar() {
-//
-//    }
-//
-//    // Listar subtarefas de uma tarefa específica
 //    public List<Subtarefa> listarPorTarefa(Tarefa tarefa) {
 //
 //    }
