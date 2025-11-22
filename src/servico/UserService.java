@@ -4,10 +4,9 @@ import modelo.User;
 import persistencia.UserDAO;
 
 public class UserService {
-    private final UserDAO userDAO;
+    private final UserDAO userDAO = new UserDAO();
 
-    public UserService(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public UserService() {
     }
 
 
@@ -26,8 +25,6 @@ public class UserService {
         }
         return userDAO.buscarUsuario(username, password).getFirst();
     }
-
-
 
 
 }

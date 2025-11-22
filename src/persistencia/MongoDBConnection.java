@@ -12,6 +12,7 @@ public class MongoDBConnection {
 
     private static MongoClient mongoClient = null;
     private static MongoDatabase database = null;
+    private MongoDBConnection() {}
 
     public static MongoDatabase getDatabase() throws Exception {
         if(mongoClient == null) {
@@ -33,7 +34,6 @@ public class MongoDBConnection {
                 System.err.println("ERRO: não foi possivel conecrar com o Banco de Dados");
                 throw new Exception("Não foi possível a conexão com o banco de dados");
             }
-
         }
         return database;
     }
