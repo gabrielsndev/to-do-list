@@ -20,7 +20,7 @@ public class UserService {
     }
 
     public User retornarUsuario(String username, String password) throws Exception {
-        if(!userDAO.encontrar(username, password)) {
+        if(!userDAO.encontrar(username, Auth.hashearSenha(password))) {
             throw new Exception("Usuário não encontrado");
         }
         return userDAO.buscarUsuario(username, password).getFirst();

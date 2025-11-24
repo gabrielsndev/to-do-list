@@ -1,11 +1,20 @@
 package modelo;
 
 import jakarta.persistence.*;
+import servico.Auth;
 
 import java.util.List;
 
 @Entity @Table(name = "User")
 public class User {
+
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = Auth.hashearSenha(password);
+        this.email = email;
+    }
+
+    public User() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +23,7 @@ public class User {
      @Column(nullable = false, length = 60)
     private String username;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 150)
     private String password;
 
     @Column(nullable = false, length = 150)

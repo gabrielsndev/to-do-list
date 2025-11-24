@@ -65,5 +65,4 @@ public class UserDAO implements IUserRepositorio {
             em.close();
         }
     }
-
 }
