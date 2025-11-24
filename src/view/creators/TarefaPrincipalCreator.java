@@ -10,12 +10,12 @@ import view.factory.IViewCreator;
 public class TarefaPrincipalCreator implements IViewCreator{
 
 	
-	public JFrame createView() {
+	public JFrame createView() throws Exception {
 		
 		TarefaDAO dao = new TarefaDAO();
-		TarefaServico servico = new TarefaServico(dao);
+		TarefaServico servico = new TarefaServico();
 		
-		TarefaPrincipal view = new TarefaPrincipal(dao, servico);
+		TarefaPrincipal view = new TarefaPrincipal(servico);
 		return view;
 	}
 

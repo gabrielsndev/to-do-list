@@ -203,7 +203,7 @@ public class Exportar extends JFrame {
 						TarefaDAO tarefaDAO = new TarefaDAO();
 						List<Tarefa> tarefas = tarefaDAO.listar();
 
-						TarefaServico tarefaServico = new TarefaServico(tarefaDAO);
+						TarefaServico tarefaServico = new TarefaServico();
 						IGeradorRelatorioMensal gerador = GeradorDeRelatorios.createMonthlyGenerator("EXCEL", tarefaServico);
 
 						String nomeArquivo = "relatorio-" + ano + "-" + mes + ".xlsx";

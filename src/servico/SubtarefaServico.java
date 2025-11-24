@@ -1,6 +1,7 @@
 package servico;
 
 import modelo.Subtarefa;
+import modelo.Tarefa;
 import persistencia.SubtarefaDAO;
 
 import java.time.LocalDate;
@@ -26,4 +27,11 @@ public class SubtarefaServico {
         dao.limparOrfas(id);
     }
 
+    public List<Subtarefa> listarSubtarefas(List<Tarefa> task) {
+        return dao.listarSubtarefas(task);
+    }
+
+    public void remover(String id) throws Exception {
+        dao.remover(id);
+    }
 }

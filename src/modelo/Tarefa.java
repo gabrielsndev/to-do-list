@@ -38,17 +38,16 @@ public class Tarefa {
 	public Tarefa() {}
 
     
-    public Tarefa(String titulo, String descricao, LocalDate deadline, int prioridade, boolean critica) {
+    public Tarefa(String titulo, String descricao, LocalDate deadline, int prioridade) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.deadline = deadline;
         this.prioridade = prioridade;
-        this.critica = critica;
+        this.critica = false;
     }
 
 
     public void adicionarSubtarefa(Subtarefa subtarefa) {
-        subtarefa.setTarefa(this); // estabelece a referência para a tarefa pai
         this.subtarefas.add(subtarefa);
     }
 

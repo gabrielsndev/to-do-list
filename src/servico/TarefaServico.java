@@ -1,4 +1,5 @@
 package servico;
+import interfaces.ICalculadorProgresso;
 import modelo.Tarefa;
 import interfaces.repositorioInterface.TarefaRepositorio;
 import persistencia.TarefaDAO;
@@ -9,11 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TarefaServico {
+public class TarefaServico implements ICalculadorProgresso {
 
     private final TarefaRepositorio tarefaRepositorio = new TarefaDAO();
     private final SubtarefaServico subtarefaServico = new SubtarefaServico();
 
+    //vai receber o id do usuário depois
     public TarefaServico() throws Exception {}
 
     public void criarTarefa(Tarefa tarefa) throws Exception {
@@ -71,7 +73,8 @@ public class TarefaServico {
 	}
 
 
-
-
-
+    @Override
+    public double calcularPercentualConcluido(Tarefa tarefa) {
+        return 0;
+    }
 }

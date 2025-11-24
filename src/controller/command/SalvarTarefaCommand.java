@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import javax.swing.JOptionPane;
 
+import modelo.Tarefa;
 import servico.TarefaServico;
 import persistencia.TarefaDAO;
 
@@ -23,7 +24,7 @@ public class SalvarTarefaCommand implements Command {
     private boolean sucesso = false;
 
     // Construtor recebe STRINGS puras, não JTextFields (desacoplamento da UI)
-    public SalvarTarefaCommand(Component parentView, String titulo, String dataTexto, String prioridadeTexto, String descricao) {
+    public SalvarTarefaCommand(Component parentView, String titulo, String dataTexto, String prioridadeTexto, String descricao) throws Exception {
         this.parentView = parentView;
         this.titulo = titulo;
         this.dataTexto = dataTexto;
@@ -31,7 +32,7 @@ public class SalvarTarefaCommand implements Command {
         this.descricao = descricao;
         
         // Instancia o serviço (idealmente seria injetado, mas aqui instanciamos para simplificar o fluxo)
-        this.tarefaServico = new TarefaServico(new TarefaDAO());
+        this.tarefaServico = new TarefaServico();
     }
 
     @Override
@@ -62,7 +63,8 @@ public class SalvarTarefaCommand implements Command {
 
             // 2. Chama o Serviço (Business Logic)
             // Passamos dados LIMPOS e TIPADOS
-            tarefaServico.criarNovaTarefa(titulo, descricao, deadline, prioridade);
+            Tarefa t = new Tarefa(titulo, descricao, deadline, prioridade);
+            tarefaServico.criarTarefa(t);
             
             // 3. Feedback de Sucesso
             JOptionPane.showMessageDialog(parentView, "Tarefa salva com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);

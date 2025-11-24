@@ -1,5 +1,7 @@
 package view;
 
+import servico.TarefaServico;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -62,8 +64,17 @@ public class Home extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				TarefaPrincipal tarefa = new TarefaPrincipal();
-				tarefa.setLocationRelativeTo(null);
+
+
+                TarefaPrincipal tarefa = null;
+                try {
+                    tarefa = new TarefaPrincipal(new TarefaServico());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                tarefa.setLocationRelativeTo(null);
+
+
 				tarefa.setVisible(true);
 				
 			}

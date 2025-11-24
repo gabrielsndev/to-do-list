@@ -4,12 +4,14 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import modelo.Subtarefa;
-import modelo.Tarefa;
 import com.mongodb.client.MongoCollection;
+import modelo.Tarefa;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SubtarefaDAO {
 
@@ -33,23 +35,46 @@ public class SubtarefaDAO {
 
     }
 
-    // Remover subtarefa pelo ID
-    public void remover(long idTask, String idSubtask) throws Exception {
+    public void remover(String idSubtask) throws Exception {
         try {
-            this.collection.updateOne(
-                    Filters.eq("id_task", idTask),
-                    Updates.pull("id", idSubtask)
-            );
+            Bson filtro = Filters.eq("itens.id", idSubtask);
+            Bson update = Updates.pull("itens", new Document("id", idSubtask));
+            this.collection.updateOne(filtro, update);
+
         } catch(Exception e) {
-            throw new Exception("Erro ao remover Subtarefa");
+            throw new Exception("Erro ao remover Subtarefa pelo ID", e);
         }
     }
 
-//    // Tem que implementar recebendo uma lista de tarefas e iterando sobre elas pra evitar filtrar por usuário
 
-//    public List<Subtarefa> listarPorTarefa(Tarefa tarefa) {
-//
-//    }
+    public List<Subtarefa> listarSubtarefas(List<Tarefa> tasks) {
+        List<Subtarefa> resultado = new ArrayList<>();
+
+        List<Long> ids = tasks.stream()
+                .map(Tarefa::getId)
+                .collect(Collectors.toList());
+
+        var documentos = this.collection.find(Filters.in("task_id", ids));
+
+        for (Document doc: documentos) {
+            List<Document> itens = doc.getList("itens", Document.class);
+
+            if(itens != null) {
+                for (Document item: itens) {
+                    Subtarefa s = new Subtarefa();
+                    s.setId(item.getString("id"));
+                    s.setTitulo(item.getString("titulo"));
+                    s.setDescricao(item.getString("descricao"));
+                    s.setConcluida(item.getBoolean("concluida", false));
+
+                    resultado.add(s);
+                }
+            }
+        }
+
+        return resultado;
+    }
+
 
     public void iniciarListaSubtarefas(Long idTask) throws Exception {
         try {

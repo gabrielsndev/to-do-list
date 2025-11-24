@@ -7,6 +7,7 @@ public class Subtarefa {
     private String id;
     private String titulo;
     private String descricao;
+    private Boolean concluida;
     private LocalDate deadline;
 
 
@@ -30,6 +31,9 @@ public class Subtarefa {
     public LocalDate getDeadline() {
         return deadline;
     }
+    public boolean getConcluida() {
+        return concluida;
+    }
 
     public void setId(String id){
         this.id = id;
@@ -39,6 +43,9 @@ public class Subtarefa {
     }
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+    public void setConcluida(boolean b) {
+        this.concluida = b;
     }
 
     @Override

@@ -26,11 +26,9 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
 	private PainelListarCriticas painelCriticas;
 	private PainelCadastrarTarefa painelCadastrar;
 	
-	private final TarefaDAO dao;
 	private final TarefaServico servico;
     
-    public TarefaPrincipal(TarefaDAO dao, TarefaServico servico) {
-    	this.dao = dao;
+    public TarefaPrincipal(TarefaServico servico) throws Exception {
     	this.servico = servico;
     	
         setTitle("Sistema de Tarefas");
@@ -48,7 +46,11 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
             	
                IViewCreator home = new HomeCreator();
                Command navegar = new NavegarCommand(TarefaPrincipal.this, home);
-               navegar.execute();
+                try {
+                    navegar.execute();
+                } catch (Exception ex) {
+                    throw new RuntimeException("Erro em tempo de execução");
+                }
 
             }
         });
@@ -57,10 +59,10 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
         tabbedPane.setBounds(0, 0, 784, 561);
 
         
-        painelListar = new PainelListarTarefas(dao.listar());
+        painelListar = new PainelListarTarefas(servico.listarTarefa());
         painelCadastrar = new PainelCadastrarTarefa(this);
-        painelSubtarefa = new PainelSubtarefas(dao.listar());
-        painelCriticas = new PainelListarCriticas(servico.listarTarefaCritica(dao.listar()));
+        painelSubtarefa = new PainelSubtarefas(servico.listarTarefa());
+        painelCriticas = new PainelListarCriticas(servico.listarTarefaCritica(servico.listarTarefa()));
 
         tabbedPane.addTab("Listar Tarefas", painelListar);
         tabbedPane.addTab("Cadastrar Tarefas", painelCadastrar);
@@ -74,17 +76,17 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
 
 	    
     
-    public void salvarTarefa(Tarefa tarefa) {
-    	dao.salvar(tarefa);
-    }
+    // public void salvarTarefa(Tarefa tarefa) {
+    //	dao.salvar(tarefa);
+    // }
 
 	
 	public void atualizar() {
-		this.painelListar.atualizarLista(dao.listar());
+		this.painelListar.atualizarLista(servico.listarTarefa());
         
-    	this.painelSubtarefa.atualizarPainel(dao.listar());
+    	this.painelSubtarefa.atualizarPainel(servico.listarTarefa());
         
-    	this.painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(dao.listar()));
+    	this.painelCriticas.atualizarTabelaCriticas(servico.listarTarefaCritica(servico.listarTarefa()));
 			
 	}
 

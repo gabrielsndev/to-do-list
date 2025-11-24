@@ -13,6 +13,7 @@ import model.ButtonRenderer;
 import model.DataPrazoRender;
 import model.TipoDAO;
 import model.ButtonEditor;
+import servico.SubtarefaServico;
 
 import javax.swing.table.DefaultTableModel;
 import java.time.format.DateTimeFormatter;
@@ -25,11 +26,11 @@ public class PainelSubtarefas extends JPanel {
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
-    private SubtarefaDAO subtarefaDAO = new SubtarefaDAO();
+    private SubtarefaServico subtarefaServico = new SubtarefaServico();
 
     private List<Tarefa> tarefas;
     
-    public PainelSubtarefas(List<Tarefa> tarefas) {
+    public PainelSubtarefas(List<Tarefa> tarefas) throws Exception {
         setLayout(new BorderLayout());
 
         JTabbedPane abasInternas = new JTabbedPane();
@@ -42,8 +43,6 @@ public class PainelSubtarefas extends JPanel {
 
         add(abasInternas, BorderLayout.CENTER);
         
-        subtarefaDAO.limparSubtarefasOrfas();
-
         carregarSubtarefasNaTabela();
 
         carregarTarefasNoComboBox(tarefas);
@@ -90,8 +89,8 @@ public class PainelSubtarefas extends JPanel {
                     Object idObj = table.getModel().getValueAt(modelRow, 0);
 
                     try {
-                        long id = Long.parseLong(idObj.toString());
-                        subtarefaDAO.remover(id);
+                        String id = idObj.toString();
+                        subtarefaServico.remover(id);
                         ((DefaultTableModel) table.getModel()).removeRow(modelRow);
                         JOptionPane.showMessageDialog(table, "Subtarefa excluída com sucesso.");
                     } catch (Exception ex) {
@@ -139,7 +138,13 @@ public class PainelSubtarefas extends JPanel {
         btnSalvar.setBounds(250, 180, 100, 30);
         painelCadastro.add(btnSalvar);
 
-        btnSalvar.addActionListener(e -> salvarSubtarefa());
+        btnSalvar.addActionListener(e -> {
+            try {
+                salvarSubtarefa();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         return painelCadastro;
     }
@@ -165,7 +170,7 @@ public class PainelSubtarefas extends JPanel {
 
     private void carregarSubtarefasNaTabela() {
         modeloTabela.setRowCount(0);
-        List<Subtarefa> subtarefas = subtarefaDAO.listar();
+        List<Subtarefa> subtarefas = subtarefaServico.listarSubtarefas(tarefas);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         for (Subtarefa s : subtarefas) {
             modeloTabela.addRow(new Object[] {
@@ -186,7 +191,7 @@ public class PainelSubtarefas extends JPanel {
         carregarSubtarefasNaTabela();
     }
 
-    private void salvarSubtarefa() {
+    private void salvarSubtarefa() throws Exception {
         String titulo = textTitulo.getText().trim();
         String descricao = textDescricao.getText().trim();
         Tarefa tarefaSelecionada = (Tarefa) comboBoxTarefaMae.getSelectedItem();
@@ -203,9 +208,8 @@ public class PainelSubtarefas extends JPanel {
         Subtarefa subtarefa = new Subtarefa();
         subtarefa.setTitulo(titulo);
         subtarefa.setDescricao(descricao);
-        subtarefa.setTarefa(tarefaSelecionada);
 
-        subtarefaDAO.salvar(subtarefa);
+        subtarefaServico.salvarNovaSubtarefa(subtarefa, tarefaSelecionada.getId());
 
         JOptionPane.showMessageDialog(this, "Subtarefa salva com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
