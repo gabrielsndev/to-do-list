@@ -416,19 +416,5 @@ public class PainelEvento extends JFrame {
         return listarEventoPDia;
     }
 
-    
    
-	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PainelEvento frame = new PainelEvento();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 }

@@ -89,22 +89,20 @@ public class PainelCadastrarTarefa extends JPanel {
                 String prioridade = textFieldPrioridadeTarefa.getText();
                 String descricao = textFieldDescricaoTarefa.getText();
 
-                // B. Instancia o Command com Strings puras (Desacoplamento)
+
                 SalvarTarefaCommand command = new SalvarTarefaCommand(
-                    PainelCadastrarTarefa.this, // Passa a view para exibir mensagens de erro/sucesso
+                    PainelCadastrarTarefa.this, 
                     titulo,
                     data,
                     prioridade,
                     descricao
                 );
 
-                // C. Executa a lógica (Validação, Conversão, Persistência)
                 command.execute();
 
-                // D. Verifica o resultado
                 if (command.isSucesso()) {
                     limparCampos();
-                    // E. Avisa o Mediator (TarefaPrincipal) para atualizar as outras abas
+                    
                     atualizarPaineis.atualizar();
                 }
             }
@@ -114,7 +112,7 @@ public class PainelCadastrarTarefa extends JPanel {
     private void limparCampos() {
         textFieldTituloTarefa.setText("");
         textFieldDataTarefa.setText("");
-        textFieldDataTarefa.setValue(null); // Reseta a máscara
+        textFieldDataTarefa.setValue(null); 
         textFieldDescricaoTarefa.setText("");
         textFieldPrioridadeTarefa.setText("");
     }
