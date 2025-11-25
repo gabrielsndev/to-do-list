@@ -7,8 +7,6 @@ public class Subtarefa {
     private String id;
     private String titulo;
     private String descricao;
-    private Boolean concluida;
-    private LocalDate deadline;
 
 
     public Subtarefa() {}
@@ -16,7 +14,6 @@ public class Subtarefa {
     public Subtarefa(String titulo, String descricao, LocalDate deadline) {
         this.titulo = titulo;
         this.descricao = descricao;
-        this.deadline = deadline;
     }
 
     public String getId() {
@@ -28,12 +25,6 @@ public class Subtarefa {
     public String getDescricao() {
         return descricao;
     }
-    public LocalDate getDeadline() {
-        return deadline;
-    }
-    public boolean getConcluida() {
-        return concluida;
-    }
 
     public void setId(String id){
         this.id = id;
@@ -43,9 +34,6 @@ public class Subtarefa {
     }
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-    public void setConcluida(boolean b) {
-        this.concluida = b;
     }
 
     @Override

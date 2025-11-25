@@ -9,8 +9,10 @@ import modelo.Tarefa;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SubtarefaDAO {
@@ -22,10 +24,15 @@ public class SubtarefaDAO {
     }
 
     public void salvar(Subtarefa subtarefa, Long idTask) throws Exception{
+
+        String UUId = UUID.randomUUID().toString();
+        subtarefa.setId(UUId);
+        Document docSalvar = convertToDoc(subtarefa);
+
         try {
             this.collection.updateOne(
-                    Filters.eq("id_task", idTask),
-                    Updates.push("itens", subtarefa));
+                    Filters.eq("task_id", idTask),
+                    Updates.push("itens", docSalvar));
         } catch(Exception e) {
             throw new Exception("Erro na conexão com o MongoDB");
         }
@@ -50,6 +57,10 @@ public class SubtarefaDAO {
     public List<Subtarefa> listarSubtarefas(List<Tarefa> tasks) {
         List<Subtarefa> resultado = new ArrayList<>();
 
+        if (tasks == null || tasks.isEmpty()) {
+            return resultado;
+        }
+
         List<Long> ids = tasks.stream()
                 .map(Tarefa::getId)
                 .collect(Collectors.toList());
@@ -61,17 +72,11 @@ public class SubtarefaDAO {
 
             if(itens != null) {
                 for (Document item: itens) {
-                    Subtarefa s = new Subtarefa();
-                    s.setId(item.getString("id"));
-                    s.setTitulo(item.getString("titulo"));
-                    s.setDescricao(item.getString("descricao"));
-                    s.setConcluida(item.getBoolean("concluida", false));
-
+                    Subtarefa s = convertToSubtask(item);
                     resultado.add(s);
                 }
             }
         }
-
         return resultado;
     }
 
@@ -94,6 +99,26 @@ public class SubtarefaDAO {
         } catch (Exception e) {
             throw new Exception("Erro ao apagar tarefas orfãs da tarefa: " + id);
         }
+    }
+
+
+    public Document convertToDoc(Subtarefa sub) {
+        Document doc = new Document()
+                .append("id", sub.getId())
+                .append("titulo", sub.getTitulo())
+                .append("descricao", sub.getDescricao());
+
+        return doc;
+    }
+
+    public Subtarefa convertToSubtask(Document doc) {
+        Subtarefa sub = new Subtarefa();
+
+        sub.setId(doc.getString("id"));
+        sub.setTitulo(doc.getString("titulo"));
+        sub.setDescricao(doc.getString("descricao"));
+
+        return sub;
     }
 
 

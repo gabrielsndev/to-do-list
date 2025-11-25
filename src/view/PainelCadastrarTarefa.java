@@ -90,13 +90,18 @@ public class PainelCadastrarTarefa extends JPanel {
                 String descricao = textFieldDescricaoTarefa.getText();
 
                 // B. Instancia o Command com Strings puras (Desacoplamento)
-                SalvarTarefaCommand command = new SalvarTarefaCommand(
-                    PainelCadastrarTarefa.this, // Passa a view para exibir mensagens de erro/sucesso
-                    titulo,
-                    data,
-                    prioridade,
-                    descricao
-                );
+                SalvarTarefaCommand command = null;
+                try {
+                    command = new SalvarTarefaCommand(
+                        PainelCadastrarTarefa.this, // Passa a view para exibir mensagens de erro/sucesso
+                        titulo,
+                        data,
+                        prioridade,
+                        descricao
+                    );
+                } catch (Exception ex) {
+                    throw new RuntimeException("Erro na execução");
+                }
 
                 command.execute();
 

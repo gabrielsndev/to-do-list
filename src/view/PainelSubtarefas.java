@@ -176,7 +176,6 @@ public class PainelSubtarefas extends JPanel {
             modeloTabela.addRow(new Object[] {
                 s.getId(),
                 s.getTitulo(),
-                s.getDeadline() != null ? s.getDeadline().format(formatter) : "",
                 s.getDescricao(),
                 "Pendente", // status fixo, pode expandir futuramente
                 "0", // prioridade fixa aqui, pode adaptar se subtarefa tiver campo

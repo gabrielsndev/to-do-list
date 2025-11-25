@@ -27,12 +27,12 @@ public class Tarefa {
     private Boolean critica;
     private Integer diasCriticos = 3;
 
-    @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Transient
     private List<Subtarefa> subtarefas = new ArrayList<>();
 
     //Tem que ajeitar pra adicionar o id do usuário
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
 	public Tarefa() {}

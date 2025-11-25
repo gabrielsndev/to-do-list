@@ -20,7 +20,7 @@ public class TarefaServico implements ICalculadorProgresso {
 
     public void criarTarefa(Tarefa tarefa) throws Exception {
         List<Tarefa> buscarTarefaNaData =  tarefaRepositorio.buscarDeadLine(tarefa.getDeadline());
-        if (buscarTarefaNaData.isEmpty()) {
+        if (!buscarTarefaNaData.isEmpty()) {
             throw new Exception("Já existe uma tarefa marcada para essa data.");
         }
         tarefaRepositorio.salvar(tarefa);
