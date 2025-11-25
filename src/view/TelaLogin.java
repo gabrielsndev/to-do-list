@@ -5,6 +5,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import controller.command.AutenticarCommand;
+import controller.command.Command;
+import controller.command.NavegarCommand;
+import view.creators.CadastroUsuarioCreator; 
+import view.factory.IViewCreator;
+
 public class TelaLogin extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -12,10 +18,10 @@ public class TelaLogin extends JFrame {
     private JTextField txtNome;
     private JPasswordField txtSenha;
     private JButton btnEnviar;
-
+    
     public TelaLogin() {
+    	
         setTitle("Login");
-       
         setSize(400, 350); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); 
@@ -24,10 +30,30 @@ public class TelaLogin extends JFrame {
         contentPane.setLayout(null);
         setContentPane(contentPane);
 
+       
+        JButton btnCadastrar = new JButton("Cadastrar");
+        btnCadastrar.setFont(new Font("Tahoma", Font.PLAIN, 11)); 
+        btnCadastrar.setBounds(280, 10, 90, 25); 
+        contentPane.add(btnCadastrar);
+
+        
+        btnCadastrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                IViewCreator cadastroCreator = new CadastroUsuarioCreator();
+                Command navegar = new NavegarCommand(TelaLogin.this, cadastroCreator);
+                try {
+					navegar.execute();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
+        
         JLabel lblTitulo = new JLabel("Entrar");
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 24));
-        
         lblTitulo.setBounds(0, 20, 384, 40); 
         contentPane.add(lblTitulo);
 
@@ -55,22 +81,21 @@ public class TelaLogin extends JFrame {
         btnEnviar = new JButton("Enviar");
         btnEnviar.setFont(new Font("Tahoma", Font.BOLD, 12));
         btnEnviar.setBounds(140, 240, 100, 35);
-        
         contentPane.add(btnEnviar);
 
-        
         btnEnviar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+            	// Responsabilidade da View é apenas pegar os dados
                 String nome = txtNome.getText();
                 String senha = new String(txtSenha.getPassword());
-
-                if(nome.isEmpty() || senha.isEmpty()) {
-                     JOptionPane.showMessageDialog(TelaLogin.this, "Preencha todos os campos!");
-                } else {
                 
-                     JOptionPane.showMessageDialog(TelaLogin.this, "Tentando logar como: " + nome);
-                }
+                Command autenticar = new AutenticarCommand(TelaLogin.this, nome, senha);
+                
+               try {
+					autenticar.execute();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
             }
         });
     }

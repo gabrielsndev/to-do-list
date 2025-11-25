@@ -7,7 +7,6 @@ import view.factory.IViewCreator;
 
 public class TelaLoginCreator implements IViewCreator{
 
-	
 	public JFrame createView() {
 		TelaLogin view = new TelaLogin();
 		return view;
