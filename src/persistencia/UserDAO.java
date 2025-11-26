@@ -6,8 +6,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import modelo.User;
-
 import java.util.List;
+
 
 public class UserDAO implements IUserRepositorio {
 
@@ -17,7 +17,6 @@ public class UserDAO implements IUserRepositorio {
         this.emf = Persistence.createEntityManagerFactory("todo-pu");
     }
 
-
     public void cadastrar(User user) throws Exception {
         EntityManager em = emf.createEntityManager();
         try{
@@ -26,43 +25,34 @@ public class UserDAO implements IUserRepositorio {
             em.getTransaction().commit();
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new Exception("Erro ao salvar usuário no banco de dados");
         } finally {
             em.close();
         }
     }
-
-    public boolean encontrar(String username, String password) throws Exception {
+    
+    public User buscarPorUsername(String username) throws Exception {
         EntityManager em = emf.createEntityManager();
         try {
-            // Query JPQL que busca por username E password
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.username = :user AND u.password = :pass", User.class)
-            .setParameter("user", username)
-            .setParameter("pass", password);
-
-            List<User> resultado = query.getResultList();
-
-            return !resultado.isEmpty();
-        } catch (Exception e) {
-            throw new Exception("Erro ao buscar no Banco de dados");
-        }
-        finally {
-            em.close();
-        }
-    }
-
-    public List<User> buscarUsuario(String username, String password) throws Exception {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery("SELECT u FROM User u WHERE u.username = :user AND u.password = :pass", User.class)
-                    .setParameter("user", username)
-                    .setParameter("pass", password)
-                    .getResultList();
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.username = :user", User.class)
+                    .setParameter("user", username);
+            
+            List<User> users = query.getResultList();
+            
+            if (users.isEmpty()) {
+                return null; 
+            }
+            
+            return users.get(0); 
+            
         } catch(Exception e ) {
+            e.printStackTrace();
             throw new Exception("Erro na conexão com o Banco de Dados");
-        }
-        finally {
+        } finally {
             em.close();
         }
     }
+    
+    
 }

@@ -11,23 +11,30 @@ public class UserService {
 
     public boolean cadastrarUsuario(User u) throws Exception {
     	
-    	u.setPassword(Auth.hashearSenha(u.getPassword()));
+    	User usuarioExistente = userDAO.buscarPorUsername(u.getUsername());
     	
-    	if(userDAO.encontrar(u.getUsername(), u.getPassword())) {
+    	if(usuarioExistente != null) {
             throw new Exception("Usuário já existe");
         } else {
+        	u.setPassword(Auth.hashearSenha(u.getPassword()));
             this.userDAO.cadastrar(u);
             return true;
         }
     }
 
     public User retornarUsuario(String username, String password) throws Exception {
-    	String senhaHas = Auth.hashearSenha(password);
+    	User usuarioEncontrado = userDAO.buscarPorUsername(username);
     	
-        if(!userDAO.encontrar(username, senhaHas)) {
+        if(usuarioEncontrado == null) {
             throw new Exception("Usuário não encontrado");
         }
-        return userDAO.buscarUsuario(username, senhaHas).getFirst();
+        
+        
+        if(!Auth.compararSenhas(password	,usuarioEncontrado.getPassword())) {
+        	throw new Exception("Senha incorreta");
+        }
+        
+        return usuarioEncontrado;
     }
 
 
