@@ -3,8 +3,8 @@ package view;
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 
-import interfaces.AtualizarPaineis; // Sua interface Mediator
-import controller.command.SalvarTarefaCommand; // O Comando que faz o trabalho duro
+import interfaces.AtualizarPaineis; 
+import controller.command.SalvarTarefaCommand; 
 
 import java.awt.*;
 import java.awt.event.ActionListener;

@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="lib/bson-5.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/mongodb-driver-core-5.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/mongodb-driver-sync-5.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/jbcrypt-0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
