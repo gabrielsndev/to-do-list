@@ -7,13 +7,14 @@ import java.time.format.DateTimeParseException;
 import javax.swing.JOptionPane;
 
 import modelo.Tarefa;
+import servico.SessionManager;
 import servico.TarefaServico;
 import persistencia.TarefaDAO;
 
 public class SalvarTarefaCommand implements Command {
 
     private Component parentView; // Para centralizar o JOptionPane
-    private TarefaServico tarefaServico;
+    private final TarefaServico tarefaServico = new TarefaServico(SessionManager.getInstance());
     
     // Dados brutos (Raw Data) vindos da tela
     private String titulo;
@@ -32,7 +33,6 @@ public class SalvarTarefaCommand implements Command {
         this.descricao = descricao;
         
         // Instancia o serviço (idealmente seria injetado, mas aqui instanciamos para simplificar o fluxo)
-        this.tarefaServico = new TarefaServico();
     }
 
     @Override

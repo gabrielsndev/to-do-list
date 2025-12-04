@@ -12,10 +12,8 @@ public class TarefaPrincipalCreator implements IViewCreator{
 	
 	public JFrame createView() throws Exception {
 		
-		TarefaDAO dao = new TarefaDAO();
-		TarefaServico servico = new TarefaServico();
-		
-		TarefaPrincipal view = new TarefaPrincipal(servico);
+
+		TarefaPrincipal view = new TarefaPrincipal();
 		return view;
 	}
 

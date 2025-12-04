@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import controller.command.Command;
 import controller.command.NavegarCommand;
+import servico.SessionManager;
 import view.creators.HomeCreator;
 import view.factory.IViewCreator;
 
@@ -26,11 +27,10 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
 	private PainelListarCriticas painelCriticas;
 	private PainelCadastrarTarefa painelCadastrar;
 	
-	private final TarefaServico servico;
+	private final TarefaServico servico = new TarefaServico(SessionManager.getInstance());
     
-    public TarefaPrincipal(TarefaServico servico) throws Exception {
-    	this.servico = servico;
-    	
+    public TarefaPrincipal() throws Exception {
+
         setTitle("Sistema de Tarefas");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

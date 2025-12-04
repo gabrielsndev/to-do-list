@@ -4,6 +4,8 @@ import java.awt.Component;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 
+import modelo.User;
+import servico.SessionManager;
 import servico.UserService;
 import view.creators.HomeCreator; // Precisamos do Creator da Home
 import view.factory.IViewCreator;
@@ -32,13 +34,15 @@ public class AutenticarCommand implements Command {
 
         try {
            
-            userService.retornarUsuario(username, password);
+            User user = userService.retornarUsuario(username, password);
+            SessionManager usuarioLogado = SessionManager.getInstance();
+            usuarioLogado.logarUsuario(user);
 
             JOptionPane.showMessageDialog(loginView, "Login realizado com sucesso!", "Bem-vindo", JOptionPane.INFORMATION_MESSAGE);
 
             IViewCreator homeCreator = new HomeCreator();
             Command irParaHome = new NavegarCommand(loginView, homeCreator);
-            irParaHome.execute(); 
+            irParaHome.execute();
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -69,6 +69,10 @@ public class User {
         return tarefasUsuario;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public void setTarefasUsuario(List<Tarefa> tarefasUsuario) {
         this.tarefasUsuario = tarefasUsuario;
     }

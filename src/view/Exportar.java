@@ -17,6 +17,7 @@ import interfaces.reportGerator.IGeradorRelatorioMensal;
 import modelo.Tarefa;
 import persistencia.TarefaDAO;
 import relatorios.GeradorDeRelatorios;
+import servico.SessionManager;
 import servico.TarefaServico;
 
 import javax.swing.JLabel;
@@ -33,8 +34,9 @@ public class Exportar extends JFrame {
 	private JTextField textFieldDiaEspecifico;
 	private JTextField textFieldMesEspecifico;
 	private JTextField textFieldData;
+    private final TarefaServico tarefaServico = new TarefaServico(SessionManager.getInstance());
 
-	public Exportar() {
+	public Exportar() throws Exception {
 		setTitle("Exportar");
 		setSize(800,600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -88,7 +90,6 @@ public class Exportar extends JFrame {
 	    
 	    btnEnviar.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	TarefaDAO taskDAO = new TarefaDAO();
 	            String destinatario = textFieldEmail.getText().trim();
 	            String data = textFieldData.getText().trim();
 	            
@@ -99,7 +100,7 @@ public class Exportar extends JFrame {
 	                	LocalDate dataFormatada = LocalDate.parse(data);
 	                    String mensagem = "Segue o relatório de tarefas em anexo.";
 						String nomeArquivo = "relatorio-" + dataFormatada + ".pdf";
-	                    List<Tarefa>todasTarefas = taskDAO.listar();
+	                    List<Tarefa>todasTarefas = tarefaServico.listarTarefa();
 
 						IGeradorRelatorioDiario gerador = GeradorDeRelatorios.createDailyGenerator("PDF");
 						gerador.gerarRelatorioDiario(todasTarefas, dataFormatada, nomeArquivo);
@@ -201,9 +202,8 @@ public class Exportar extends JFrame {
 						int mes = Integer.parseInt(parts[1]);
 
 						TarefaDAO tarefaDAO = new TarefaDAO();
-						List<Tarefa> tarefas = tarefaDAO.listar();
+						List<Tarefa> tarefas = tarefaServico.listarTarefa();
 
-						TarefaServico tarefaServico = new TarefaServico();
 						IGeradorRelatorioMensal gerador = GeradorDeRelatorios.createMonthlyGenerator("EXCEL", tarefaServico);
 
 						String nomeArquivo = "relatorio-" + ano + "-" + mes + ".xlsx";

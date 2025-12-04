@@ -15,8 +15,7 @@ public class TarefaDAO implements TarefaRepositorio {
     public TarefaDAO() {
         this.emf = Persistence.createEntityManagerFactory("todo-pu");
     }
-   
-   
+
     public void salvar(Tarefa t) {
        EntityManager em = emf.createEntityManager();
        try {
@@ -28,20 +27,22 @@ public class TarefaDAO implements TarefaRepositorio {
        }
     }
 
-    public List<Tarefa> listar(){
+    public List<Tarefa> listar(long idUser) {
 	   EntityManager em = emf.createEntityManager();
 	   try {
-           return em.createQuery("SELECT t FROM Tarefa t", Tarefa.class).getResultList();
+           return em.createQuery("SELECT t FROM Tarefa t WHERE t.user.id = :id", Tarefa.class)
+                   .setParameter("id", idUser)
+                   .getResultList();
        } finally {
            em.close();
        }
    }
-    public List<Tarefa> listarTarefaCritica(){
+    public List<Tarefa> listarTarefaCritica() {
        EntityManager em = emf.createEntityManager();
 
        try {
            return em.createQuery("SELECT t FROM Tarefa t WHERE t.critica = true", Tarefa.class).getResultList();
-       }finally {
+       } finally {
            em.close();
        }
    }

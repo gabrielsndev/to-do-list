@@ -1,5 +1,6 @@
 package view;
 
+import servico.SessionManager;
 import servico.TarefaServico;
 
 import java.awt.BorderLayout;
@@ -16,6 +17,7 @@ import java.awt.event.ActionEvent;
 
 public class Home extends JFrame {
 
+    private final SessionManager user = SessionManager.getInstance();
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
@@ -68,7 +70,7 @@ public class Home extends JFrame {
 
                 TarefaPrincipal tarefa = null;
                 try {
-                    tarefa = new TarefaPrincipal(new TarefaServico());
+                    tarefa = new TarefaPrincipal();
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -86,8 +88,13 @@ public class Home extends JFrame {
 		btnSubtarefa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				Exportar exportar = new Exportar();
-				exportar.setLocationRelativeTo(null);
+                Exportar exportar = null;
+                try {
+                    exportar = new Exportar();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                exportar.setLocationRelativeTo(null);
 				exportar.setVisible(true);
 			}
 			

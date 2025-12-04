@@ -14,15 +14,18 @@ public class TarefaServico implements ICalculadorProgresso {
 
     private final TarefaRepositorio tarefaRepositorio = new TarefaDAO();
     private final SubtarefaServico subtarefaServico = new SubtarefaServico();
+    private final SessionManager userLogado;
 
-    //vai receber o id do usuário depois
-    public TarefaServico() throws Exception {}
+    public TarefaServico(SessionManager u) throws Exception {
+        this.userLogado= u;
+    }
 
     public void criarTarefa(Tarefa tarefa) throws Exception {
         List<Tarefa> buscarTarefaNaData =  tarefaRepositorio.buscarDeadLine(tarefa.getDeadline());
         if (!buscarTarefaNaData.isEmpty()) {
             throw new Exception("Já existe uma tarefa marcada para essa data.");
         }
+        tarefa.setUser(userLogado.getUsuario());
         tarefaRepositorio.salvar(tarefa);
         subtarefaServico.iniciarLista(tarefa.getId());
     }
@@ -54,7 +57,7 @@ public class TarefaServico implements ICalculadorProgresso {
     }
 
     public List<Tarefa> listarTarefa(){
-        return tarefaRepositorio.listar();
+        return tarefaRepositorio.listar(this.userLogado.getUsuario().getId());
     }
 
     public List<Tarefa> listarTarefaCritica(List<Tarefa> tarefas) {
