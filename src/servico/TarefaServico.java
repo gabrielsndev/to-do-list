@@ -16,10 +16,8 @@ public class TarefaServico implements ICalculadorProgresso {
     private final SubtarefaServico subtarefaServico;
     private final SessionManager userLogado;
 
-    public TarefaServico(SessionManager u, TarefaRepositorio t) throws Exception {
+    public TarefaServico(SessionManager u) throws Exception {
         this.userLogado= u;
-        this.tarefaRepositorio = t;
-        this.subtarefaServico = new SubtarefaServico();
     }
 
     public void criarTarefa(Tarefa tarefa) throws Exception {

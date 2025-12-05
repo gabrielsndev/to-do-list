@@ -33,11 +33,7 @@ public class AutenticarCommand implements Command {
         }
 
         try {
-           
-            User user = userService.retornarUsuario(username, password);
-            SessionManager usuarioLogado = SessionManager.getInstance();
-            usuarioLogado.logarUsuario(user);
-
+            SessionManager.getInstance().logarUsuario(userService.retornarUsuario(username, password));
             JOptionPane.showMessageDialog(loginView, "Login realizado com sucesso!", "Bem-vindo", JOptionPane.INFORMATION_MESSAGE);
 
             IViewCreator homeCreator = new HomeCreator();
