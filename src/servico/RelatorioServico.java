@@ -1,24 +1,34 @@
 package servico;
 
-import email.Mensageiro;
-import interfaces.reportGerator.IGeradorRelatorioDiario;
-import modelo.Tarefa;
-import relatorios.GeradorDeRelatorios;
-
 import java.time.LocalDate;
 import java.util.List;
 
+import email.Mensageiro;
+import interfaces.reportGerator.IGeradorRelatorioDiario;
+import interfaces.reportGerator.IGeradorRelatorioMensal;
+import modelo.Tarefa;
+import persistencia.TarefaDAO;
+import relatorios.GeradorDeRelatorios;
+import strategy.IExportacaoStrategy;
+
 public class RelatorioServico {
+    private TarefaServico tarefaServico;
 
-    public void enviarRelatorioDoDiaPorEmail(LocalDate dia, List<Tarefa> tarefas, String destinatario) {
-        String nomeArquivo = "relatorio-" + dia + ".pdf";
-        String titulo = "Relatório de tarefas do dia: " + dia;
-
-        // 1. Gerar o PDF com nome personalizado usando a fábrica e interface corretas
-        IGeradorRelatorioDiario gerador = GeradorDeRelatorios.createDailyGenerator("PDF");
-        gerador.gerarRelatorioDiario(tarefas, dia, nomeArquivo);
-
-        // 2. Enviar o PDF gerado por e-mail
-        Mensageiro.enviarEmail(destinatario, titulo, nomeArquivo);
+    public RelatorioServico(SessionManager session) throws Exception {
+        this.tarefaServico = new TarefaServico(session, new TarefaDAO());
     }
+
+    
+    public void processarExportacao(IExportacaoStrategy estrategia) throws Exception {
+        
+        List<Tarefa> tarefas = tarefaServico.listarTarefa();
+
+        // O Serviço delega a execução para a estratégia
+        estrategia.exportar(tarefas);
+    }
+    
+    public TarefaServico getTarefaServico() {
+        return this.tarefaServico;
+    }
+  
 }

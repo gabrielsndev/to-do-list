@@ -27,10 +27,12 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
 	private PainelListarCriticas painelCriticas;
 	private PainelCadastrarTarefa painelCadastrar;
 	
-	private final TarefaServico servico = new TarefaServico(SessionManager.getInstance());
+	private final TarefaServico servico;
     
-    public TarefaPrincipal() throws Exception {
-
+    public TarefaPrincipal(TarefaServico s) throws Exception {
+    	
+    	this.servico = s;
+    	
         setTitle("Sistema de Tarefas");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

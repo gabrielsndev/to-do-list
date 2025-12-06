@@ -12,12 +12,14 @@ import java.util.Optional;
 
 public class TarefaServico implements ICalculadorProgresso {
 
-    private final TarefaRepositorio tarefaRepositorio = new TarefaDAO();
-    private final SubtarefaServico subtarefaServico = new SubtarefaServico();
+    private final TarefaRepositorio tarefaRepositorio;
+    private final SubtarefaServico subtarefaServico;
     private final SessionManager userLogado;
 
-    public TarefaServico(SessionManager u) throws Exception {
+    public TarefaServico(SessionManager u, TarefaRepositorio t) throws Exception {
         this.userLogado= u;
+        this.tarefaRepositorio = t;
+        this.subtarefaServico = new SubtarefaServico();
     }
 
     public void criarTarefa(Tarefa tarefa) throws Exception {

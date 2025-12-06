@@ -2,6 +2,11 @@ package view;
 
 import servico.SessionManager;
 import servico.TarefaServico;
+import view.creators.ExportarCreator;
+import view.creators.HomeCreator;
+import view.creators.PainelEventoCreator;
+import view.creators.TarefaPrincipalCreator;
+import view.factory.IViewCreator;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -9,6 +14,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controller.command.Command;
+import controller.command.NavegarCommand;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -20,23 +29,6 @@ public class Home extends JFrame {
     private final SessionManager user = SessionManager.getInstance();
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Home frame = new Home();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	} 
 	
 	public Home() {
 		setTitle("home");
@@ -65,21 +57,19 @@ public class Home extends JFrame {
 		JButton btnNewButton = new JButton("Tarefa");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
-
-
-                TarefaPrincipal tarefa = null;
-                try {
-                    tarefa = new TarefaPrincipal();
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-                tarefa.setLocationRelativeTo(null);
-
-
-				tarefa.setVisible(true);
+			    
+        		IViewCreator tarefaPrincipal = new TarefaPrincipalCreator();
+        		Command navegar = new NavegarCommand(Home.this, tarefaPrincipal);
+        		try {
+					navegar.execute();
+				} catch (Exception e1) {
+				
+					e1.printStackTrace();
+				}
 				
 			}
+			
+		    
 		});
 		btnNewButton.setBounds(10, 125, 80, 29);
 		panel.add(btnNewButton);
@@ -87,15 +77,16 @@ public class Home extends JFrame {
 		JButton btnSubtarefa = new JButton("Exportar");
 		btnSubtarefa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
-                Exportar exportar = null;
-                try {
-                    exportar = new Exportar();
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-                exportar.setLocationRelativeTo(null);
-				exportar.setVisible(true);
+				
+        		IViewCreator exportar = new ExportarCreator();
+        		Command navegar = new NavegarCommand(Home.this, exportar);
+        		try {
+					navegar.execute();
+				} catch (Exception e1) {
+				
+					e1.printStackTrace();
+				}
+				
 			}
 			
 		});
@@ -105,12 +96,18 @@ public class Home extends JFrame {
 		JButton btnEvento = new JButton("Evento");
 		btnEvento.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
-				PainelEvento evento = new PainelEvento();
-				evento.setLocationRelativeTo(null);
-				evento.setVisible(true);
-			}
 			
+        		IViewCreator painelEvento = new PainelEventoCreator();
+        		Command navegar = new NavegarCommand(Home.this, painelEvento);
+        		try {
+					navegar.execute();
+				} catch (Exception e1) {
+				
+					e1.printStackTrace();
+				}
+				
+			}
+				
 		});
 		
 		btnEvento.setBounds(192, 125, 80, 29);
