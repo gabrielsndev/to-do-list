@@ -15,10 +15,9 @@ public class ExportarPlanilhaCommand implements Command {
     private RelatorioServico relatorioServico;
 
     public ExportarPlanilhaCommand(Component parentView, JTextField mesField) throws Exception {
-    	SessionManager session = SessionManager.getInstance();
         this.parentView = parentView;
         this.mesField = mesField;
-        this.relatorioServico = new RelatorioServico(session);
+        this.relatorioServico = new RelatorioServico();
     }
 
     @Override

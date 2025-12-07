@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.EventObject;
 
 import modelo.Tarefa;
+import persistencia.TarefaDAO;
 
 public class ButtonEditor extends DefaultCellEditor {
     private final JButton button;

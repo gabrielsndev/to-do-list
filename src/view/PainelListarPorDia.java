@@ -8,6 +8,8 @@ import model.ButtonRenderer;
 import model.DataPrazoRender;
 import model.TipoDAO;
 import model.ButtonEditor;
+import persistencia.TarefaDAO;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javax.swing.table.DefaultTableModel;

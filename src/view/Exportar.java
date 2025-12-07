@@ -33,7 +33,7 @@ public class Exportar extends JFrame {
 	private JTextField textFieldDiaEspecifico;
 	private JTextField textFieldMesEspecifico;
 	private JTextField textFieldData;
-    private final TarefaServico tarefaServico = new TarefaServico(SessionManager.getInstance());
+    private final TarefaServico tarefaServico = new TarefaServico();
 
 	public Exportar() throws Exception {
 		setTitle("Exportar");
@@ -200,7 +200,6 @@ public class Exportar extends JFrame {
 						int ano = Integer.parseInt(parts[0]);
 						int mes = Integer.parseInt(parts[1]);
 
-						TarefaDAO tarefaDAO = new TarefaDAO();
 						List<Tarefa> tarefas = tarefaServico.listarTarefa();
 
 						IGeradorRelatorioMensal gerador = GeradorDeRelatorios.createMonthlyGenerator("EXCEL", tarefaServico);

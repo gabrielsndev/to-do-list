@@ -12,10 +12,9 @@ import relatorios.GeradorDeRelatorios;
 import strategy.IExportacaoStrategy;
 
 public class RelatorioServico {
-    private TarefaServico tarefaServico;
+    private TarefaServico tarefaServico = new TarefaServico();
 
-    public RelatorioServico(SessionManager session) throws Exception {
-        this.tarefaServico = new TarefaServico(session, new TarefaDAO());
+    public RelatorioServico() throws Exception {
     }
 
     

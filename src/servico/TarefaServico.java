@@ -2,6 +2,7 @@ package servico;
 import interfaces.ICalculadorProgresso;
 import modelo.Tarefa;
 import interfaces.repositorioInterface.TarefaRepositorio;
+import persistencia.SubtarefaDAO;
 import persistencia.TarefaDAO;
 
 import java.time.LocalDate;
@@ -12,12 +13,11 @@ import java.util.Optional;
 
 public class TarefaServico implements ICalculadorProgresso {
 
-    private final TarefaRepositorio tarefaRepositorio;
-    private final SubtarefaServico subtarefaServico;
-    private final SessionManager userLogado;
+    private final TarefaRepositorio tarefaRepositorio = new TarefaDAO();
+    private final SubtarefaServico subtarefaServico = new SubtarefaServico();
+    private final SessionManager userLogado = SessionManager.getInstance();
 
-    public TarefaServico(SessionManager u) throws Exception {
-        this.userLogado= u;
+    public TarefaServico() throws Exception {
     }
 
     public void criarTarefa(Tarefa tarefa) throws Exception {

@@ -113,5 +113,22 @@ public class Home extends JFrame {
 		btnEvento.setBounds(192, 125, 80, 29);
 		panel.add(btnEvento);
 
+		JButton btnSair = new JButton("Sair");
+		btnSair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SessionManager.getInstance().deslogar();
+        		IViewCreator telaLogin = new view.creators.TelaLoginCreator();
+        		Command navegar = new NavegarCommand(Home.this, telaLogin);
+        		try {
+					navegar.execute();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnSair.setBounds(93, 165, 95, 29);
+		panel.add(btnSair);
+
+
 	}
 }

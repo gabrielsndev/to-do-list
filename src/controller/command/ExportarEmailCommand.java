@@ -26,7 +26,7 @@ public class ExportarEmailCommand implements Command {
         this.emailField = emailField;
         this.dataField = dataField;
         
-        this.relatorioServico = new RelatorioServico(session);
+        this.relatorioServico = new RelatorioServico();
     }
 
     @Override
