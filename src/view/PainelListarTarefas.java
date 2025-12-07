@@ -7,7 +7,6 @@ import java.awt.*;
 import java.util.List;
 
 import modelo.Tarefa;
-import persistencia.TarefaDAO;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
 import model.TipoDAO;

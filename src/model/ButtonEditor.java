@@ -1,13 +1,10 @@
 package model;
 
 import persistencia.EventoDAO;
-import persistencia.TarefaDAO;
-import view.TarefaPrincipal;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.EventObject;

@@ -1,10 +1,8 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +17,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
@@ -28,9 +25,7 @@ import model.ButtonRenderer;
 import model.DataPrazoRender;
 import model.TipoDAO;
 import modelo.Evento;
-import modelo.Tarefa;
 import persistencia.EventoDAO;
-import persistencia.TarefaDAO;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;

@@ -2,13 +2,10 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.List;
 
 import modelo.Subtarefa;
 import modelo.Tarefa;
-import persistencia.SubtarefaDAO;
-import persistencia.TarefaDAO;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
 import model.TipoDAO;

@@ -9,8 +9,6 @@ import view.creators.HomeCreator;
 import view.factory.IViewCreator;
 
 
-import modelo.Tarefa;
-import persistencia.TarefaDAO;
 import servico.TarefaServico;
 
 import interfaces.AtualizarPaineis;
