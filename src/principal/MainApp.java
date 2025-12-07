@@ -16,6 +16,7 @@ public class MainApp {
                 try {
                 	System.out.println("Começando do outro main aaa");
                     IViewCreator telaInicial = new TelaLoginCreator();
+
                     
                     JFrame frameInicial = telaInicial.createView(); 
                     	

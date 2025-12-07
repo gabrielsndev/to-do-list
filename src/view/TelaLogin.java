@@ -8,7 +8,11 @@ import java.awt.event.ActionListener;
 import controller.command.AutenticarCommand;
 import controller.command.Command;
 import controller.command.NavegarCommand;
-import view.creators.CadastroUsuarioCreator; 
+import modelo.User;
+import persistencia.RedisUser;
+import servico.SessionManager;
+import view.creators.CadastroUsuarioCreator;
+import view.creators.HomeCreator;
 import view.factory.IViewCreator;
 
 public class TelaLogin extends JFrame {
@@ -18,9 +22,26 @@ public class TelaLogin extends JFrame {
     private JTextField txtNome;
     private JPasswordField txtSenha;
     private JButton btnEnviar;
+    private final RedisUser redisUser = new RedisUser();
     
     public TelaLogin() {
-    	
+
+        try {
+            User u = redisUser.getUsario();
+            if (u != null) {
+                try {
+                    IViewCreator homeCreator = new HomeCreator();
+                    Command irParaHome = new NavegarCommand(TelaLogin.this, homeCreator);
+                    irParaHome.execute();
+                    SessionManager.getInstance().logarUsuario(u);
+                    this.dispose();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         setTitle("Login");
         setSize(400, 350); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

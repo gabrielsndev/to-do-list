@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 
 import modelo.User;
+import persistencia.RedisUser;
 import servico.SessionManager;
 import servico.UserService;
 import view.creators.HomeCreator; // Precisamos do Creator da Home
@@ -34,6 +35,7 @@ public class AutenticarCommand implements Command {
 
         try {
             SessionManager.getInstance().logarUsuario(userService.retornarUsuario(username, password));
+            new RedisUser().salvarUsuario(userService.retornarUsuario(username, password));
             JOptionPane.showMessageDialog(loginView, "Login realizado com sucesso!", "Bem-vindo", JOptionPane.INFORMATION_MESSAGE);
 
             IViewCreator homeCreator = new HomeCreator();
