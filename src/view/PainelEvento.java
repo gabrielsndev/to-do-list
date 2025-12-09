@@ -8,6 +8,7 @@ import controller.command.Command;
 import controller.command.NavegarCommand;
 import view.creators.HomeCreator;
 import view.factory.IViewCreator;
+import interfaces.repositorioInterface.EventoRepositorio;
 import servico.EventoServico;
 import persistencia.EventoDAO;
 
@@ -18,7 +19,8 @@ public class PainelEvento extends JFrame {
     private final EventoServico eventoServico;
 
     public PainelEvento() {
-        this.eventoServico = new EventoServico(new EventoDAO());
+    	EventoRepositorio repositorio = new EventoDAO(); 
+        this.eventoServico = new EventoServico(repositorio);
 
         setTitle("Gerenciamento de Eventos");
         setSize(800, 600);
