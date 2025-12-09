@@ -1,6 +1,8 @@
 package servico;
 
 import modelo.Evento;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,11 @@ public class EventoServico{
         }
         eventoRepositorio.salvar(evento);
         }
+    
+    public List<Evento> buscarEventosPorData(LocalDate data) {
+     
+        return eventoRepositorio.buscarPorData(data);
+    }
 
     public void atualizarEvento(Evento evento) throws Exception {
         List<Evento> eventosNaData = eventoRepositorio.buscarPorData(evento.getData());

@@ -1,25 +1,27 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.List;
-import modelo.Tarefa;
-import model.ButtonRenderer;
-import model.DataPrazoRender;
-import model.TipoDAO;
-import model.ButtonEditor;
-import persistencia.TarefaDAO;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import javax.swing.table.DefaultTableModel;
+import java.util.List;
+
+import modelo.Tarefa;
+import servico.TarefaServico; 
+import model.*; 
 
 public class PainelListarPorDia extends JPanel {
+
     private JTextField textFieldData;
     private JTable tabela;
     private DefaultTableModel modeloTabela;
+    
+    private TarefaServico tarefaServico;
 
-    public PainelListarPorDia() {
+    public PainelListarPorDia(TarefaServico servico) {
+        this.tarefaServico = servico;
+        
         setLayout(null);
 
         JLabel lblTitulo = new JLabel("Lista de Tarefas Por Dia");
@@ -42,27 +44,36 @@ public class PainelListarPorDia extends JPanel {
         add(btnBuscar);
 
         String[] colunas = {"ID", "Titulo", "Data", "Descrição", "Status", "Prioridade", "Editar", "Apagar"};
-        modeloTabela = new DefaultTableModel(null, colunas);
+        
+        modeloTabela = new DefaultTableModel(null, colunas) {
+             @Override
+             public boolean isCellEditable(int row, int column) {
+                 return column == 4 || column == 6 || column == 7;
+             }
+        };
+        
         tabela = new JTable(modeloTabela);
+        this.configuringTabela();
 
         JScrollPane scrollPane = new JScrollPane(tabela);
         scrollPane.setBounds(10, 80, 760, 400);
         add(scrollPane);
 
+        btnBuscar.addActionListener(e -> buscarTarefasPorDia());
+    }
+    
+    private void configuringTabela() {
         tabela.removeColumn(tabela.getColumn("ID"));
 
         String[] statusOptions = {"Pendente", "Concluída", "Atrasada"};
         tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(new JComboBox<>(statusOptions)));
-
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar",TipoDAO.TAREFA));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", TipoDAO.TAREFA));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar",TipoDAO.TAREFA));
-
-        btnBuscar.addActionListener(e -> buscarTarefasPorDia());
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.TAREFA));
     }
 
     private void buscarTarefasPorDia() {
@@ -75,15 +86,16 @@ public class PainelListarPorDia extends JPanel {
         try {
             LocalDate data = LocalDate.parse(texto, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-            TarefaDAO dao = new TarefaDAO();
-            List<Tarefa> tarefas = dao.buscarDeadLine(data);
+            List<Tarefa> tarefas = tarefaServico.buscarTarefasPorData(data); 
 
             modeloTabela.setRowCount(0);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            
             for (Tarefa t : tarefas) {
                 modeloTabela.addRow(new Object[]{
                     t.getId(),
                     t.getTitulo(),
-                    t.getDeadline().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                    t.getDeadline().format(dtf),
                     t.getDescricao(),
                     "Pendente",
                     t.getPrioridade(),
@@ -92,7 +104,8 @@ public class PainelListarPorDia extends JPanel {
                 });
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Data inválida", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Data inválida ou erro na busca.", "Erro", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
     }
 }

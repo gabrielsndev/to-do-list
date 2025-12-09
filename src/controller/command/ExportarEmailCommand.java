@@ -49,13 +49,10 @@ public class ExportarEmailCommand implements Command {
             }
 
             
-            // cria a estratégia específica, passando os dados que ela precisa (email e data)
             IExportacaoStrategy estrategia = new ExportarEmailPdfStrategy(destinatario, data);
             
-            // O serviço vai buscar as tarefas do banco e entregar para a estratégia.
+            
             relatorioServico.processarExportacao(estrategia);
-
-
 
             JOptionPane.showMessageDialog(parentView, "E-mail enviado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 

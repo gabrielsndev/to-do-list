@@ -66,19 +66,17 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
         tabbedPane.addTab("Listar Tarefas", painelListar);
         tabbedPane.addTab("Cadastrar Tarefas", painelCadastrar);
         tabbedPane.addTab("Subtarefas", painelSubtarefa);
-        tabbedPane.addTab("Listar Tarefa Por Dia", new PainelListarPorDia());
+        tabbedPane.addTab("Listar Tarefa Por Dia", new PainelListarPorDia(this.servico));
         tabbedPane.addTab("Listar Tarefas Criticas", painelCriticas);
 
         getContentPane().add(tabbedPane);
         setVisible(true);
     }
 
-	    
     
     // public void salvarTarefa(Tarefa tarefa) {
     //	dao.salvar(tarefa);
     // }
-
 	
 	public void atualizar() {
 		this.painelListar.atualizarLista(servico.listarTarefa());

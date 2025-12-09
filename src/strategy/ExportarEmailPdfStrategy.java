@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import modelo.Tarefa;
 import relatorios.GeradorDeRelatorios;
+import servico.SessionManager;
 import interfaces.reportGerator.IGeradorRelatorioDiario;
 import email.Mensageiro;
 
@@ -29,5 +30,6 @@ public class ExportarEmailPdfStrategy implements IExportacaoStrategy {
         Mensageiro.enviarEmail(destinatario, mensagem, nomeArquivo);
         
         System.out.println("Estratégia Email executada.");
+        System.out.println("Usuario: " + SessionManager.getInstance().getUsuario());
     }
 }

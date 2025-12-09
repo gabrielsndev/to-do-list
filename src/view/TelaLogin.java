@@ -34,7 +34,7 @@ public class TelaLogin extends JFrame {
                     Command irParaHome = new NavegarCommand(TelaLogin.this, homeCreator);
                     irParaHome.execute();
                     SessionManager.getInstance().logarUsuario(u);
-                    this.dispose();
+                    
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -105,7 +105,7 @@ public class TelaLogin extends JFrame {
 
         btnEnviar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	// Responsabilidade da View é apenas pegar os dados
+            	
                 String nome = txtNome.getText();
                 String senha = new String(txtSenha.getPassword());
                 

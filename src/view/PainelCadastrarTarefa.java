@@ -81,20 +81,20 @@ public class PainelCadastrarTarefa extends JPanel {
                 String prioridade = textFieldPrioridadeTarefa.getText();
                 String descricao = textFieldDescricaoTarefa.getText();
 
-                SalvarTarefaCommand command = null;
                 try {
-                    command = new SalvarTarefaCommand(PainelCadastrarTarefa.this, titulo,data,prioridade,descricao);
+                	SalvarTarefaCommand command = new SalvarTarefaCommand(PainelCadastrarTarefa.this, titulo,data,prioridade,descricao);
+                    command.execute();
+                    
+                    if (command.isSucesso()) {
+                    	limparCampos();
+                    	
+                    	atualizarPaineis.atualizar();
+                    }
+                    
                 } catch (Exception ex) {
                     throw new RuntimeException("Erro na execução");
                 }
 
-                command.execute();
-
-                if (command.isSucesso()) {
-                    limparCampos();
-
-                    atualizarPaineis.atualizar();
-                }
             }
         });
     }

@@ -26,10 +26,8 @@ public class PainelListarCriticas extends JPanel {
         lblTitulo.setBounds(10, 11, 300, 28);
         add(lblTitulo);
 
-        // 1. Configura a estrutura da tabela (Uma única vez)
         configurarTabela();
         
-        //  Preenchendo com os dados iniciais
         atualizarTabelaCriticas(tarefasIniciais);
     }
 
@@ -37,7 +35,7 @@ public class PainelListarCriticas extends JPanel {
         modeloTabela = new DefaultTableModel(null, colunas) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Apenas colunas Editar(6) e Apagar(7) e Status(4) são editáveis
+              
                 return column == 4 || column == 6 || column == 7;
             }
         };
@@ -62,14 +60,11 @@ public class PainelListarCriticas extends JPanel {
         tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.TAREFA));
     }
     
-    // Apenas troca os dados, não redesenha a tela toda
     public void atualizarTabelaCriticas(List<Tarefa> tarefas) {
-        // Limpa as linhas atuais
         modeloTabela.setRowCount(0);
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-        // Adiciona as novas linhas
         for (Tarefa t : tarefas) {
             String dataFormatada = "";
             if (t.getDeadline() != null) {

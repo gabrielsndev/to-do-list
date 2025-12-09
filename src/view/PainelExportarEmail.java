@@ -40,7 +40,7 @@ public class PainelExportarEmail extends JPanel {
         btnEnviar.setBounds(324, 279, 117, 35);
         add(btnEnviar);
         
-        // Ação encapsulada no Command
+        // ação encapsulada no Command
         btnEnviar.addActionListener(e -> {
             
 			try {

@@ -12,6 +12,7 @@ import relatorios.GeradorDeRelatorios;
 import strategy.IExportacaoStrategy;
 
 public class RelatorioServico {
+	
     private TarefaServico tarefaServico = new TarefaServico();
 
     public RelatorioServico() throws Exception {

@@ -54,11 +54,13 @@
 	            }
 
 	            int prioridade;
+	            
 	            try {
 	                prioridade = Integer.parseInt(this.prioridadeTexto);
 	            } catch (NumberFormatException e) {
 	                throw new IllegalArgumentException("A prioridade deve ser um número inteiro.");
 	            }
+	            
 	            Tarefa t = new Tarefa(titulo, descricao, deadline, prioridade);
 	            tarefaServico.criarTarefa(t);
 
@@ -78,7 +80,6 @@
 	        }
 	    }
 
-	    // Método para a View saber se deve limpar os campos e notificar o Mediator
 	    public boolean isSucesso() {
 	        return sucesso;
 	    }

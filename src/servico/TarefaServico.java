@@ -42,8 +42,23 @@ public class TarefaServico implements ICalculadorProgresso {
             throw new Exception("Tarefa não encontrada!");
         }
 
-
-
+    }
+    
+    public List<Tarefa> buscarTarefasPorData(LocalDate data) {
+        // Busca tarefas pela data
+        List<Tarefa> tarefasNaData = tarefaRepositorio.buscarDeadLine(data);
+        
+        // Filtra apenas as tarefas do usuário logado (Regra de Segurança)
+        List<Tarefa> tarefasDoUsuario = new ArrayList<>();
+        if (userLogado.getUsuario() != null) {
+            Long idLogado = userLogado.getUsuario().getId();
+            for (Tarefa t : tarefasNaData) {
+                if (t.getUser() != null && t.getUser().getId().equals(idLogado)) {
+                    tarefasDoUsuario.add(t);
+                }
+            }
+        }
+        return tarefasDoUsuario;
     }
 
     public void atualizarTarefa(Tarefa tarefa) throws Exception {

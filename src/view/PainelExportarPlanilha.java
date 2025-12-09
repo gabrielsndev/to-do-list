@@ -50,7 +50,7 @@ public class PainelExportarPlanilha extends JPanel {
         btnMes.setBounds(307, 356, 125, 33);
         add(btnMes);
         
-        // Ação encapsulada no Command
+        // ação encapsulada no Command
         btnMes.addActionListener(e -> {
             
 			try {

@@ -84,4 +84,8 @@ public class User {
     public void setEventosUsuario(List<Evento> eventosUsuario) {
         this.eventosUsuario = eventosUsuario;
     }
+    
+    public String toString() {
+    	return this.username;
+    }
 }
