@@ -1,5 +1,6 @@
 package modelo;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -11,23 +12,31 @@ public class Tarefa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Long id;
     
     @Column(nullable = false, length = 100)
+    @Expose
     private String titulo;
     
     @Column( length = 250)
+    @Expose
     private String descricao;
-    
+
+    @Expose
     private LocalDate deadline;
   
     @Column(nullable = false)
+    @Expose
     private Integer prioridade;
-    
+
+    @Expose
     private Boolean critica;
+    @Expose
     private Integer diasCriticos = 3;
 
     @Transient
+    @Expose
     private List<Subtarefa> subtarefas = new ArrayList<>();
 
     //Tem que ajeitar pra adicionar o id do usuário

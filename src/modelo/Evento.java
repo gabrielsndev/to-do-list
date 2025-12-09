@@ -1,5 +1,6 @@
 package modelo;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -10,19 +11,23 @@ public class Evento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Long id;
     
     @Column(nullable = false, length = 100)
+    @Expose
     private String titulo;
 
     @Column(length = 100)
+    @Expose
     private String descricao;
     
     @Column(nullable = false)
+    @Expose
     private LocalDate data;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true) // por enquanto pode ser true
+    @JoinColumn(name = "user", nullable = true) // por enquanto pode ser true
     private User user;
 
 

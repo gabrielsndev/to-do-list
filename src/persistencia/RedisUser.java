@@ -14,6 +14,8 @@ public class RedisUser {
     private static JedisPool pool = new JedisPool("localhost", 6379);
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .excludeFieldsWithoutExposeAnnotation()
+            .setPrettyPrinting()
             .create();
 
     public void salvarUsuario(User user) {

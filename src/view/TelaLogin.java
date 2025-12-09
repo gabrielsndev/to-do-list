@@ -25,28 +25,27 @@ public class TelaLogin extends JFrame {
     private final RedisUser redisUser = new RedisUser();
     
     public TelaLogin() {
+//        try {
+//            User u = redisUser.getUsario();
+//            if (u != null) {
+//                try {
+//                    IViewCreator homeCreator = new HomeCreator();
+//                    Command irParaHome = new NavegarCommand(TelaLogin.this, homeCreator);
+//                    irParaHome.execute();
+//                    SessionManager.getInstance().logarUsuario(u);
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
 
-        try {
-            User u = redisUser.getUsario();
-            if (u != null) {
-                try {
-                    IViewCreator homeCreator = new HomeCreator();
-                    Command irParaHome = new NavegarCommand(TelaLogin.this, homeCreator);
-                    irParaHome.execute();
-                    SessionManager.getInstance().logarUsuario(u);
-                    
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         setTitle("Login");
-        setSize(400, 350); 
+        setSize(400, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); 
-        
+        setLocationRelativeTo(null);
+
         JPanel contentPane = new JPanel();
         contentPane.setLayout(null);
         setContentPane(contentPane);

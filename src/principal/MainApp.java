@@ -1,5 +1,12 @@
 package principal;
 
+import controller.command.Command;
+import controller.command.NavegarCommand;
+import modelo.User;
+import persistencia.RedisUser;
+import servico.SessionManager;
+import view.TelaLogin;
+import view.creators.TarefaPrincipalCreator;
 import view.factory.IViewCreator;
 import view.creators.CadastroUsuarioCreator;
 import view.creators.HomeCreator;
@@ -15,16 +22,30 @@ public class MainApp {
             public void run() {
                 try {
                 	System.out.println("Começando do outro main aaa");
-                    IViewCreator telaInicial = new TelaLoginCreator();
+                    RedisUser redisUser = new RedisUser();
+                    User u = redisUser.getUsario();
 
-                    
-                    JFrame frameInicial = telaInicial.createView(); 
-                    	
+                    IViewCreator telaInicial;
+                    if (u != null) {
+                        try {
+                            telaInicial = new HomeCreator();
+                            SessionManager.getInstance().logarUsuario(u);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        telaInicial = new TelaLoginCreator();
+                    }
+                    JFrame frameInicial = telaInicial.createView();
                     frameInicial.setLocationRelativeTo(null);
                     frameInicial.setVisible(true);
-                    
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                } catch (RuntimeException e) {
+                    throw new RuntimeException(e);
+
+
+            } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         });

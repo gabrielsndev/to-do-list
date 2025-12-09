@@ -1,5 +1,6 @@
 package view;
 
+import persistencia.RedisUser;
 import servico.SessionManager;
 import servico.TarefaServico;
 import view.creators.ExportarCreator;
@@ -117,6 +118,7 @@ public class Home extends JFrame {
 		btnSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SessionManager.getInstance().deslogar();
+                new RedisUser().limparRedis();
         		IViewCreator telaLogin = new view.creators.TelaLoginCreator();
         		Command navegar = new NavegarCommand(Home.this, telaLogin);
         		try {
