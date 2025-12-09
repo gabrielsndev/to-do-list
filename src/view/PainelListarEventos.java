@@ -8,6 +8,7 @@ import java.util.List;
 
 import modelo.Evento;
 import servico.EventoServico;
+import strategyButton.EventoStrategy;
 import model.*; 
 
 public class PainelListarEventos extends JPanel {
@@ -31,7 +32,7 @@ public class PainelListarEventos extends JPanel {
         
         tabela = new JTable(modeloTabela);
         configurarTabela();
-        atualizarTabela(); // Carrega dados usando o serviço
+        atualizarTabela(); 
         
         add(new JScrollPane(tabela), BorderLayout.CENTER);
     }
@@ -43,12 +44,16 @@ public class PainelListarEventos extends JPanel {
         tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(new JComboBox<>(statusOptions)));
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
         
+        EventoStrategy strategy = new EventoStrategy(this.eventoServico);
+
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", TipoDAO.EVENTO));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", strategy));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.EVENTO));
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", strategy));
     }
+    
+    
     
     private void atualizarTabela() {
         List<Evento> lista = eventoServico.listarTodosOsEventos();

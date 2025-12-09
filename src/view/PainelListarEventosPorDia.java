@@ -5,11 +5,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import modelo.Evento;
 import servico.EventoServico;
+import strategyButton.EventoStrategy;
 import model.*;
 
 public class PainelListarEventosPorDia extends JPanel {
@@ -47,18 +47,28 @@ public class PainelListarEventosPorDia extends JPanel {
         modeloTabela = new DefaultTableModel(null, colunas);
         tabela = new JTable(modeloTabela);
         
-        tabela.removeColumn(tabela.getColumn("ID"));
-        tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
-        tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", TipoDAO.EVENTO));
-        tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.EVENTO));
+        configurarTabela();
 
         JScrollPane scrollPane = new JScrollPane(tabela);
         scrollPane.setBounds(10, 95, 759, 427);
         add(scrollPane);
 
         btnBuscar.addActionListener(e -> buscar());
+    }
+
+    private void configurarTabela() {
+        tabela.removeColumn(tabela.getColumn("ID"));
+        
+        tabela.getColumn("Status").setCellEditor(new DefaultCellEditor(new JComboBox<>(new String[]{"Pendente", "Concluída"})));
+        tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
+        
+        EventoStrategy strategy = new EventoStrategy(this.eventoServico);
+
+        tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", strategy));
+
+        tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", strategy));
     }
 
     private void buscar() {
@@ -72,7 +82,6 @@ public class PainelListarEventosPorDia extends JPanel {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDate dataBusca = LocalDate.parse(texto, dtf);
             
-
             List<Evento> eventos = eventoServico.buscarEventosPorData(dataBusca);
 
             modeloTabela.setRowCount(0);

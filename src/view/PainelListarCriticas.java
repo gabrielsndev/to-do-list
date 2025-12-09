@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import modelo.Tarefa;
+import strategyButton.TarefaStrategy;
 import model.*; // ButtonEditor, ButtonRenderer, etc.
 
 public class PainelListarCriticas extends JPanel {
@@ -54,10 +55,10 @@ public class PainelListarCriticas extends JPanel {
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", TipoDAO.TAREFA));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", new TarefaStrategy()));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.TAREFA));
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", new TarefaStrategy()));
     }
     
     public void atualizarTabelaCriticas(List<Tarefa> tarefas) {

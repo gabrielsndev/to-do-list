@@ -44,28 +44,28 @@ public class PainelListarSubtarefas extends JPanel {
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", TipoDAO.TAREFA));
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", null));
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.TAREFA) {
-             private static final long serialVersionUID = 1L;
-             
-             // Lógica de apagar encapsulada aqui (pode ser movida para Command depois)
-             protected void onClick(JTable table, int row) {
-                 int confirm = JOptionPane.showConfirmDialog(table, "Excluir subtarefa?", "Confirmar", JOptionPane.YES_NO_OPTION);
-                 if (confirm == JOptionPane.YES_OPTION) {
-                     try {
-                         int modelRow = table.convertRowIndexToModel(row);
-                         String id = table.getModel().getValueAt(modelRow, 0).toString();
-                         servico.remover(id); // Assume que recebe String ou Long conforme seu DAO
-                         ((DefaultTableModel) table.getModel()).removeRow(modelRow);
-                     } catch (Exception e) {
-                         e.printStackTrace();
-                     }
-                 }
-             }
-        });
-    }
+//        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.TAREFA) {
+////             private static final long serialVersionUID = 1L;
+////             
+////             // Lógica de apagar encapsulada aqui (pode ser movida para Command depois)
+////             protected void onClick(JTable table, int row) {
+////                 int confirm = JOptionPane.showConfirmDialog(table, "Excluir subtarefa?", "Confirmar", JOptionPane.YES_NO_OPTION);
+////                 if (confirm == JOptionPane.YES_OPTION) {
+////                     try {
+////                         int modelRow = table.convertRowIndexToModel(row);
+////                         String id = table.getModel().getValueAt(modelRow, 0).toString();
+////                         servico.remover(id); // Assume que recebe String ou Long conforme seu DAO
+////                         ((DefaultTableModel) table.getModel()).removeRow(modelRow);
+////                     } catch (Exception e) {
+////                         e.printStackTrace();
+////                     }
+////                 }
+////             }
+////        });
+}
 
     // Método chamado pelo Pai para atualizar a tabela
     public void atualizarTabela(List<Tarefa> tarefasPai) {

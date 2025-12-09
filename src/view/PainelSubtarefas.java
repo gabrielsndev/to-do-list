@@ -30,9 +30,9 @@ public class PainelSubtarefas extends JPanel {
         atualizarPainel(tarefasIniciais);
     }
 
-
+    // MEDIATOR ??? S
     public void atualizarPainel(List<Tarefa> tarefas) {
-        // Atualiza o ComboBox do painel de cadastro
+
         if (painelCadastro != null) {
             painelCadastro.carregarTarefas(tarefas);
         }

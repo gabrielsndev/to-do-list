@@ -20,7 +20,7 @@ public class EventoServico{
     public void criarEvento(Evento evento) throws Exception {
         List<Evento> eventosNaData = eventoRepositorio.buscarPorData(evento.getData());
 
-        if(eventosNaData.isEmpty()){
+        if(!eventosNaData.isEmpty()){
             throw new Exception("Já existe um evento agendado para essa data");
         }
         eventoRepositorio.salvar(evento);

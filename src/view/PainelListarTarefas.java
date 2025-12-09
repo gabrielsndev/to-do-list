@@ -6,10 +6,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+import strategyButton.TarefaStrategy;
 import modelo.Tarefa;
 import model.ButtonRenderer;
 import model.DataPrazoRender;
-import model.TipoDAO;
 import model.ButtonEditor;
 
 public class PainelListarTarefas extends JPanel {
@@ -58,11 +58,13 @@ public class PainelListarTarefas extends JPanel {
 
         tabela.getColumn("Data").setCellRenderer(new DataPrazoRender());
 
+        
         tabela.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", TipoDAO.TAREFA));
+        
+        tabela.getColumn("Editar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Editar", new TarefaStrategy()) );
 
         tabela.getColumn("Apagar").setCellRenderer(new ButtonRenderer("Apagar"));
-        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", TipoDAO.TAREFA));
+        tabela.getColumn("Apagar").setCellEditor(new ButtonEditor(new JCheckBox(), tabela, "Apagar", new TarefaStrategy()) );
     }
     
     public void atualizarLista(List<Tarefa> tarefas) {
