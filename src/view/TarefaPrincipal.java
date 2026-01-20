@@ -56,8 +56,6 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
         
         tabbedPane = new JTabbedPane();
         tabbedPane.setBounds(0, 0, 784, 561);
-
-        
         painelListar = new PainelListarTarefas(servico.listarTarefa());
         painelCadastrar = new PainelCadastrarTarefa(this);
         painelSubtarefa = new PainelSubtarefas(servico.listarTarefa());
@@ -73,10 +71,7 @@ public class TarefaPrincipal extends JFrame implements AtualizarPaineis{
         setVisible(true);
     }
 
-    
-    // public void salvarTarefa(Tarefa tarefa) {
-    //	dao.salvar(tarefa);
-    // }
+
 	
 	public void atualizar() {
 		this.painelListar.atualizarLista(servico.listarTarefa());

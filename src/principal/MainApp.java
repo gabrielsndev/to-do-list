@@ -21,7 +21,6 @@ public class MainApp {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                	System.out.println("Começando do outro main aaa");
                     RedisUser redisUser = new RedisUser();
                     User u = redisUser.getUsario();
 

@@ -18,15 +18,6 @@ public class PainelExportarEmail extends JPanel {
         lblTitulo.setBounds(267, 48, 234, 62);
         add(lblTitulo);
         
-        JLabel lblEmail = new JLabel("Digite o Email:");
-        lblEmail.setFont(new Font("Tahoma", Font.BOLD, 12));
-        lblEmail.setBounds(267, 119, 250, 14);
-        add(lblEmail);
-
-        textFieldEmail = new JTextField();
-        textFieldEmail.setBounds(277, 144, 224, 31);
-        add(textFieldEmail);
-        
         JLabel lblData = new JLabel("Digite a data (YYYY-MM-DD):");
         lblData.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblData.setBounds(277, 191, 300, 14);
@@ -44,7 +35,7 @@ public class PainelExportarEmail extends JPanel {
         btnEnviar.addActionListener(e -> {
             
 			try {
-				Command command = new ExportarEmailCommand(PainelExportarEmail.this,textFieldEmail, textFieldData);
+				Command command = new ExportarEmailCommand(PainelExportarEmail.this, textFieldData);
 				command.execute();
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block

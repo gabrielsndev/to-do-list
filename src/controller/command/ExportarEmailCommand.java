@@ -20,10 +20,9 @@ public class ExportarEmailCommand implements Command {
     private JTextField dataField;
     private RelatorioServico relatorioServico;
 
-    public ExportarEmailCommand(Component parentView, JTextField emailField, JTextField dataField) throws Exception {
+    public ExportarEmailCommand(Component parentView, JTextField dataField) throws Exception {
         SessionManager session = SessionManager.getInstance();
         this.parentView = parentView;
-        this.emailField = emailField;
         this.dataField = dataField;
         
         this.relatorioServico = new RelatorioServico();
@@ -31,7 +30,7 @@ public class ExportarEmailCommand implements Command {
 
     @Override
     public void execute() {
-        String destinatario = emailField.getText().trim();
+        String destinatario = SessionManager.getInstance().getUsuario().getEmail();
         String dataStr = dataField.getText().trim();
 
         if (destinatario.isEmpty() || dataStr.isEmpty()) {

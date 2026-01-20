@@ -33,5 +33,7 @@
 	<classpathentry kind="lib" path="lib/mongodb-driver-core-5.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/mongodb-driver-sync-5.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/jbcrypt-0.4.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/jedis-5.2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
