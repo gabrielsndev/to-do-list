@@ -1,5 +1,6 @@
 package modelo;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -10,13 +11,25 @@ public class Evento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private Long id;
-
+    
+    @Column(nullable = false, length = 100)
+    @Expose
     private String titulo;
 
+    @Column(length = 100)
+    @Expose
     private String descricao;
+    
+    @Column(nullable = false)
+    @Expose
+    private LocalDate data;
 
-    private LocalDate data; // Data do evento
+    @ManyToOne
+    @JoinColumn(name = "user", nullable = true) // por enquanto pode ser true
+    private User user;
+
 
     public Evento() {}
 
@@ -42,6 +55,10 @@ public class Evento {
         return data;
     }
 
+    public User getUser() {return user; }
+
+
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -58,13 +75,11 @@ public class Evento {
         this.data = data;
     }
 
-    // Método para calcular quantos dias faltam para o evento
-    public long diasRestantes() {
-        return ChronoUnit.DAYS.between(LocalDate.now(), this.data);
-    }
+    public void setUser(User user) { this.user = user; }
+
 
     @Override
     public String toString() {
-        return titulo + " - " + descricao + " (Faltam " + diasRestantes() + " dias)";
+        return titulo + " - " + descricao;
     }
 }

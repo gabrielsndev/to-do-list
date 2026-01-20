@@ -7,9 +7,10 @@ import view.factory.IViewCreator;
 
 public class PainelEventoCreator implements IViewCreator{
 
+	
 	public JFrame createView() {
 		PainelEvento view = new PainelEvento();
 		return view;
 	}
-
+	
 }

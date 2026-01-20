@@ -7,10 +7,13 @@ import view.factory.IViewCreator;
 
 public class ExportarCreator implements IViewCreator{
 
-
 	public JFrame createView() {
-        Exportar view = new Exportar();
-        return view;
+        try {
+            Exportar view = new Exportar();
+            return view;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 }

@@ -3,214 +3,56 @@ package view;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.border.EmptyBorder;
 
-import email.Mensageiro;
-import modelo.Tarefa;
-import persistencia.TarefaDAO;
-import relatorios.GeradorDeRelatorios;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import javax.swing.JTextField;
+import controller.command.Command;
+import controller.command.NavegarCommand;
+import view.creators.HomeCreator;
+import view.factory.IViewCreator;
 
 public class Exportar extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTextField textFieldEmail;
-	private JTextField textFieldDiaEspecifico;
-	private JTextField textFieldMesEspecifico;
-	private JTextField textFieldData;
 
 	public Exportar() {
-		setTitle("Exportar");
-		setSize(800,600);
+		setTitle("Exportar Relatórios");
+		setSize(800, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
 		
 		JButton btnVoltar = new JButton("Voltar");
-        btnVoltar.setBounds(690, 5, 80, 20); // posição no topo direito
+        btnVoltar.setBounds(690, 5, 80, 20); 
         getContentPane().add(btnVoltar);
         
         btnVoltar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		dispose();
-        		Home home = new Home();
-        		home.setVisible(true);
-        		home.setLocationRelativeTo(null);
+        	
+        		IViewCreator homeCreator = new HomeCreator();
+        		Command navegar = new NavegarCommand(Exportar.this, homeCreator);
         		
+        		try {
+					navegar.execute();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
         	}
         });
+        
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBounds(0, 0, 784, 561);
-        tabbedPane.addTab("Exportar Para o Email",painelEmail());
-        tabbedPane.addTab("Exportar Para Planilha",painelPlanilha());
         
+        tabbedPane.addTab("Exportar Para o Email", new PainelExportarEmail());
+        tabbedPane.addTab("Exportar Para Planilha", new PainelExportarPlanilha());
         
         getContentPane().add(tabbedPane);
+        
+        
         setVisible(true);
 	}
 	
-	private JPanel painelEmail() {
-	    JPanel email = new JPanel();
-	    email.setLayout(null);
-	    
-	    
-	    JLabel lblNewLabel = new JLabel("Exportar Para O Email");
-	    lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
-	    lblNewLabel.setBounds(267, 48, 234, 62);
-	    email.add(lblNewLabel);
-	    
-	    textFieldEmail = new JTextField();
-	    textFieldEmail.setBounds(277, 144, 224, 31);
-	    email.add(textFieldEmail);
-	    textFieldEmail.setColumns(10);
-	    
-	    JLabel lblNewLabel_1 = new JLabel("Digite o Email para receber o arquivo: ");
-	    lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-	    lblNewLabel_1.setBounds(267, 119, 234, 14);
-	    email.add(lblNewLabel_1);
-	    
-	    JButton btnEnviar = new JButton("Enviar");
-	    btnEnviar.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        	TarefaDAO taskDAO = new TarefaDAO();
-	            String destinatario = textFieldEmail.getText().trim();
-	            String data = textFieldData.getText().trim();
-	            
-	            
-	            if (!destinatario.isEmpty()) {
-	                try {
-	                	
-	                	LocalDate dataFormatada = LocalDate.parse(data);
-	                    String mensagem = "Segue o relatório de tarefas em anexo.";
-	                    String caminhoAnexo = null; 
-	                    List<Tarefa>todasTarefas = taskDAO.listar();
-	                    GeradorDeRelatorios.gerarRelatorioPDFDoDia(dataFormatada, todasTarefas, "aaaa!");
-	                    Mensageiro.enviarEmail(destinatario, mensagem, "relatorio.pdf");
-	                    
-	                    JOptionPane.showMessageDialog(btnEnviar, 
-	                        "E-mail enviado com sucesso!", 
-	                        "Sucesso", 
-	                        JOptionPane.INFORMATION_MESSAGE);
-	                } catch (Exception ex) {
-	                    JOptionPane.showMessageDialog(btnEnviar, 
-	                        "Erro ao enviar e-mail: " + ex.getMessage(), 
-	                        "Erro", 
-	                        JOptionPane.ERROR_MESSAGE);
-	                    ex.printStackTrace();
-	                }
-	            } else {
-	                JOptionPane.showMessageDialog(btnEnviar, 
-	                    "Preencha o campo de Email!", 
-	                    "Erro", 
-	                    JOptionPane.WARNING_MESSAGE);
-	            }
-	        }
-	    });
-	    btnEnviar.setBounds(324, 279, 117, 35);
-	    email.add(btnEnviar);
-	    
-	    textFieldData = new JTextField();
-	    textFieldData.setColumns(10);
-	    textFieldData.setBounds(277, 228, 224, 31);
-	    email.add(textFieldData);
-	    
-	    JLabel lblNewLabel_1_1 = new JLabel("Digite a data das Tarefas:");
-	    lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-	    lblNewLabel_1_1.setBounds(317, 191, 167, 14);
-	    email.add(lblNewLabel_1_1);
-	    
-	    return email;
-	}
 
-	
-	
-	private JPanel painelPlanilha() {
-		JPanel planilha = new JPanel();
-		planilha.setLayout(null);
-		
-		JLabel lblNewLabel_2 = new JLabel("Exportação Com Um Dia Especifico");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel_2.setBounds(10, 11, 350, 47);
-		planilha.add(lblNewLabel_2);
-		
-		JLabel lblNewLabel_3 = new JLabel("Digite o Dia Especifico");
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel_3.setBounds(265, 69, 244, 22);
-		planilha.add(lblNewLabel_3);
-		
-		textFieldDiaEspecifico = new JTextField();
-		textFieldDiaEspecifico.setBounds(297, 102, 150, 27);
-		planilha.add(textFieldDiaEspecifico);
-		textFieldDiaEspecifico.setColumns(10);
-		
-		JButton btnDiaEspecifico = new JButton("Exportar");
-		btnDiaEspecifico.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(!textFieldDiaEspecifico.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(btnDiaEspecifico, "Dia Especifico EXPORTADO", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(btnDiaEspecifico, "Dia Especifico Não EXPORTADO", "Erro", JOptionPane.WARNING_MESSAGE);
-				}
-			}
-		});
-		btnDiaEspecifico.setBounds(307, 140, 125, 33);
-		planilha.add(btnDiaEspecifico);
-		
-		JLabel lblNewLabel_2_1 = new JLabel("Exportação Com Um Mes Especifico");
-		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel_2_1.setBounds(10, 207, 350, 47);
-		planilha.add(lblNewLabel_2_1);
-		
-		JLabel lblNewLabel_3_1 = new JLabel("Digite a Mes Especifico");
-		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel_3_1.setBounds(260, 275, 244, 22);
-		planilha.add(lblNewLabel_3_1);
-		
-		textFieldMesEspecifico = new JTextField();
-		textFieldMesEspecifico.setColumns(10);
-		textFieldMesEspecifico.setBounds(297, 306, 150, 27);
-		planilha.add(textFieldMesEspecifico);
-		
-		JButton btnMesEspecifico = new JButton("Exportar");
-		btnMesEspecifico.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(!textFieldMesEspecifico.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(btnDiaEspecifico, "Mes Especifico Exportado", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(btnDiaEspecifico, "Mes Especifico Não EXPORTADO", "Erro", JOptionPane.WARNING_MESSAGE);
-				}
-			}
-		});
-		btnMesEspecifico.setBounds(307, 356, 125, 33);
-		planilha.add(btnMesEspecifico);
-		
-		return planilha;
-	}
-	
-	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Exportar frame = new Exportar();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 }

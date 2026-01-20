@@ -14,8 +14,7 @@ public class NavegarCommand implements Command {
         this.viewCreator = viewCreator;
     }
 
-    
-    public void execute() {
+    public void execute() throws Exception {
         JFrame proximaView = viewCreator.createView(); 
         
         proximaView.setLocationRelativeTo(null);

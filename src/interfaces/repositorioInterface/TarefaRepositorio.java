@@ -1,4 +1,4 @@
-package repositorioInterface;
+package interfaces.repositorioInterface;
 
 import modelo.Tarefa;
 
@@ -12,6 +12,6 @@ public interface TarefaRepositorio {
     void editarTarefa(Tarefa t) throws Exception;
     void remover(long id) throws Exception;
     Optional<Tarefa> buscar(long id);
-    List<Tarefa> listar();
+    List<Tarefa> listar(long id);
     List<Tarefa> buscarDeadLine(LocalDate deadline);
 }

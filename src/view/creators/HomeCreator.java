@@ -11,5 +11,4 @@ public class HomeCreator implements IViewCreator{
 		Home view = new Home();
 		return view;
 	}
-	
 }

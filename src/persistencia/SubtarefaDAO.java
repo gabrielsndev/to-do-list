@@ -1,110 +1,125 @@
 package persistencia;
 
-import jakarta.persistence.*;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
 import modelo.Subtarefa;
+import com.mongodb.client.MongoCollection;
 import modelo.Tarefa;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SubtarefaDAO {
-    private EntityManagerFactory emf;
-    
-    public SubtarefaDAO() {
-        this.emf = Persistence.createEntityManagerFactory("todo-pu");
+
+    private final MongoCollection<Document> collection;
+
+    public SubtarefaDAO() throws Exception {
+        this.collection = MongoDBConnection.getDatabase().getCollection("subtarefas_listas");
     }
-    
-    public void limparSubtarefasOrfas() {
-        EntityManager em = emf.createEntityManager();
+
+    public void salvar(Subtarefa subtarefa, Long idTask) throws Exception{
+
+        String UUId = UUID.randomUUID().toString();
+        subtarefa.setId(UUId);
+        Document docSalvar = convertToDoc(subtarefa);
+
         try {
-            em.getTransaction().begin();
-
-            int deletados = em.createNativeQuery(
-                "DELETE FROM subtarefa WHERE tarefa_id NOT IN (SELECT id FROM tarefa)"
-            ).executeUpdate();
-
-            em.getTransaction().commit();
-
-            System.out.println("Subtarefas órfãs deletadas: " + deletados);
-        } catch (Exception e) {
-            if (em.getTransaction().isActive())
-                em.getTransaction().rollback();
-            e.printStackTrace();
-        } finally {
-            em.close();
+            this.collection.updateOne(
+                    Filters.eq("task_id", idTask),
+                    Updates.push("itens", docSalvar));
+        } catch(Exception e) {
+            throw new Exception("Erro na conexão com o MongoDB");
         }
     }
 
-    // Salvar nova subtarefa 
-    public void salvar(Subtarefa subtarefa) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(subtarefa);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-    }
-
-    // Atualizar dados de uma subtarefa existente
     public void editar(Subtarefa subtarefa) {
-        EntityManager em = emf.createEntityManager();
+
+    }
+
+    public void remover(String idSubtask) throws Exception {
         try {
-            em.getTransaction().begin();
-            em.merge(subtarefa); // Atualiza os dados com base no ID
-            em.getTransaction().commit();
-        } finally {
-            em.close();
+            Bson filtro = Filters.eq("itens.id", idSubtask);
+            Bson update = Updates.pull("itens", new Document("id", idSubtask));
+            this.collection.updateOne(filtro, update);
+
+        } catch(Exception e) {
+            throw new Exception("Erro ao remover Subtarefa pelo ID", e);
         }
     }
 
-    // Remover subtarefa pelo ID
-    public void remover(long id) throws Exception {
-        EntityManager em = emf.createEntityManager();
-        try {
-            Subtarefa subtarefa = em.find(Subtarefa.class, id);
-            if (subtarefa == null) {
-                throw new Exception("Subtarefa não encontrada");
+
+    public List<Subtarefa> listarSubtarefas(List<Tarefa> tasks) {
+        List<Subtarefa> resultado = new ArrayList<>();
+
+        if (tasks == null || tasks.isEmpty()) {
+            return resultado;
+        }
+
+        List<Long> ids = tasks.stream()
+                .map(Tarefa::getId)
+                .collect(Collectors.toList());
+
+        var documentos = this.collection.find(Filters.in("task_id", ids));
+
+        for (Document doc: documentos) {
+            List<Document> itens = doc.getList("itens", Document.class);
+
+            if(itens != null) {
+                for (Document item: itens) {
+                    Subtarefa s = convertToSubtask(item);
+                    resultado.add(s);
+                }
             }
-
-            em.getTransaction().begin();
-            em.remove(subtarefa);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
         }
+        return resultado;
     }
 
-    // Buscar uma subtarefa pelo ID
-    public Subtarefa buscar(long id) {
-        EntityManager em = emf.createEntityManager();
+
+    public void iniciarListaSubtarefas(Long idTask) throws Exception {
         try {
-            return em.find(Subtarefa.class, id);
-        } finally {
-            em.close();
+            Document novoDocumento = new Document()
+                    .append("task_id", idTask)
+                    .append("itens", new ArrayList<Subtarefa>());
+
+            this.collection.insertOne(novoDocumento);
+        } catch(Exception e) {
+            throw new Exception("Erro ao iniciar lista de tarefas no MongoDB");
         }
     }
 
-    // Listar todas as subtarefas (caso queira ver todas do sistema)
-    public List<Subtarefa> listar() {
-        EntityManager em = emf.createEntityManager();
+    public void limparOrfas(Long id) throws Exception {
         try {
-            return em.createQuery("SELECT s FROM Subtarefa s", Subtarefa.class).getResultList();
-        } finally {
-            em.close();
+            this.collection.deleteOne(Filters.eq("task_id", id));
+        } catch (Exception e) {
+            throw new Exception("Erro ao apagar tarefas orfãs da tarefa: " + id);
         }
     }
 
-    // Listar subtarefas de uma tarefa específica
-    public List<Subtarefa> listarPorTarefa(Tarefa tarefa) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery(
-                    "SELECT s FROM Subtarefa s WHERE s.tarefa = :tarefa", Subtarefa.class)
-                    .setParameter("tarefa", tarefa)
-                    .getResultList();
-        } finally {
-            em.close();
-        }
+
+    public Document convertToDoc(Subtarefa sub) {
+        Document doc = new Document()
+                .append("id", sub.getId())
+                .append("titulo", sub.getTitulo())
+                .append("descricao", sub.getDescricao());
+
+        return doc;
     }
+
+    public Subtarefa convertToSubtask(Document doc) {
+        Subtarefa sub = new Subtarefa();
+
+        sub.setId(doc.getString("id"));
+        sub.setTitulo(doc.getString("titulo"));
+        sub.setDescricao(doc.getString("descricao"));
+
+        return sub;
+    }
+
+
 }

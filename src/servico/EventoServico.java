@@ -1,10 +1,12 @@
 package servico;
 
 import modelo.Evento;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import repositorioInterface.EventoRepositorio;
+import interfaces.repositorioInterface.EventoRepositorio;
 
 
 public class EventoServico{
@@ -18,11 +20,16 @@ public class EventoServico{
     public void criarEvento(Evento evento) throws Exception {
         List<Evento> eventosNaData = eventoRepositorio.buscarPorData(evento.getData());
 
-        if(eventosNaData.isEmpty()){
+        if(!eventosNaData.isEmpty()){
             throw new Exception("Já existe um evento agendado para essa data");
         }
         eventoRepositorio.salvar(evento);
         }
+    
+    public List<Evento> buscarEventosPorData(LocalDate data) {
+     
+        return eventoRepositorio.buscarPorData(data);
+    }
 
     public void atualizarEvento(Evento evento) throws Exception {
         List<Evento> eventosNaData = eventoRepositorio.buscarPorData(evento.getData());
@@ -52,5 +59,9 @@ public class EventoServico{
 
     public List<Evento> listarTodosOsEventosPorMes(int mes) {
         return eventoRepositorio.listarPorMes(mes);
+    }
+
+    public long calcularDiasRestantes(Evento evento) {
+        return java.time.temporal.ChronoUnit.DAYS.between(java.time.LocalDate.now(), evento.getData());
     }
 }

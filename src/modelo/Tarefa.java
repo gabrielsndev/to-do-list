@@ -1,46 +1,62 @@
 package modelo;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
 @Entity
+@Table(name = "Tarefa")
 public class Tarefa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+    @Expose
     private Long id;
+    
+    @Column(nullable = false, length = 100)
+    @Expose
     private String titulo;
+    
+    @Column( length = 250)
+    @Expose
     private String descricao;
-    private LocalDate deadline;
-    private Integer prioridade;
-    private Boolean critica;
 
-    @OneToMany(mappedBy = "tarefa", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Expose
+    private LocalDate deadline;
+  
+    @Column(nullable = false)
+    @Expose
+    private Integer prioridade;
+
+    @Expose
+    private Boolean critica;
+    @Expose
+    private Integer diasCriticos = 3;
+
+    @Transient
+    @Expose
     private List<Subtarefa> subtarefas = new ArrayList<>();
+
+    //Tem que ajeitar pra adicionar o id do usuário
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
 
 	public Tarefa() {}
 
     
-    public Tarefa(String titulo, String descricao, LocalDate deadline, int prioridade, boolean critica) {
+    public Tarefa(String titulo, String descricao, LocalDate deadline, int prioridade) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.deadline = deadline;
         this.prioridade = prioridade;
-        this.critica = critica;
+        this.critica = false;
     }
 
 
-
     public void adicionarSubtarefa(Subtarefa subtarefa) {
-        subtarefa.setTarefa(this); // estabelece a referência para a tarefa pai
         this.subtarefas.add(subtarefa);
     }
 
@@ -55,21 +71,7 @@ public class Tarefa {
 
         this.subtarefas = subtarefas;
     }
-    
- // Calcula o progresso total da tarefa com base na média do progresso das subtarefas
-    public double getPercentualConcluido() {
-        
-    	// Se a lista estiver vazia ou for nula, retorna 0.0% de progresso
-    	if (subtarefas == null || subtarefas.isEmpty()) {
-            return 0.0;
-        }
-    	// Faz a média dos percentuais de cada subtarefa (usando programação funcional com stream)
-        return subtarefas.stream()
-                .mapToDouble(Subtarefa::getPercentualConcluido)// pega os valores de execução de cada subtarefa
-                .average() // calcula a média
-                .orElse(0.0);   // se der erro ou estiver vazia, retorna 0.0
-    }
-        
+
     public Long getId() {
         return id;
     }
@@ -86,39 +88,32 @@ public class Tarefa {
         return deadline;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public int getPrioridade() {
+        return prioridade;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+    public Integer getDiasCriticos() { return diasCriticos; }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+    public User getUser() {return user; }
+
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
-    
-    
-    public int getPrioridade() {
-    	return prioridade;
-    }
-    
-    
-    public void setPrioridade(int prioridade) {
-    	this.prioridade = prioridade;
-    }
 
-    public boolean isCritica() {
-        return critica;
-    }
+    public void setPrioridade(int prioridade) { this.prioridade = prioridade; }
 
-    public void setCritica(boolean critica) {
-        this.critica = critica;
-    }
+    public boolean isCritica() { return critica; }
+
+    public void setCritica(boolean critica) { this.critica = critica; }
+
+    public void setUser(User user) { this.user = user; }
 
     @Override
     public String toString() {
