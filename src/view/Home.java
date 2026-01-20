@@ -12,7 +12,12 @@ import view.factory.IViewCreator;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -68,6 +73,11 @@ public class Home extends JFrame {
 					e1.printStackTrace();
 				}
 				
+				IViewCreator creator = new TarefaPrincipalCreator();
+				
+				Command navegar = new NavegarCommand(Home.this, creator);
+				
+				navegar.execute();
 			}
 			
 		    
@@ -89,10 +99,10 @@ public class Home extends JFrame {
 				}
 				
 			}
-			
 		});
 		btnSubtarefa.setBounds(93, 125, 95, 29);
 		panel.add(btnSubtarefa);
+		
 		
 		JButton btnEvento = new JButton("Evento");
 		btnEvento.addActionListener(new ActionListener() {
