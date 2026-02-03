@@ -24,7 +24,7 @@ Para cada necessidade do sistema, escolhemos a tecnologia mais eficiente:
 ## 🚀 Como Executar
 1. Certifique-se de ter o **Java 17+** instalado.
 2. É necessário ter instâncias do **MongoDB** e **Redis** rodando (recomendado via Docker).
-3. Clone o repositório: `git clone https://github.com/seu-usuario/repo-name`
+3. Clone o repositório: `git clone https://github.com/gabrielsndev/to-do-list`
 4. Configure as credenciais de e-mail no arquivo de propriedades.
 
 ## 👥 Contribuidores
