@@ -1,59 +1,33 @@
-# Projeto - Lista de Aquecimento (POO)
+# 🚀 Advanced ToDo List - Java Multi-Database
 
-Este repositório contém a implementação da lista de aquecimento para o projeto da disciplina de **Programação Orientada a Objetos (POO)** do curso de Análise e Desenvolvimento de Sistemas - IFPB, Campus Santa Rita.
+Este projeto é uma aplicação de gerenciamento de tarefas desenvolvida originalmente no 2º período de ADS (IFPB) e profundamente refatorada no 3º período para implementar arquiteturas avançadas de persistência e padrões de projeto.
 
-## 👥 Equipe
-- Gabriel Souza
-- Thalys Eduardo
-- Maylson Silva
+## 🛠️ Evolução e Disciplinas
+O projeto passou por um ciclo de melhoria contínua integrando conhecimentos de:
+- **Padrões de Projeto:** Refatoração de código para garantir escalabilidade e manutenção.
+- **Banco de Dados II:** Implementação de persistência poliglota (SQL e NoSQL).
 
----
+## 🏗️ Arquitetura de Dados
+Para cada necessidade do sistema, escolhemos a tecnologia mais eficiente:
+- **H2 Database (SQL):** Responsável pelo armazenamento central das tarefas.
+- **MongoDB (NoSQL):** Utilizado para o armazenamento flexível de subtarefas e metadados dinâmicos.
+- **Redis:** Gerenciamento de sessões de usuário, garantindo alta performance e expiração automática.
 
-## 📌 Descrição do Projeto
+## 🌟 Funcionalidades Principais
+- **Sistema de Autenticação:** Login seguro com controle de sessão via Redis.
+- **Gestão de Tarefas:** CRUD completo de tarefas (H2) e subtarefas (MongoDB).
+- **Relatórios Automatizados:** Envio de relatórios de produtividade via E-mail.
+- **Design Patterns Aplicados:** - *Factory/Singleton* para conexões com bancos.
+    - *Strategy* para diferentes formas de notificação ou relatórios.
+    - *DAO/Repository* para abstração da camada de dados.
 
-O projeto é um sistema simples de cadastro de tarefas, que simula uma central de informações com as seguintes funcionalidades:
+## 🚀 Como Executar
+1. Certifique-se de ter o **Java 17+** instalado.
+2. É necessário ter instâncias do **MongoDB** e **Redis** rodando (recomendado via Docker).
+3. Clone o repositório: `git clone https://github.com/seu-usuario/repo-name`
+4. Configure as credenciais de e-mail no arquivo de propriedades.
 
-- Cadastro de tarefas com título, descrição e data limite (deadline)
-- Armazenamento das tarefas em uma lista (`ArrayList`)
-- Persistência dos dados em arquivo XML usando a biblioteca XStream
-- Geração de relatórios em PDF para tarefas de um dia específico (usando iText)
-- Envio de e-mails com as tarefas do dia atual em anexo (usando JavaMail)
-
-A aplicação roda no terminal (modo texto), com um menu interativo.
-
----
-## 📁 Estrutura do Projeto
-
-projeto-poo/
-
-│
-
-├── src/
-   
-   ├── modelo/ # Classes Tarefa e CentralDeInformacoes
-   
-   ├── persistencia/ # Classe Persistencia (XStream)
-   
-   ├── relatorios/ # Classe GeradorDeRelatorios (iText)
-   
-   ├── email/ # Classe Mensageiro (JavaMail)
-   
-   └── Main.java # Menu principal e interação com o usuário
-   
-│
-
-├── .gitignore
-
-├── README.md
-
-└── central.xml # Arquivo XML com as tarefas (gerado pelo sistema)
-
----
-
-## 🧪 Requisitos
-
-- Java 8 ou superior
-- XStream (persistência em XML)
-- iText (geração de PDF)
-- JavaMail (envio de e-mails)
-- Biblioteca JARs devem ser adicionadas ao classpath do projeto
+## 👥 Contribuidores
+- [Gabriel Souza]
+- [Thalys Eduardo]
+- [Maylson Silva]
